@@ -43,4 +43,4 @@ add_library(${PROJECT_NAME} ${SRC_LIB_FILES})
 #generate test executable
 set(TEST_BIN_NAME ${PROJECT_NAME}Test)
 add_executable(${TEST_BIN_NAME} ${SRC_TEST_FILES})
-target_link_libraries(${TEST_BIN_NAME} ${PROJECT_NAME})
+target_link_libraries(${TEST_BIN_NAME} ${PROJECT_NAME} stdc++fs)

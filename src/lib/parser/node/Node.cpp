@@ -4,14 +4,18 @@
 
 #include "../../compiler/IndentWriter.hpp"
 
-namespace parserNode
+namespace pugcpp
+{
+namespace parser
+{
+namespace node
 {
 void Node::setLineNumber(int lineNumber)
 {
     m_nLlineNumber = lineNumber;
 }
 
-int Node::getLineNumber()
+int Node::getLineNumber() const
 {
     return m_nLlineNumber;
 }
@@ -21,7 +25,7 @@ void Node::setValue(const string &value)
     m_sValue = value;
 }
 
-const string &Node::getValue()
+const string &Node::getValue() const
 {
     return m_sValue;
 }
@@ -31,7 +35,7 @@ void Node::setName(const string &name)
     m_sName = name;
 }
 
-const string &Node::getName()
+const string &Node::getName() const
 {
     return m_sName;
 }
@@ -90,7 +94,7 @@ void Node::setFileName(const string &fileName)
     m_sFileName = fileName;
 }
 
-const string &Node::getFileName()
+const string &Node::getFileName() const
 {
     return m_sFileName;
 }
@@ -102,4 +106,6 @@ shared_ptr<Node> Node::clone()
     return clone;
 }
 
-} // namespace parserNode
+} // namespace node
+} // namespace parser
+} // namespace pugcpp

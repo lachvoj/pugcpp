@@ -1,7 +1,11 @@
 #pragma once
 
+#include <fstream>
+
 #include "ITemplateLoader.hpp"
 
+namespace pugcpp
+{
 namespace tmpl
 {
 class FileTemplateLoader : public ITemplateLoader
@@ -10,16 +14,17 @@ class FileTemplateLoader : public ITemplateLoader
     string encoding_ = "UTF-8";
     string folderPath_ = "";
     string extension_ = "pug";
+    ifstream reader_;
 
     void validateFolderPath(const string &folderPath);
 
   public:
     FileTemplateLoader(const string &folderPath, const string &encoding);
     FileTemplateLoader(const string &folderPath, const string &encoding, const string &extension);
-    ~FileTemplateLoader();
 
     long getLastModified(const string &name);
-    ifstream getReader(const string &name);
+    istream &getReader(const string &name);
     const string &getExtension() const;
 };
 } // namespace tmpl
+} // namespace pugcpp

@@ -2,6 +2,10 @@
 
 #include "Token.hpp"
 
+namespace pugcpp
+{
+namespace lexer
+{
 namespace token
 {
 class Mixin : Token
@@ -17,3 +21,5 @@ class Mixin : Token
     string &arguments();
 };
 } // namespace token
+} // namespace lexer
+} // namespace pugcpp

@@ -6,6 +6,8 @@
 
 using namespace std;
 
+namespace pugcpp
+{
 namespace compiler
 {
 class IndentWriter
@@ -15,7 +17,7 @@ class IndentWriter
     int m_nParentIndents = 0;
     bool m_bUseIndent = false;
     bool m_bEmpty = true;
-    shared_ptr<stringstream> m_pWriter;
+    stringstream &m_pWriter;
     string m_sPp = "  ";
     bool m_bEscape;
     bool m_bCompiledTag;
@@ -24,10 +26,7 @@ class IndentWriter
     void write(const string &string);
 
   public:
-    IndentWriter(shared_ptr<stringstream> writer);
-    ~IndentWriter()
-    {
-    }
+    IndentWriter(stringstream &writer);
 
     IndentWriter &add(const string &string);
     IndentWriter &append(const string &string);
@@ -47,3 +46,4 @@ class IndentWriter
 };
 
 } // namespace compiler
+} // namespace pugcpp

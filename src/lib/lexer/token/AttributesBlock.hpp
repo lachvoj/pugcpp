@@ -2,6 +2,10 @@
 
 #include "Token.hpp"
 
+namespace pugcpp
+{
+namespace lexer
+{
 namespace token
 {
 class AttributesBlock : Token
@@ -11,3 +15,5 @@ class AttributesBlock : Token
     ~AttributesBlock();
 };
 } // namespace token
+} // namespace lexer
+} // namespace pugcpp

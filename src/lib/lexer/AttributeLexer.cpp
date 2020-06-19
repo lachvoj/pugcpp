@@ -1,20 +1,18 @@
+#include "AttributeLexer.hpp"
+
 #include <regex>
 
 #include "../util/StringUtils.hpp"
-#include "AttributeLexer.hpp"
 
-using namespace util;
-
+namespace pugcpp
+{
 namespace lexer
 {
+using namespace util;
 
 AttributeLexer::AttributeLexer()
 {
     states_.push(KEY);
-}
-
-AttributeLexer::~AttributeLexer()
-{
 }
 
 const AttributeList &AttributeLexer::getToken(const string &input, int lineno)
@@ -52,9 +50,7 @@ void AttributeLexer::parse(const char c)
         case EXPRESSION:
         case ARRAY:
         case STRING:
-        case OBJECT:
-            value_ += c;
-            break;
+        case OBJECT: value_ += c; break;
 
         default:
             states_.push(KEY);
@@ -87,34 +83,16 @@ void AttributeLexer::parse(const char c)
         }
         break;
 
-    case '=':
-        parseAssign(real);
-        break;
-    case '(':
-        parseExpressionStart(c);
-        break;
-    case ')':
-        parseExpressionEnd(c);
-        break;
-    case '{':
-        parseObjectStart(c);
-        break;
-    case '}':
-        parseObjectEnd(c);
-        break;
-    case '[':
-        parseArrayStart(c);
-        break;
-    case ']':
-        parseArrayEnd(c);
-        break;
+    case '=': parseAssign(real); break;
+    case '(': parseExpressionStart(c); break;
+    case ')': parseExpressionEnd(c); break;
+    case '{': parseObjectStart(c); break;
+    case '}': parseObjectEnd(c); break;
+    case '[': parseArrayStart(c); break;
+    case ']': parseArrayEnd(c); break;
     case '"':
-    case '\'':
-        parseQuotes(c);
-        break;
-    default:
-        parseDefaults(c);
-        break;
+    case '\'': parseQuotes(c); break;
+    default: parseDefaults(c); break;
     }
 }
 
@@ -122,19 +100,13 @@ void AttributeLexer::parseAssign(const char real)
 {
     switch (state())
     {
-    case KEY_CHAR:
-        key_ += real;
-        break;
+    case KEY_CHAR: key_ += real; break;
     case VALUE:
     case EXPRESSION:
     case ARRAY:
     case STRING:
-    case OBJECT:
-        value_ += real;
-        break;
-    default:
-        states_.push(VALUE);
-        break;
+    case OBJECT: value_ += real; break;
+    default: states_.push(VALUE); break;
     }
 }
 
@@ -196,12 +168,8 @@ void AttributeLexer::parseQuotes(const char c)
 {
     switch (state())
     {
-    case KEY:
-        states_.push(KEY_CHAR);
-        break;
-    case KEY_CHAR:
-        states_.pop();
-        break;
+    case KEY: states_.push(KEY_CHAR); break;
+    case KEY_CHAR: states_.pop(); break;
     case STRING:
         if (c == quote_)
         {
@@ -222,13 +190,10 @@ void AttributeLexer::parseDefaults(const char c)
     switch (state())
     {
     case KEY:
-    case KEY_CHAR:
-        key_ += c;
-        break;
-    default:
-        value_ += c;
-        break;
+    case KEY_CHAR: key_ += c; break;
+    default: value_ += c; break;
     }
 }
 
 } // namespace lexer
+} // namespace pugcpp

@@ -1,5 +1,9 @@
 #include "Include.hpp"
 
+namespace pugcpp
+{
+namespace lexer
+{
 namespace token
 {
 Include::Include(const string &value, int lineNumber) : Token::Token(value, lineNumber, e_Include)
@@ -26,3 +30,5 @@ Token &Include::attrs()
     return attrs_;
 }
 } // namespace token
+} // namespace lexer
+} // namespace pugcpp

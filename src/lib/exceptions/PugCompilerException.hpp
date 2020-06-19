@@ -1,21 +1,26 @@
 #pragma once
 
-#include <string>
 #include <memory>
+#include <string>
 
-#include "PugException.hpp"
 #include "../parser/node/Node.hpp"
 #include "../template/ITemplateLoader.hpp"
+#include "PugException.hpp"
 
 using namespace std;
 
-
+namespace pugcpp
+{
 namespace exceptions
 {
-class PugCompilerException: PugException
+using namespace tmpl;
+using namespace parser::node;
+
+class PugCompilerException : PugException
 {
   public:
-    PugCompilerException(const parserNode::Node &nd, shared_ptr<tmpl::ITemplateLoader> &templateLoader, const string &message);
-    ~PugCompilerException(){}
+    PugCompilerException(const Node &nd, shared_ptr<ITemplateLoader> templateLoader, const std::exception *e);
+    PugCompilerException(const Node &nd, shared_ptr<ITemplateLoader> templateLoader, const string &message);
 };
 } // namespace exceptions
+} // namespace pugcpp

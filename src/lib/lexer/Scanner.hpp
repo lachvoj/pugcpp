@@ -4,11 +4,10 @@
 #include <regex>
 #include <string>
 
-#include "../util/StringUtils.hpp"
-
 using namespace std;
-using namespace util;
 
+namespace pugcpp
+{
 namespace lexer
 {
 class Scanner
@@ -22,7 +21,6 @@ class Scanner
   public:
     Scanner(ifstream &stream);
     Scanner(const string &input);
-    ~Scanner();
 
     void consume(int length);
     string findInLine(const string &re);
@@ -38,3 +36,4 @@ class Scanner
     bool isAdditionalBlankline();
 };
 } // namespace lexer
+} // namespace pugcpp

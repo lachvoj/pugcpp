@@ -2,6 +2,10 @@
 
 #include "Token.hpp"
 
+namespace pugcpp
+{
+namespace lexer
+{
 namespace token
 {
 class If : Token
@@ -20,3 +24,5 @@ class If : Token
     bool alternativeCondition();
 };
 } // namespace token
+} // namespace lexer
+} // namespace pugcpp

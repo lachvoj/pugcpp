@@ -2,6 +2,10 @@
 
 #include "Token.hpp"
 
+namespace pugcpp
+{
+namespace lexer
+{
 namespace token
 {
 class PipelessText : Token
@@ -11,3 +15,5 @@ class PipelessText : Token
     ~PipelessText();
 };
 } // namespace token
+} // namespace lexer
+} // namespace pugcpp

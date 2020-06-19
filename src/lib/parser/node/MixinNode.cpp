@@ -1,9 +1,12 @@
 #include "MixinNode.hpp"
 
-namespace parserNode
+namespace pugcpp
 {
-MixinNode::MixinNode(/* args */)
+namespace parser
 {
-}
+namespace node
+{
 
-} // namespace parserNode
+} // namespace node
+} // namespace parser
+} // namespace pugcpp

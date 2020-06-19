@@ -2,12 +2,16 @@
 
 #include "token/Token.hpp"
 
-namespace token
+namespace pugcpp
 {
+namespace lexer
+{
+using namespace token;
+
 class Assignment : Token
 {
   public:
     Assignment(const string &value, int lineNumber);
-    ~Assignment();
 };
-} // namespace token
+} // namespace lexer
+} // namespace pugcpp

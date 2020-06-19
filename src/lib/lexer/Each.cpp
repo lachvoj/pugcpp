@@ -1,6 +1,8 @@
 #include "Each.hpp"
 
-namespace token
+namespace pugcpp
+{
+namespace lexer
 {
 Each::Each(const string &value, int lineNumber) : Token::Token(value, lineNumber, e_Each)
 {
@@ -25,4 +27,5 @@ string &Each::key()
 {
     return key_;
 }
-} // namespace token
+} // namespace lexer
+} // namespace pugcpp

@@ -1,5 +1,9 @@
 #include "Mixin.hpp"
 
+namespace pugcpp
+{
+namespace lexer
+{
 namespace token
 {
 Mixin::Mixin(const string &value, int lineNumber) : Token::Token(value, lineNumber, e_Mixin)
@@ -15,3 +19,5 @@ string &Mixin::arguments()
     return arguments_;
 }
 } // namespace token
+} // namespace lexer
+} // namespace pugcpp

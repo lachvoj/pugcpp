@@ -2,10 +2,13 @@
 
 #include "../util/StringUtils.hpp"
 
+namespace pugcpp
+{
 namespace compiler
 {
+using namespace util;
 
-IndentWriter::IndentWriter(shared_ptr<stringstream> writer) : m_pWriter(writer)
+IndentWriter::IndentWriter(stringstream &writer) : m_pWriter(writer)
 {
 }
 
@@ -23,7 +26,7 @@ IndentWriter &IndentWriter::append(const string &str)
 
 void IndentWriter::write(const string &string)
 {
-    (*m_pWriter) << string;
+    m_pWriter << string;
     m_bEmpty = false;
 }
 
@@ -39,7 +42,7 @@ void IndentWriter::decrement()
 
 string IndentWriter::toString()
 {
-    return m_pWriter->str();
+    return m_pWriter.str();
 }
 
 void IndentWriter::newline()
@@ -47,7 +50,7 @@ void IndentWriter::newline()
     if (!isPp())
         return;
 
-    write("\n" + util::StringUtils::repeat(m_sPp, m_nIndent));
+    write("\n" + StringUtils::repeat(m_sPp, m_nIndent));
 }
 
 void IndentWriter::prettyIndent(int offset, bool newline)
@@ -56,7 +59,7 @@ void IndentWriter::prettyIndent(int offset, bool newline)
         return;
 
     string newlineChar = newline ? "\n" : "";
-    write(newlineChar + util::StringUtils::repeat(m_sPp, m_nIndent + offset - 1));
+    write(newlineChar + StringUtils::repeat(m_sPp, m_nIndent + offset - 1));
 }
 
 void IndentWriter::setUseIndent(bool useIndent)
@@ -99,3 +102,4 @@ bool IndentWriter::isCompiledDoctype()
     return m_bCompiledDoctype;
 }
 } // namespace compiler
+} // namespace pugcpp

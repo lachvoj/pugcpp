@@ -8,8 +8,12 @@
 
 using namespace std;
 
+namespace pugcpp
+{
 namespace exceptions
 {
+using namespace tmpl;
+
 class PugException : public Exception
 {
   private:
@@ -19,8 +23,11 @@ class PugException : public Exception
     shared_ptr<tmpl::ITemplateLoader> m_pTemplateLoader;
 
   public:
-    PugException(const string &message, const string &filename, int lineNumber,
-                 shared_ptr<tmpl::ITemplateLoader> templateLoader);
+    PugException(const string &message,
+                 const string &filename,
+                 int lineNumber,
+                 shared_ptr<tmpl::ITemplateLoader> templateLoader,
+                 const std::exception *e);
     PugException(const string &message);
     ~PugException()
     {
@@ -31,3 +38,4 @@ class PugException : public Exception
     int getLienNumber();
 };
 } // namespace exceptions
+} // namespace pugcpp

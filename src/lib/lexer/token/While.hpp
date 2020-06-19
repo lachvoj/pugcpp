@@ -2,6 +2,10 @@
 
 #include "Token.hpp"
 
+namespace pugcpp
+{
+namespace lexer
+{
 namespace token
 {
 class While : Token
@@ -11,3 +15,5 @@ class While : Token
     ~While();
 };
 } // namespace token
+} // namespace lexer
+} // namespace pugcpp

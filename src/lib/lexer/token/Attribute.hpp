@@ -4,7 +4,10 @@
 #include <string>
 
 using namespace std;
-
+namespace pugcpp
+{
+namespace lexer
+{
 namespace token
 {
 class Attribute
@@ -16,10 +19,11 @@ class Attribute
 
   public:
     Attribute(const string &name, const any &value, bool escape);
-    ~Attribute();
 
     const string &name() const;
     const any &value() const;
     const bool escaped() const;
 };
 } // namespace token
+} // namespace lexer
+} // namespace pugcpp

@@ -1,5 +1,9 @@
 #include "AttributeList.hpp"
 
+namespace pugcpp
+{
+namespace lexer
+{
 namespace token
 {
 AttributeList::AttributeList(int lineNumber) : Token::Token(lineNumber, e_AttributeList)
@@ -31,3 +35,5 @@ void AttributeList::addBoolAttribute(const string &name, bool value)
 }
 
 } // namespace token
+} // namespace lexer
+} // namespace pugcpp

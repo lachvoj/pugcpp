@@ -5,7 +5,11 @@
 
 using namespace std;
 
-namespace parserNode
+namespace pugcpp
+{
+namespace parser
+{
+namespace node
 {
 class Attr
 {
@@ -23,4 +27,6 @@ class Attr
     bool isEscaped();
 };
 
-} // namespace parserNode
+} // namespace node
+} // namespace parser
+} // namespace pugcpp

@@ -1,13 +1,17 @@
 #pragma once
 
-namespace parserNode
+namespace pugcpp
+{
+namespace parser
+{
+namespace node
 {
 class MixinNode
 {
   private:
     /* data */
   public:
-    MixinNode(/* args */);
-    ~MixinNode();
 };
-} // namespace parserNode
+} // namespace node
+} // namespace parser
+} // namespace pugcpp

@@ -1,5 +1,9 @@
 #include "Token.hpp"
 
+namespace pugcpp
+{
+namespace lexer
+{
 namespace token
 {
 Token::Token(int lineNumber /*= 0*/, TokenType type /*= e_Default*/) : lineNumber_(lineNumber), type_(type)
@@ -7,12 +11,12 @@ Token::Token(int lineNumber /*= 0*/, TokenType type /*= e_Default*/) : lineNumbe
 }
 
 Token::Token(const string &value, int lineNumber, TokenType type /*= e_Default*/)
-    : value_(value), lineNumber_(lineNumber), type_(type)
+: value_(value), lineNumber_(lineNumber), type_(type)
 {
 }
 
 Token::Token(const string &value, int lineNumber, bool buffer, TokenType type /*= e_Default*/)
-    : value_(value), lineNumber_(lineNumber), buffer_(buffer), type_(type)
+: value_(value), lineNumber_(lineNumber), buffer_(buffer), type_(type)
 {
 }
 
@@ -101,3 +105,5 @@ const vector<string> &Token::values() const
 }
 
 } // namespace token
+} // namespace lexer
+} // namespace pugcpp

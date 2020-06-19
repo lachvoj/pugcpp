@@ -1,10 +1,15 @@
 #include "PugException.hpp"
 
+namespace pugcpp
+{
 namespace exceptions
 {
-PugException::PugException(const string &message, const string &filename, int lineNumber,
-                           shared_ptr<tmpl::ITemplateLoader> templateLoader)
-    : Exception(message), m_sFilename(filename), m_nLineNumber(lineNumber), m_pTemplateLoader(templateLoader)
+PugException::PugException(const string &message,
+                           const string &filename,
+                           int lineNumber,
+                           shared_ptr<ITemplateLoader> templateLoader,
+                           const std::exception *e)
+: Exception(message, e), m_sFilename(filename), m_nLineNumber(lineNumber), m_pTemplateLoader(templateLoader)
 {
 }
 
@@ -12,9 +17,9 @@ PugException::PugException(const string &message) : Exception(message)
 {
 }
 
-const char *what() const noexcept override
+const char *PugException::what() const noexcept
 {
-    return what().c_str();
+    return m_sError.c_str();
 }
 
 const string &PugException::getFilename()
@@ -27,3 +32,4 @@ int PugException::getLienNumber()
     return m_nLineNumber;
 }
 } // namespace exceptions
+} // namespace pugcpp

@@ -2,8 +2,12 @@
 
 #include "token/Token.hpp"
 
-namespace token
+namespace pugcpp
 {
+namespace lexer
+{
+using namespace token;
+
 class Each : Token
 {
   private:
@@ -12,11 +16,11 @@ class Each : Token
 
   public:
     Each(const string &value, int lineNumber);
-    ~Each();
 
     const string &code() const;
     string &code();
     const string &key() const;
     string &key();
 };
-} // namespace token
+} // namespace lexer
+} // namespace pugcpp

@@ -2,6 +2,10 @@
 
 #include "Token.hpp"
 
+namespace pugcpp
+{
+namespace lexer
+{
 namespace token
 {
 class Interpolation : Token
@@ -11,3 +15,5 @@ class Interpolation : Token
     ~Interpolation();
 };
 } // namespace token
+} // namespace lexer
+} // namespace pugcpp

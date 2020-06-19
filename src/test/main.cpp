@@ -2,6 +2,8 @@
 #include <regex>
 #include <string>
 
+#include "../lib/include/PugCpp.hpp"
+
 using namespace std;
 
 string input_ = "test test \n test 123";
@@ -22,7 +24,7 @@ void findInLine(const string &re)
 
 int main(int argc, char const *argv[])
 {
-    findInLine("12");
+    string out = pugcpp::PugCpp::render("test.pug", nullptr);
 
     return 0;
 }

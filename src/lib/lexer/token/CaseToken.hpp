@@ -2,6 +2,10 @@
 
 #include "Token.hpp"
 
+namespace pugcpp
+{
+namespace lexer
+{
 namespace token
 {
 class CaseToken : Token
@@ -11,3 +15,5 @@ class CaseToken : Token
     ~CaseToken();
 };
 } // namespace token
+} // namespace lexer
+} // namespace pugcpp

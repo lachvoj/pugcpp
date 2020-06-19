@@ -8,15 +8,19 @@
 #include <set>
 #include <vector>
 
-#include "../util/HashUtils.hpp"
-
 #include "../filter/IFilter.hpp"
 #include "../parser/node/MixinNode.hpp"
+#include "../util/HashUtils.hpp"
 
 using namespace std;
 
+namespace pugcpp
+{
 namespace model
 {
+using namespace filter;
+using namespace parser::node;
+
 class PugModel
 {
   private:
@@ -24,19 +28,18 @@ class PugModel
 
     map<string, any> baseModel_;
     deque<map<string, any>> scopes_;
-    map<string, parserNode::MixinNode> mixins_;
-    map<string, shared_ptr<filter::IFilter>> filter_;
+    map<string, MixinNode> mixins_;
+    map<string, shared_ptr<IFilter>> filter_;
 
   public:
     static const string NON_LOCAL_VARS;
 
     PugModel(const map<string, any> *defaults);
-    ~PugModel();
 
     void pushScope();
     void popScope();
-    void setMixin(const string &name, const parserNode::MixinNode &node);
-    parserNode::MixinNode &getMixin(const string &name);
+    void setMixin(const string &name, const MixinNode &node);
+    MixinNode &getMixin(const string &name);
     void clear();
     bool containsKey(const string &key);
     bool containsValue(const any *value);
@@ -49,7 +52,8 @@ class PugModel
     bool remove(const string &key);
     int size();
     list<any> values();
-    shared_ptr<filter::IFilter> getFilter(const string &name);
-    void addFilter(const string &name, const shared_ptr<filter::IFilter> &filter);
+    shared_ptr<IFilter> getFilter(const string &name);
+    void addFilter(const string &name, const shared_ptr<IFilter> &filter);
 };
 } // namespace model
+} // namespace pugcpp

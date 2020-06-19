@@ -7,6 +7,10 @@
 
 using namespace std;
 
+namespace pugcpp
+{
+namespace lexer
+{
 namespace token
 {
 class AttributeList : Token
@@ -25,3 +29,5 @@ class AttributeList : Token
 };
 
 } // namespace token
+} // namespace lexer
+} // namespace pugcpp

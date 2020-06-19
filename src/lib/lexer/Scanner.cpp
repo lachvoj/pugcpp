@@ -1,7 +1,12 @@
 #include "Scanner.hpp"
 
+#include "../util/StringUtils.hpp"
+
+namespace pugcpp
+{
 namespace lexer
 {
+using namespace util;
 
 void Scanner::initFromStream(ifstream &stream)
 {
@@ -126,3 +131,4 @@ bool Scanner::isAdditionalBlankline()
 }
 
 } // namespace lexer
+} // namespace pugcpp

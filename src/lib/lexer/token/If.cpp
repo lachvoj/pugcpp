@@ -1,10 +1,14 @@
 #include "If.hpp"
 
+namespace pugcpp
+{
+namespace lexer
+{
 namespace token
 {
 If::If(const string &value, int lineNumber, bool inverseCondition = false, bool alternativeCondition = false)
-    : Token::Token(value, lineNumber, e_If), inverseCondition_(inverseCondition),
-      alternativeCondition_(alternativeCondition)
+: Token::Token(value, lineNumber, e_If), inverseCondition_(inverseCondition),
+  alternativeCondition_(alternativeCondition)
 {
 }
 
@@ -28,3 +32,5 @@ bool If::alternativeCondition()
     return alternativeCondition_;
 }
 } // namespace token
+} // namespace lexer
+} // namespace pugcpp

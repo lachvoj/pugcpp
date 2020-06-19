@@ -1,18 +1,18 @@
 #include "PugModel.hpp"
 
-
+namespace pugcpp
+{
 namespace model
 {
 const string PugModel::LOCALS = "locals";
 const string PugModel::NON_LOCAL_VARS = "nonLocalVars";
 
 template <class T>
-inline void hash_combine(std::size_t & seed, const T & v)
+inline void hash_combine(std::size_t &seed, const T &v)
 {
     std::hash<T> hasher;
     seed ^= hasher(v) + 0x9e3779b9 + (seed << 6) + (seed >> 2);
 }
-
 
 PugModel::PugModel(const map<string, any> *defaults)
 {
@@ -59,12 +59,12 @@ void PugModel::popScope()
     scopes_.pop_back();
 }
 
-void PugModel::setMixin(const string &name, const parserNode::MixinNode &node)
+void PugModel::setMixin(const string &name, const MixinNode &node)
 {
-    mixins_.insert(pair<string, parserNode::MixinNode>(name, node));
+    mixins_.insert(pair<string, MixinNode>(name, node));
 }
 
-parserNode::MixinNode &PugModel::getMixin(const string &name)
+MixinNode &PugModel::getMixin(const string &name)
 {
     return mixins_.find(name)->second;
 }
@@ -96,7 +96,7 @@ bool PugModel::containsValue(const any *value)
         rIt++;
         for (auto &i : *rIt)
         {
-            //TODO: double check this!!!!!!!!!!!!
+            // TODO: double check this!!!!!!!!!!!!
             if (any_cast<void *>(i.second) == any_cast<void *>(value))
             {
                 return true;
@@ -114,7 +114,7 @@ list<pair<string, any>> PugModel::entrySet()
         rIt++;
         for (auto &i : *rIt)
         {
-            //TODO: double check this!!!!!!!!!!!!
+            // TODO: double check this!!!!!!!!!!!!
             entries.push_back(i);
         }
     }
@@ -149,7 +149,7 @@ list<string> PugModel::keySet()
         rIt++;
         for (auto &i : *rIt)
         {
-            //TODO: double check this!!!!!!!!!!!!
+            // TODO: double check this!!!!!!!!!!!!
             keys.push_back(i.first);
         }
     }
@@ -193,21 +193,22 @@ list<any> PugModel::values()
 {
     list<string> ks = keySet();
     list<any> ret(ks.size());
-    for (string &key: ks)
+    for (string &key : ks)
     {
         ret.push_back(get(key));
     }
     return ret;
 }
 
-shared_ptr<filter::IFilter> PugModel::getFilter(const string &name)
+shared_ptr<IFilter> PugModel::getFilter(const string &name)
 {
     return filter_.find(name)->second;
 }
 
-void PugModel::addFilter(const string &name, const shared_ptr<filter::IFilter> &filter)
+void PugModel::addFilter(const string &name, const shared_ptr<IFilter> &filter)
 {
-    filter_[name] =  filter;
+    filter_[name] = filter;
 }
 
 } // namespace model
+} // namespace pugcpp

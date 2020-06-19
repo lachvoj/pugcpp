@@ -8,17 +8,21 @@
 
 using namespace std;
 
+namespace pugcpp
+{
 namespace expression
 {
+using namespace model;
+
 class IExpressionHandler
 {
   public:
-    ~IExpressionHandler(){};
-    virtual bool evaluateBooleanExpression(string expression, model::PugModel model);
-    virtual any evaluateExpression(string expression, model::PugModel model);
-    virtual string evaluateStringExpression(string expression, model::PugModel model);
-    virtual void assertExpression(string expression);
-    virtual void setCache(bool cache);
-    virtual void clearCache();
+    virtual bool evaluateBooleanExpression(const string &expression, PugModel model) = 0;
+    virtual any evaluateExpression(const string &expression, PugModel model) = 0;
+    virtual string evaluateStringExpression(const string &expression, PugModel model) = 0;
+    virtual void assertExpression(string expression) = 0;
+    virtual void setCache(bool cache) = 0;
+    virtual void clearCache() = 0;
 };
 } // namespace expression
+} // namespace pugcpp

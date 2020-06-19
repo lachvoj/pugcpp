@@ -3,18 +3,24 @@
 #include <exception>
 #include <string>
 
+using namespace std;
+
+namespace pugcpp
+{
 namespace exceptions
 {
-class Exception: public exception
+class Exception : public exception
 {
-  private:
+  protected:
     string m_sError;
+    std::exception m_clThrowable;
 
   public:
     Exception(const string &error);
-    ~Exception();
+    Exception(const string &error, const std::exception *e);
 
     const char *what() const noexcept override;
 };
 
 } // namespace exceptions
+} // namespace pugcpp

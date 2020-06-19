@@ -1,6 +1,10 @@
 #include "Attr.hpp"
 
-namespace parserNode
+namespace pugcpp
+{
+namespace parser
+{
+namespace node
 {
 
 Attr::Attr(const string &name, const any &value, bool escaped) : name_(name), value_(value), escaped_(escaped)
@@ -22,4 +26,6 @@ bool Attr::isEscaped()
     return escaped_;
 }
 
-} // namespace parserNode
+} // namespace node
+} // namespace parser
+} // namespace pugcpp

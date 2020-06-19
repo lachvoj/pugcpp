@@ -2,6 +2,10 @@
 
 #include "Token.hpp"
 
+namespace pugcpp
+{
+namespace lexer
+{
 namespace token
 {
 class Newline : Token
@@ -11,3 +15,5 @@ class Newline : Token
     ~Newline();
 };
 } // namespace token
+} // namespace lexer
+} // namespace pugcpp

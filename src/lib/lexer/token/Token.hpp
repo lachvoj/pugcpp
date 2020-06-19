@@ -5,6 +5,10 @@
 
 using namespace std;
 
+namespace pugcpp
+{
+namespace lexer
+{
 namespace token
 {
 enum TokenType
@@ -87,3 +91,5 @@ class Token
     const vector<string> &values() const;
 };
 } // namespace token
+} // namespace lexer
+} // namespace pugcpp

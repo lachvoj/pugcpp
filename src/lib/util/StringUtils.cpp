@@ -1,5 +1,10 @@
 #include "StringUtils.hpp"
 
+#include <algorithm>
+
+namespace pugcpp
+{
+
 namespace util
 {
 string &StringUtils::ltrim(string &str, const string &chars /*= "\t\n\v\f\r "*/)
@@ -31,4 +36,36 @@ string StringUtils::repeat(const string &str, int count)
 
     return ret;
 }
+
+bool StringUtils::startsWith(string const &fullString, string const &starting)
+{
+    return (fullString.rfind(starting, 0) == 0);
+}
+
+bool endsWith(string const &fullString, string const &ending)
+{
+    if (fullString.length() >= ending.length())
+    {
+        return (0 == fullString.compare(fullString.length() - ending.length(), ending.length(), ending));
+    }
+    return false;
+}
+
+string StringUtils::toLowerCase(const string &str)
+{
+    string ret = str;
+    for_each(ret.begin(), ret.end(), [](char &c) { c = ::tolower(c); });
+
+    return ret;
+}
+
+string StringUtils::toUpperCase(const string &str)
+{
+    string ret = str;
+    for_each(ret.begin(), ret.end(), [](char &c) { c = ::toupper(c); });
+
+    return ret;
+}
+
 } // namespace util
+} // namespace pugcpp

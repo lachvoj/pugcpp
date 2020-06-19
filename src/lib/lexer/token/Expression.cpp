@@ -1,9 +1,13 @@
 #include "Expression.hpp"
 
+namespace pugcpp
+{
+namespace lexer
+{
 namespace token
 {
 Expression::Expression(const string &value, int lineNumber, bool escape = false)
-    : Token::Token(value, lineNumber, e_Expression), escape_(escape)
+: Token::Token(value, lineNumber, e_Expression), escape_(escape)
 {
 }
 
@@ -18,3 +22,5 @@ bool &Expression::escape()
 }
 
 } // namespace token
+} // namespace lexer
+} // namespace pugcpp

@@ -2,6 +2,10 @@
 
 #include "Token.hpp"
 
+namespace pugcpp
+{
+namespace lexer
+{
 namespace token
 {
 class Eos : Token
@@ -11,3 +15,5 @@ class Eos : Token
     ~Eos();
 };
 } // namespace token
+} // namespace lexer
+} // namespace pugcpp

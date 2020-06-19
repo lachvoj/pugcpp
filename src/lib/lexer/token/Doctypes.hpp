@@ -5,6 +5,10 @@
 
 using namespace std;
 
+namespace pugcpp
+{
+namespace lexer
+{
 namespace token
 {
 class Doctypes
@@ -18,3 +22,5 @@ class Doctypes
     static const string &get(const string &pugDocType);
 };
 } // namespace token
+} // namespace lexer
+} // namespace pugcpp

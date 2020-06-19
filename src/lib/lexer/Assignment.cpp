@@ -1,8 +1,11 @@
 #include "Assignment.hpp"
 
-namespace token
+namespace pugcpp
+{
+namespace lexer
 {
 Assignment::Assignment(const string &value, int lineNumber) : Token::Token(value, lineNumber, e_Assignment)
 {
 }
-} // namespace token
+} // namespace lexer
+} // namespace pugcpp

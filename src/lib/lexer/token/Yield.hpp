@@ -2,6 +2,10 @@
 
 #include "Token.hpp"
 
+namespace pugcpp
+{
+namespace lexer
+{
 namespace token
 {
 class Yield : Token
@@ -11,3 +15,5 @@ class Yield : Token
     ~Yield();
 };
 } // namespace token
+} // namespace lexer
+} // namespace pugcpp

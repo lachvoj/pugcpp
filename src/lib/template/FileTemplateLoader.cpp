@@ -12,17 +12,19 @@ namespace fs = std::filesystem;
 
 using namespace std;
 
+namespace pugcpp
+{
 namespace tmpl
 {
 
 FileTemplateLoader::FileTemplateLoader(const string &folderPath, const string &encoding)
-    : folderPath_(folderPath), encoding_(encoding)
+: folderPath_(folderPath), encoding_(encoding)
 {
     validateFolderPath(folderPath);
 }
 
 FileTemplateLoader::FileTemplateLoader(const string &folderPath, const string &encoding, const string &extension)
-    : folderPath_(folderPath), encoding_(encoding), extension_(extension)
+: folderPath_(folderPath), encoding_(encoding), extension_(extension)
 {
     validateFolderPath(folderPath);
 }
@@ -42,9 +44,11 @@ long FileTemplateLoader::getLastModified(const string &name)
     return value.count();
 }
 
-ifstream FileTemplateLoader::getReader(const string &name)
+istream &FileTemplateLoader::getReader(const string &name)
 {
-    return ifstream(name);
+    reader_.open(name);
+
+    return (istream &)reader_;
 }
 
 const string &FileTemplateLoader::getExtension() const
@@ -53,3 +57,4 @@ const string &FileTemplateLoader::getExtension() const
 }
 
 } // namespace tmpl
+} // namespace pugcpp

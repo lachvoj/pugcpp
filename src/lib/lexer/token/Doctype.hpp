@@ -2,6 +2,10 @@
 
 #include "Token.hpp"
 
+namespace pugcpp
+{
+namespace lexer
+{
 namespace token
 {
 class Doctype : Token
@@ -11,3 +15,5 @@ class Doctype : Token
     ~Doctype();
 };
 } // namespace token
+} // namespace lexer
+} // namespace pugcpp

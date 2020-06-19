@@ -7,10 +7,13 @@
 #include "token/AttributeList.hpp"
 
 using namespace std;
-using namespace token;
 
+namespace pugcpp
+{
 namespace lexer
 {
+using namespace token;
+
 class AttributeLexer
 {
   public:
@@ -51,3 +54,4 @@ class AttributeLexer
     const AttributeList &getToken(const string &input, int lineno);
 };
 } // namespace lexer
+} // namespace pugcpp

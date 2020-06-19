@@ -11,14 +11,22 @@
 
 using namespace std;
 
+namespace pugcpp
+{
 // forward definition.
 namespace tmpl
 {
 class PugTemplate;
 }
 
-namespace parserNode
+namespace parser
 {
+namespace node
+{
+using namespace compiler;
+using namespace model;
+using namespace tmpl;
+
 class Node
 {
   protected:
@@ -30,14 +38,13 @@ class Node
     string m_sFileName;
 
   public:
-    virtual void execute(const compiler::IndentWriter &writer, const model::PugModel &model,
-                         const tmpl::PugTemplate &tmplt);
+    virtual void execute(IndentWriter &writer, PugModel &model, PugTemplate &tmplt);
     void setLineNumber(int lineNumber);
-    int getLineNumber();
+    int getLineNumber() const;
     void setValue(const string &value);
-    const string &getValue();
+    const string &getValue() const;
     void setName(const string &name);
-    const string &getName();
+    const string &getName() const;
     void push(shared_ptr<Node> node);
     void setNodes(list<shared_ptr<Node>> &nodes);
     const list<shared_ptr<Node>> &getNodes();
@@ -47,8 +54,9 @@ class Node
     void setBlock(shared_ptr<Node> block);
     shared_ptr<Node> getBlock();
     void setFileName(const string &fileName);
-    const string &getFileName();
+    const string &getFileName() const;
     shared_ptr<Node> clone();
 };
-
-} // namespace parserNode
+} // namespace node
+} // namespace parser
+} // namespace pugcpp

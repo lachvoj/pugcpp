@@ -2,27 +2,38 @@
 
 #include <memory>
 
-#include "../parser/node/Node.hpp"
-#include "../template/PugTemplate.hpp"
 #include "../expression/IExpressionHandler.hpp"
 #include "../model/PugModel.hpp"
+#include "../parser/node/Node.hpp"
+#include "../template/PugTemplate.hpp"
 
 using namespace std;
 
+namespace pugcpp
+{
 namespace compiler
 {
+using namespace parser::node;
+using namespace tmpl;
+using namespace expression;
+using namespace model;
+
 class Compiler
 {
-private:
-    shared_ptr<parserNode::Node> m_pRootNode;
+  private:
+    shared_ptr<Node> m_pRootNode;
     bool m_bPrettyPrint;
-    shared_ptr<tmpl::PugTemplate> m_pTemplate;
-    shared_ptr<expression::IExpressionHandler> m_pExpressionHandler;
+    shared_ptr<PugTemplate> m_pTemplate;
+    shared_ptr<IExpressionHandler> m_pExpressionHandler;
 
-public:
-    Compiler(shared_ptr<parserNode::Node> rootNode);
-    ~Compiler();
+  public:
+    Compiler(shared_ptr<Node> rootNode);
 
-    string compileToString(const model::PugModel &model) throw
+    string compileToString(PugModel &model);
+    void compile(PugModel &model, stringstream &w);
+    void setPrettyPrint(bool prettyPrint);
+    void setTemplate(shared_ptr<PugTemplate> pugTemplate);
+    void setExpressionHandler(shared_ptr<IExpressionHandler> expressionHandler);
 };
-}
+} // namespace compiler
+} // namespace pugcpp

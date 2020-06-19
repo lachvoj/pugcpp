@@ -2,6 +2,10 @@
 
 #include "Token.hpp"
 
+namespace pugcpp
+{
+namespace lexer
+{
 namespace token
 {
 class Call : Token
@@ -17,3 +21,5 @@ class Call : Token
     const string &arguments() const;
 };
 } // namespace token
+} // namespace lexer
+} // namespace pugcpp
