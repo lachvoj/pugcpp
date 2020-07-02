@@ -14,7 +14,7 @@ AccessModifierOffset: -2
 
 # If true, horizontally aligns arguments after an open bracket.
 # This applies to round brackets (parentheses), angle brackets and square brackets. This will result in formattings like code someLongFunction(argument1, argument2); endcode
-#AlignAfterOpenBracket: false
+AlignAfterOpenBracket: AlwaysBreak
 
 # If true, aligns escaped newlines as far left as possible. Otherwise puts them into the right-most column.
 #AlignEscapedNewlinesLeft
@@ -50,7 +50,7 @@ AllowShortLoopsOnASingleLine: false
 
 # If true, always break after function definition return types.
 # More truthfully called ‘break before the identifier following the type in a function definition’. PenaltyReturnTypeOnItsOwnLine becomes irrelevant.
-AlwaysBreakAfterDefinitionReturnType: false
+AlwaysBreakAfterDefinitionReturnType: None
 
 # If true, always break before multiline string literals.
 AlwaysBreakBeforeMultilineStrings: false
@@ -177,7 +177,7 @@ Language: Cpp
 #PenaltyExcessCharacter (unsigned)
 
 # Penalty for putting the return type of a function onto its own line.
-#PenaltyReturnTypeOnItsOwnLine (unsigned)
+PenaltyReturnTypeOnItsOwnLine: 2000
 
 # If true, analyze the formatted file for the most common alignment of & and *. PointerAlignment is then used only as fallback.
 PointerAlignment: Right

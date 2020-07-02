@@ -29,6 +29,16 @@ add_custom_target(release
     COMMENT "Switch CMAKE_BUILD_TYPE to Release"
 )
 
+add_custom_target(doc
+    COMMAND doxygen Doxyfile
+    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+)
+
+add_custom_target(formatSources
+    COMMAND find src/ -iname *.hpp -o -iname *.cpp | xargs clang-format -i -style=file
+    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+)
+
 #add lib source files
 file(GLOB_RECURSE SRC_LIB_FILES ${LIB_SRC_DIR}/*.cpp)
 message(lib files: ${SRC_LIB_FILES})
