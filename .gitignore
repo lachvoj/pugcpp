@@ -38,3 +38,6 @@ build/
 Makefile
 CMakeCache.txt
 cmake_install.cmake
+
+# Doxygen output
+doc/
