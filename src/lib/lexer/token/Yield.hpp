@@ -8,11 +8,10 @@ namespace lexer
 {
 namespace token
 {
-class Yield : Token
+class Yield: public Token
 {
   public:
     Yield(const string &value, int lineNumber);
-    ~Yield();
 };
 } // namespace token
 } // namespace lexer

@@ -8,7 +8,7 @@ namespace lexer
 {
 namespace token
 {
-class If : Token
+class If: public Token
 {
   private:
     bool inverseCondition_;
@@ -16,7 +16,6 @@ class If : Token
 
   public:
     If(const string &value, int lineNumber, bool inverseCondition, bool alternativeCondition);
-    ~If();
 
     const bool &inverseCondition() const;
     bool inverseCondition();

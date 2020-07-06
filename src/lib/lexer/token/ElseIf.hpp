@@ -8,11 +8,10 @@ namespace lexer
 {
 namespace token
 {
-class ElseIf : Token
+class ElseIf: public Token
 {
   public:
     ElseIf(const string &value, int lineNumber);
-    ~ElseIf();
 };
 } // namespace token
 } // namespace lexer

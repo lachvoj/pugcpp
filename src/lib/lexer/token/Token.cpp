@@ -1,4 +1,4 @@
-#include "Token.hpp"
+#include "./Token.hpp"
 
 namespace pugcpp
 {
@@ -20,8 +20,9 @@ Token::Token(const string &value, int lineNumber, bool buffer, TokenType type /*
 {
 }
 
-Token::~Token()
+const TokenType Token::getType() const
 {
+    return type_;
 }
 
 string &Token::value()

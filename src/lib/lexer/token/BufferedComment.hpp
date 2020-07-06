@@ -8,11 +8,10 @@ namespace lexer
 {
 namespace token
 {
-class BufferedComment : Token
+class BufferedComment: public Token
 {
   public:
     BufferedComment(const string &value, int lineNumber);
-    ~BufferedComment();
 };
 } // namespace token
 } // namespace lexer

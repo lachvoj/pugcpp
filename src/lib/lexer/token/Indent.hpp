@@ -8,11 +8,10 @@ namespace lexer
 {
 namespace token
 {
-class Indent : Token
+class Indent: public Token
 {
   public:
     Indent(const string &value, int lineNumber);
-    ~Indent();
 };
 } // namespace token
 } // namespace lexer

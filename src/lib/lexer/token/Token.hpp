@@ -13,7 +13,8 @@ namespace token
 {
 enum TokenType
 {
-    e_AttributeList = 0,
+    e_Default = 0,
+    e_AttributeList,
     e_AttributeBlock,
     e_Block,
     e_BlockCode,
@@ -24,7 +25,6 @@ enum TokenType
     e_Comment,
     e_CssClass,
     e_CssId,
-    e_Default,
     e_Deferred,
     e_Doctype,
     e_Dot,
@@ -71,8 +71,8 @@ class Token
     Token(int lineNumber = 0, TokenType type = e_Default);
     Token(const string &value, int lineNumber, TokenType type = e_Default);
     Token(const string &value, int lineNumber, bool buffer, TokenType type = e_Default);
-    ~Token();
 
+    const TokenType getType() const;
     string &value();
     const string &value() const;
     const int lineNumber() const;

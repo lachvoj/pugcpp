@@ -8,11 +8,10 @@ namespace lexer
 {
 namespace token
 {
-class Dot : Token
+class Dot: public Token
 {
   public:
     Dot(int lineNumber);
-    ~Dot();
 };
 } // namespace token
 } // namespace lexer

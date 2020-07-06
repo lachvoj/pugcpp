@@ -8,11 +8,10 @@ namespace lexer
 {
 namespace token
 {
-class MixinBlock : Token
+class MixinBlock: public Token
 {
   public:
     MixinBlock(const string &value, int lineNumber);
-    ~MixinBlock();
 };
 } // namespace token
 } // namespace lexer

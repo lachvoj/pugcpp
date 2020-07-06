@@ -8,11 +8,10 @@ namespace lexer
 {
 namespace token
 {
-class ForTag : Token
+class ForTag: public Token
 {
   public:
     ForTag(const string &value, int lineNumber);
-    ~ForTag();
 };
 } // namespace token
 } // namespace lexer

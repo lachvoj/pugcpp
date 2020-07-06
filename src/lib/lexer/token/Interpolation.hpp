@@ -8,11 +8,10 @@ namespace lexer
 {
 namespace token
 {
-class Interpolation : Token
+class Interpolation: public Token
 {
   public:
     Interpolation(const string &value, int lineNumber);
-    ~Interpolation();
 };
 } // namespace token
 } // namespace lexer

@@ -8,11 +8,10 @@ namespace lexer
 {
 namespace token
 {
-class Colon : Token
+class Colon : public Token
 {
   public:
     Colon(int lineNumber);
-    ~Colon();
 };
 } // namespace token
 } // namespace lexer

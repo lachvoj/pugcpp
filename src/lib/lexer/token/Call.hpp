@@ -8,14 +8,13 @@ namespace lexer
 {
 namespace token
 {
-class Call : Token
+class Call: public Token
 {
   private:
     string arguments_;
 
   public:
     Call(const string &value, int lineNumber);
-    ~Call();
 
     string &arguments();
     const string &arguments() const;

@@ -8,11 +8,10 @@ namespace lexer
 {
 namespace token
 {
-class Deferred : Token
+class Deferred: public Token
 {
   public:
     Deferred(const string &value, int lineNumber);
-    ~Deferred();
 };
 } // namespace token
 } // namespace lexer

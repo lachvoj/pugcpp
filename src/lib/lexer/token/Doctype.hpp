@@ -8,11 +8,10 @@ namespace lexer
 {
 namespace token
 {
-class Doctype : Token
+class Doctype: public Token
 {
   public:
     Doctype(const string &value, int lineNumber);
-    ~Doctype();
 };
 } // namespace token
 } // namespace lexer

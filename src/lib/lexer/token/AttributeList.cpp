@@ -10,10 +10,6 @@ AttributeList::AttributeList(int lineNumber) : Token::Token(lineNumber, e_Attrib
 {
 }
 
-AttributeList::~AttributeList()
-{
-}
-
 const list<Attribute> &AttributeList::attributes() const
 {
     return attributes_;

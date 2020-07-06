@@ -8,11 +8,10 @@ namespace lexer
 {
 namespace token
 {
-class CaseToken : Token
+class CaseToken: public Token
 {
   public:
     CaseToken(const string &value, int lineNumber);
-    ~CaseToken();
 };
 } // namespace token
 } // namespace lexer

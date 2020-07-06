@@ -13,14 +13,13 @@ namespace lexer
 {
 namespace token
 {
-class AttributeList : Token
+class AttributeList: public Token
 {
   private:
     list<Attribute> attributes_ = {};
 
   public:
     AttributeList(int lineNumber);
-    ~AttributeList();
 
     const list<Attribute> &attributes() const;
     void addAttribute(const string &name, const string &value, bool escapedAttr);

@@ -8,11 +8,10 @@ namespace lexer
 {
 namespace token
 {
-class While : Token
+class While: public Token
 {
   public:
     While(const string &value, int lineNumber);
-    ~While();
 };
 } // namespace token
 } // namespace lexer

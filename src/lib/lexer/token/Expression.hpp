@@ -8,14 +8,13 @@ namespace lexer
 {
 namespace token
 {
-class Expression : Token
+class Expression: public Token
 {
   private:
     bool escape_;
 
   public:
     Expression(const string &value, int lineNumber, bool escape);
-    ~Expression();
 
     const bool escape() const;
     bool &escape();

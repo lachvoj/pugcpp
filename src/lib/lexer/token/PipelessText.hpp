@@ -8,11 +8,10 @@ namespace lexer
 {
 namespace token
 {
-class PipelessText : Token
+class PipelessText: public Token
 {
   public:
     PipelessText(const string &value, int lineNumber);
-    ~PipelessText();
 };
 } // namespace token
 } // namespace lexer

@@ -8,7 +8,7 @@ namespace lexer
 {
 namespace token
 {
-class Include : Token
+class Include: public Token
 {
   private:
     string filter_;
@@ -16,7 +16,6 @@ class Include : Token
 
   public:
     Include(const string &value, int lineNumber);
-    ~Include();
 
     const string &filter() const;
     string &filter();

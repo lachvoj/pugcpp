@@ -8,11 +8,10 @@ namespace lexer
 {
 namespace token
 {
-class When : Token
+class When: public Token
 {
   public:
     When(const string &value, int lineNumber);
-    ~When();
 };
 } // namespace token
 } // namespace lexer

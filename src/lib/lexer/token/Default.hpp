@@ -8,11 +8,10 @@ namespace lexer
 {
 namespace token
 {
-class Default : Token
+class Default: public Token
 {
   public:
     Default(const string &value, int lineNumber);
-    ~Default();
 };
 } // namespace token
 } // namespace lexer
