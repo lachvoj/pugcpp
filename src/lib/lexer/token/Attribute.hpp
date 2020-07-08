@@ -1,4 +1,5 @@
-#pragma once
+#ifndef Attribute_hpp
+#define Attribute_hpp
 
 #include <any>
 #include <string>
@@ -27,3 +28,4 @@ class Attribute
 } // namespace token
 } // namespace lexer
 } // namespace pugcpp
+#endif

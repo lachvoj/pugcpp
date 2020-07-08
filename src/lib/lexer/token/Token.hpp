@@ -1,4 +1,5 @@
-#pragma once
+#ifndef Token_hpp
+#define Token_hpp
 
 #include <string>
 #include <vector>
@@ -93,3 +94,4 @@ class Token
 } // namespace token
 } // namespace lexer
 } // namespace pugcpp
+#endif

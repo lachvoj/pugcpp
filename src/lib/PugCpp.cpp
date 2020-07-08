@@ -1,11 +1,6 @@
 #include "include/PugCpp.hpp"
 
-#include "PugCppP.hpp"
-#include "expression/DummyExpressionHandler.hpp"
-#include "parser/Parser.hpp"
-#include "parser/node/Node.hpp"
-#include "template/FileTemplateLoader.hpp"
-#include "template/PugTemplate.hpp"
+#include "./PugCppP.hpp"
 
 namespace pugcpp
 {
@@ -56,9 +51,10 @@ string PugCppP::templateToString(PugTemplate &tmpl, map<string, any> *model)
     return writer.str();
 }
 
-shared_ptr<PugTemplate> PugCppP::createTemplate(const string &filename,
-                                                shared_ptr<ITemplateLoader> loader,
-                                                shared_ptr<IExpressionHandler> expressionHandler)
+shared_ptr<PugTemplate> PugCppP::createTemplate(
+    const string &filename,
+    shared_ptr<ITemplateLoader> loader,
+    shared_ptr<IExpressionHandler> expressionHandler)
 {
     parser::Parser parser(filename, loader, expressionHandler);
     shared_ptr<Node> root = parser.parse();

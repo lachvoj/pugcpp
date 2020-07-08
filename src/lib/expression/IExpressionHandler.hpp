@@ -1,4 +1,5 @@
-#pragma once
+#ifndef IExpressionHadler
+#define IExpressionHadler
 
 #include <any>
 #include <string>
@@ -10,6 +11,12 @@ using namespace std;
 
 namespace pugcpp
 {
+// forward declarations
+namespace model
+{
+class PugModel;
+}
+
 namespace expression
 {
 using namespace model;
@@ -26,3 +33,4 @@ class IExpressionHandler
 };
 } // namespace expression
 } // namespace pugcpp
+#endif

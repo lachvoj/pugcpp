@@ -1,8 +1,15 @@
-#pragma once
+#ifndef AssigmentNode_hpp
+#define AssigmentNode_hpp
+
+#include <any>
 
 #include "../../compiler/IndentWriter.hpp"
+#include "../../exceptions/ExpressionException.hpp"
+#include "../../exceptions/PugCompilerException.hpp"
 #include "../../model/PugModel.hpp"
 #include "../../template/ITemplateLoader.hpp"
+#include "../../template/PugTemplate.hpp"
+
 #include "Node.hpp"
 
 namespace pugcpp
@@ -19,3 +26,4 @@ class AssigmentNode : public Node
 } // namespace node
 } // namespace parser
 } // namespace pugcpp
+#endif

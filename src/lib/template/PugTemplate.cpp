@@ -1,9 +1,5 @@
 #include "PugTemplate.hpp"
 
-#include "../compiler/Compiler.hpp"
-#include "../lexer/token/Doctypes.hpp"
-#include "../util/StringUtils.hpp"
-
 namespace pugcpp
 {
 namespace tmpl
@@ -16,7 +12,7 @@ void PugTemplate::process(PugModel &model, stringstream &writer)
     compiler::Compiler compiler(m_pRootNode);
     compiler.setPrettyPrint(m_bPrettyPrint);
     compiler.setTemplate(shared_ptr<PugTemplate>(this));
-    compiler.setExpressionHandler(m_pExpressionHandler);
+    compiler.setExpressionHandler(m_pclExpressionHandler);
     compiler.compile(model, writer);
 }
 
@@ -52,12 +48,12 @@ bool PugTemplate::isXml()
 
 void PugTemplate::setTemplateLoader(shared_ptr<ITemplateLoader> templateLoader)
 {
-    m_pTemplateLoader = templateLoader;
+    m_pclTemplateLoader = templateLoader;
 }
 
 shared_ptr<ITemplateLoader> PugTemplate::getTemplateLoader()
 {
-    return m_pTemplateLoader;
+    return m_pclTemplateLoader;
 }
 
 void PugTemplate::setDoctype(const string &name)
@@ -83,10 +79,12 @@ void PugTemplate::setMode(pugcpp::PugCpp::Mode mode)
 
 void PugTemplate::setExpressionHandler(shared_ptr<IExpressionHandler> expressionHandler)
 {
+    m_pclExpressionHandler = expressionHandler;
 }
 
 shared_ptr<IExpressionHandler> PugTemplate::getExpressionHandler()
 {
+    return m_pclExpressionHandler;
 }
 
 } // namespace tmpl

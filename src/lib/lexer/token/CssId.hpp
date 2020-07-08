@@ -1,4 +1,5 @@
-#pragma once
+#ifndef CssId_hpp
+#define CssId_hpp
 
 #include "Token.hpp"
 
@@ -8,7 +9,7 @@ namespace lexer
 {
 namespace token
 {
-class CssId: public Token
+class CssId : public Token
 {
   public:
     CssId(const string &value, int lineNumber);
@@ -16,3 +17,4 @@ class CssId: public Token
 } // namespace token
 } // namespace lexer
 } // namespace pugcpp
+#endif

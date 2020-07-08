@@ -1,4 +1,5 @@
-#pragma once
+#ifndef PugCpp_hpp
+#define PugCpp_hpp
 
 #include <any>
 #include <map>
@@ -22,3 +23,4 @@ class PugCpp
     static string render(const string &filename, map<string, any> *model, bool prettyPrint);
 };
 } // namespace pugcpp
+#endif

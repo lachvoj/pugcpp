@@ -1,4 +1,5 @@
-#pragma once
+#ifndef BlockCode_hpp
+#define BlockCode_hpp
 
 #include "Token.hpp"
 
@@ -8,7 +9,7 @@ namespace lexer
 {
 namespace token
 {
-class BlockCode: public Token
+class BlockCode : public Token
 {
   public:
     BlockCode(int lineNumber);
@@ -16,3 +17,4 @@ class BlockCode: public Token
 } // namespace token
 } // namespace lexer
 } // namespace pugcpp
+#endif

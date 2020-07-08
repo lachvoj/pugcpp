@@ -1,4 +1,5 @@
-#pragma once
+#ifndef Colon_hpp
+#define Colon_hpp
 
 #include "Token.hpp"
 
@@ -16,3 +17,4 @@ class Colon : public Token
 } // namespace token
 } // namespace lexer
 } // namespace pugcpp
+#endif

@@ -1,4 +1,5 @@
-#pragma once
+#ifndef Doctypes_hpp
+#define Doctypes_hpp
 
 #include <map>
 #include <string>
@@ -24,3 +25,4 @@ class Doctypes
 } // namespace token
 } // namespace lexer
 } // namespace pugcpp
+#endif

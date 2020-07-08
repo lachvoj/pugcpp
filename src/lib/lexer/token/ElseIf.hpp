@@ -1,4 +1,5 @@
-#pragma once
+#ifndef ElseIf_hpp
+#define ElseIf_hpp
 
 #include "Token.hpp"
 
@@ -8,7 +9,7 @@ namespace lexer
 {
 namespace token
 {
-class ElseIf: public Token
+class ElseIf : public Token
 {
   public:
     ElseIf(const string &value, int lineNumber);
@@ -16,3 +17,4 @@ class ElseIf: public Token
 } // namespace token
 } // namespace lexer
 } // namespace pugcpp
+#endif

@@ -1,4 +1,5 @@
-#pragma once
+#ifndef Exception_hpp
+#define Exception_hpp
 
 #include <exception>
 #include <string>
@@ -24,3 +25,4 @@ class Exception : public exception
 
 } // namespace exceptions
 } // namespace pugcpp
+#endif

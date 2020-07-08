@@ -1,4 +1,5 @@
-#pragma once
+#ifndef Outdent_hpp
+#define Outdent_hpp
 
 #include "Token.hpp"
 
@@ -8,11 +9,12 @@ namespace lexer
 {
 namespace token
 {
-class Outdent: public Token
+class Outdent : public Token
 {
   public:
-    Outdent(const string &value, int lineNumber);
+    Outdent(int lineNumber);
 };
 } // namespace token
 } // namespace lexer
 } // namespace pugcpp
+#endif

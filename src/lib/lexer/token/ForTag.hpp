@@ -1,4 +1,5 @@
-#pragma once
+#ifndef ForTag_hpp
+#define ForTag_hpp
 
 #include "Token.hpp"
 
@@ -8,7 +9,7 @@ namespace lexer
 {
 namespace token
 {
-class ForTag: public Token
+class ForTag : public Token
 {
   public:
     ForTag(const string &value, int lineNumber);
@@ -16,3 +17,4 @@ class ForTag: public Token
 } // namespace token
 } // namespace lexer
 } // namespace pugcpp
+#endif

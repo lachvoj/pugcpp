@@ -1,19 +1,29 @@
-#pragma once
+#ifndef PugTemplate_hpp
+#define PugTemplate_hpp
 
 #include <memory>
 #include <sstream>
 
-#include "../expression/IExpressionHandler.hpp"
+#include "../compiler/Compiler.hpp"
 #include "../include/PugCpp.hpp"
-#include "../model/PugModel.hpp"
-#include "../parser/node/Node.hpp"
+#include "../lexer/token/Doctypes.hpp"
+#include "../util/StringUtils.hpp"
+
 #include "ITemplateLoader.hpp"
 
 using namespace std;
 
 namespace pugcpp
 {
-// forward definition.
+// forward declaration
+namespace expression
+{
+class IExpressionHandler;
+}
+namespace model
+{
+class PugModel;
+}
 namespace parser
 {
 namespace node
@@ -35,8 +45,8 @@ class PugTemplate
     shared_ptr<Node> m_pRootNode;
     bool m_bTerse = false;
     bool m_bXml = false;
-    shared_ptr<ITemplateLoader> m_pTemplateLoader;
-    shared_ptr<IExpressionHandler> m_pExpressionHandler;
+    shared_ptr<ITemplateLoader> m_pclTemplateLoader;
+    shared_ptr<IExpressionHandler> m_pclExpressionHandler;
     string m_sDoctypeLine;
 
   public:
@@ -57,3 +67,4 @@ class PugTemplate
 };
 } // namespace tmpl
 } // namespace pugcpp
+#endif

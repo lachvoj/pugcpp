@@ -1,4 +1,5 @@
-#pragma once
+#ifndef PugModel_hpp
+#define PugModel_hpp
 
 #include <any>
 #include <deque>
@@ -16,6 +17,15 @@ using namespace std;
 
 namespace pugcpp
 {
+// //forward declaration
+// namespace parser
+// {
+// namespace node
+// {
+// class MixinNode;
+// } // namespace node
+// } // namespace parser
+
 namespace model
 {
 using namespace filter;
@@ -57,3 +67,4 @@ class PugModel
 };
 } // namespace model
 } // namespace pugcpp
+#endif

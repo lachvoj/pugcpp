@@ -1,4 +1,5 @@
-#pragma once
+#ifndef Default_hpp
+#define Default_hpp
 
 #include "Token.hpp"
 
@@ -8,7 +9,7 @@ namespace lexer
 {
 namespace token
 {
-class Default: public Token
+class Default : public Token
 {
   public:
     Default(const string &value, int lineNumber);
@@ -16,3 +17,4 @@ class Default: public Token
 } // namespace token
 } // namespace lexer
 } // namespace pugcpp
+#endif

@@ -1,19 +1,28 @@
-#pragma once
+#ifndef Node_hpp
+#define Node_hpp
 
 #include <list>
 #include <memory>
 #include <stdexcept>
 #include <string>
 
-#include "../../compiler/IndentWriter.hpp"
-#include "../../model/PugModel.hpp"
-#include "../../template/PugTemplate.hpp"
+// #include "../../compiler/IndentWriter.hpp"
+// #include "../../model/PugModel.hpp"
+// #include "../../template/PugTemplate.hpp"
 
 using namespace std;
 
 namespace pugcpp
 {
-// forward definition.
+// forward declarations
+namespace compiler
+{
+class IndentWriter;
+}
+namespace model
+{
+class PugModel;
+}
 namespace tmpl
 {
 class PugTemplate;
@@ -34,11 +43,11 @@ class Node
     int m_nLlineNumber;
     string m_sName;
     string m_sValue;
-    shared_ptr<Node> m_pBlock = nullptr;
-    string m_sFileName;
+    shared_ptr<Node> m_pBlock;
+    string const *m_sFileName;
 
   public:
-    virtual void execute(IndentWriter &writer, PugModel &model, PugTemplate &tmplt);
+    virtual void execute(IndentWriter &writer, PugModel &model, PugTemplate &tmplt) = 0;
     void setLineNumber(int lineNumber);
     int getLineNumber() const;
     void setValue(const string &value);
@@ -47,7 +56,7 @@ class Node
     const string &getName() const;
     void push(shared_ptr<Node> node);
     void setNodes(list<shared_ptr<Node>> &nodes);
-    const list<shared_ptr<Node>> &getNodes();
+    list<shared_ptr<Node>> &getNodes();
     shared_ptr<Node> pollNode();
     bool hasNodes();
     bool hasBlock();
@@ -60,3 +69,4 @@ class Node
 } // namespace node
 } // namespace parser
 } // namespace pugcpp
+#endif

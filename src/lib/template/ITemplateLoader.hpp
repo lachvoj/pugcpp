@@ -1,4 +1,5 @@
-#pragma once
+#ifndef ITemplateLoader_hpp
+#define ITemplateLoader_hpp
 
 #include <exception>
 #include <istream>
@@ -20,3 +21,4 @@ class ITemplateLoader
 };
 } // namespace tmpl
 } // namespace pugcpp
+#endif

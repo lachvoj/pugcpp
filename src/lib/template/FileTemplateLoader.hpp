@@ -1,6 +1,9 @@
-#pragma once
+#ifndef FileTemplateLoader_hpp
+#define FileTemplateLoader_hpp
 
 #include <fstream>
+
+#include "../util/FileSystem.hpp"
 
 #include "ITemplateLoader.hpp"
 
@@ -28,3 +31,4 @@ class FileTemplateLoader : public ITemplateLoader
 };
 } // namespace tmpl
 } // namespace pugcpp
+#endif

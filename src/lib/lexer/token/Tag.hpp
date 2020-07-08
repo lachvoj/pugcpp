@@ -1,4 +1,5 @@
-#pragma once
+#ifndef Tag_hpp
+#define Tag_hpp
 
 #include "Token.hpp"
 
@@ -8,7 +9,7 @@ namespace lexer
 {
 namespace token
 {
-class Tag: public Token
+class Tag : public Token
 {
   public:
     Tag(const string &value, int lineNumber);
@@ -16,3 +17,4 @@ class Tag: public Token
 } // namespace token
 } // namespace lexer
 } // namespace pugcpp
+#endif

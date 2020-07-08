@@ -1,14 +1,4 @@
-#include "FileTemplateLoader.hpp"
-
-#if __GNUC__ < 8
-#include <experimental/filesystem>
-namespace fs = std::experimental::filesystem;
-#elif
-#include <filesystem>
-namespace fs = std::filesystem;
-#endif
-
-#include <chrono>
+#include "./FileTemplateLoader.hpp"
 
 using namespace std;
 
@@ -16,6 +6,8 @@ namespace pugcpp
 {
 namespace tmpl
 {
+
+using namespace util;
 
 FileTemplateLoader::FileTemplateLoader(const string &folderPath, const string &encoding)
 : folderPath_(folderPath), encoding_(encoding)
@@ -31,17 +23,13 @@ FileTemplateLoader::FileTemplateLoader(const string &folderPath, const string &e
 
 void FileTemplateLoader::validateFolderPath(const string &folderPath)
 {
-    fs::exists(folderPath);
-    fs::is_regular_file(folderPath);
+    FileSystem::exists(folderPath);
+    FileSystem::isRegularFile(folderPath);
 }
 
 long FileTemplateLoader::getLastModified(const string &name)
 {
-    auto tp_ms = chrono::time_point_cast<chrono::milliseconds>(fs::last_write_time(name));
-    auto epoch = tp_ms.time_since_epoch();
-    auto value = chrono::duration_cast<chrono::milliseconds>(epoch);
-
-    return value.count();
+    return FileSystem::lastModified(name);
 }
 
 istream &FileTemplateLoader::getReader(const string &name)

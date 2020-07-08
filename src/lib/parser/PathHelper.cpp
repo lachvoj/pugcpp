@@ -1,14 +1,4 @@
-#include "PathHelper.hpp"
-
-#include "../util/StringUtils.hpp"
-
-#if __GNUC__ < 8
-#include <experimental/filesystem>
-namespace fs = std::experimental::filesystem;
-#elif
-#include <filesystem>
-namespace fs = std::filesystem;
-#endif
+#include "./PathHelper.hpp"
 
 namespace pugcpp
 {

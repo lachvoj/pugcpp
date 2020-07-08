@@ -1,14 +1,15 @@
-#pragma once
+#ifndef Each_hpp
+#define Each_hpp
 
-#include "token/Token.hpp"
+#include "Token.hpp"
 
 namespace pugcpp
 {
 namespace lexer
 {
-using namespace token;
-
-class Each : Token
+namespace token
+{
+class Each : public Token
 {
   private:
     string code_;
@@ -22,5 +23,7 @@ class Each : Token
     const string &key() const;
     string &key();
 };
+} // namespace token
 } // namespace lexer
 } // namespace pugcpp
+#endif

@@ -1,8 +1,4 @@
-#include "ReaderTemplateLoader.hpp"
-
-#include <stdexcept>
-
-#include "../util/StringUtils.hpp"
+#include "./ReaderTemplateLoader.hpp"
 
 namespace pugcpp
 {
@@ -41,10 +37,11 @@ void ReaderTemplateLoader::checkName(const string &name)
     string nameOfParamWithoutExtension = getNameWithoutExtension(name);
     string nameOfObjectWithoutExtension = getNameWithoutExtension(m_sName);
     if (nameOfParamWithoutExtension != nameOfObjectWithoutExtension)
-        throw runtime_error("This reader only responds to [" + m_sName + "] template. " +
-                            "You should not reference other templates if using ReaderTemplateLoader, " +
-                            "because multiple template loaders are currently not supported. " +
-                            "Maybe you could use a FileTemplateLoader?");
+        throw runtime_error(
+            "This reader only responds to [" + m_sName + "] template. " +
+            "You should not reference other templates if using ReaderTemplateLoader, " +
+            "because multiple template loaders are currently not supported. " +
+            "Maybe you could use a FileTemplateLoader?");
 }
 
 string ReaderTemplateLoader::getNameWithoutExtension(const string &name)

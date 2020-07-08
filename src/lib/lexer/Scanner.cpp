@@ -1,4 +1,4 @@
-#include "Scanner.hpp"
+#include "./Scanner.hpp"
 
 #include "../util/StringUtils.hpp"
 
@@ -8,7 +8,7 @@ namespace lexer
 {
 using namespace util;
 
-void Scanner::initFromStream(ifstream &stream)
+void Scanner::initFromStream(istream &stream)
 {
     string sb = "";
     string s = "";
@@ -31,7 +31,6 @@ void Scanner::initFromStream(ifstream &stream)
             sb += s;
         }
     }
-    stream.close();
 
     input_ = sb;
     if (!input_.empty())
@@ -45,7 +44,7 @@ bool Scanner::isEmpty()
     return input_.empty();
 }
 
-Scanner::Scanner(ifstream &stream)
+Scanner::Scanner(istream &stream)
 {
     initFromStream(stream);
 }
@@ -110,9 +109,13 @@ const string &Scanner::getInput() const
     return input_;
 }
 
-regex Scanner::getRegexForPattern(const string &sRegex)
+shared_ptr<smatch> Scanner::getMatcharForPattern(const string &sRegex)
 {
-    return regex(sRegex);
+    regex re(sRegex);
+    shared_ptr<smatch> sm = make_shared<smatch>();
+    regex_search(input_, *sm, re);
+
+    return sm;
 }
 
 bool Scanner::isIntendantionViolated()

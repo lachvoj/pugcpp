@@ -1,9 +1,5 @@
 #include "AttributeLexer.hpp"
 
-#include <regex>
-
-#include "../util/StringUtils.hpp"
-
 namespace pugcpp
 {
 namespace lexer

@@ -1,9 +1,5 @@
 #include "Node.hpp"
 
-#include <stdexcept>
-
-#include "../../compiler/IndentWriter.hpp"
-
 namespace pugcpp
 {
 namespace parser
@@ -42,7 +38,7 @@ const string &Node::getName() const
 
 void Node::push(shared_ptr<Node> node)
 {
-    if (node == nullptr)
+    if (!node)
         throw runtime_error("Null node!");
 
     m_clNodes.push_front(node);
@@ -53,17 +49,19 @@ void Node::setNodes(list<shared_ptr<Node>> &nodes)
     m_clNodes = nodes;
 }
 
-const list<shared_ptr<Node>> &Node::getNodes()
+list<shared_ptr<Node>> &Node::getNodes()
 {
     return m_clNodes;
 }
 
 shared_ptr<Node> Node::pollNode()
 {
-    if (m_clNodes.empty())
-        return nullptr;
+    shared_ptr<Node> ret;
 
-    shared_ptr<Node> ret = m_clNodes.front();
+    if (m_clNodes.empty())
+        return ret;
+
+    ret = m_clNodes.front();
     m_clNodes.pop_front();
 
     return ret;
@@ -91,12 +89,12 @@ shared_ptr<Node> Node::getBlock()
 
 void Node::setFileName(const string &fileName)
 {
-    m_sFileName = fileName;
+    m_sFileName = &fileName;
 }
 
 const string &Node::getFileName() const
 {
-    return m_sFileName;
+    return *m_sFileName;
 }
 
 shared_ptr<Node> Node::clone()

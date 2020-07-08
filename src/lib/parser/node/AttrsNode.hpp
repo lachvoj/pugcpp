@@ -1,4 +1,5 @@
-#pragma once
+#ifndef AttrsNode_hpp
+#define AttrsNode_hpp
 
 #include <any>
 #include <list>
@@ -6,8 +7,6 @@
 #include <memory>
 #include <string>
 
-#include "../../model/PugModel.hpp"
-#include "../../template/PugTemplate.hpp"
 #include "Attr.hpp"
 #include "Node.hpp"
 
@@ -46,9 +45,10 @@ class AttrsNode : public Node
     void setCodeNode(shared_ptr<Node> codeNode);
     shared_ptr<Node> getCodeNode();
     bool hasCodeNode();
-    string visitAttributes(model::PugModel &model, tmpl::PugTemplate &tmpl);
-    string attrsToString(map<string, string> &attrs, tmpl::PugTemplate &tmpl);
+    string visitAttributes(PugModel &model, PugTemplate &tmpl);
+    string attrsToString(map<string, string> &attrs, PugTemplate &tmpl);
 };
 } // namespace node
 } // namespace parser
 } // namespace pugcpp
+#endif

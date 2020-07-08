@@ -1,17 +1,21 @@
-#pragma once
+#ifndef Assignment_hpp
+#define Assignment_hpp
 
-#include "token/Token.hpp"
+#include "Token.hpp"
 
 namespace pugcpp
 {
 namespace lexer
 {
-using namespace token;
+namespace token
+{
 
-class Assignment : Token
+class Assignment : public Token
 {
   public:
     Assignment(const string &value, int lineNumber);
 };
+} // namespace token
 } // namespace lexer
 } // namespace pugcpp
+#endif

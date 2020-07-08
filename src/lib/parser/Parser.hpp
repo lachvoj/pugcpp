@@ -1,9 +1,11 @@
-#pragma once
+#ifndef Parser_hpp
+#define Parser_hpp
 
 #include <memory>
 #include <regex>
 #include <string>
 #include <vector>
+#include <stack>
 
 #include "../expression/IExpressionHandler.hpp"
 #include "../lexer/Lexer.hpp"
@@ -11,6 +13,7 @@
 #include "../lexer/token/Token.hpp"
 #include "../template/ITemplateLoader.hpp"
 #include "../util/CharacterParser.hpp"
+
 #include "PathHelper.hpp"
 #include "node/Attr.hpp"
 #include "node/AttrsNode.hpp"
@@ -35,35 +38,37 @@ class Parser
 {
   private:
     unique_ptr<Lexer> m_pLexer;
-    shared_ptr<map<string, BlockNode>> m_pmBlocks;
     shared_ptr<ITemplateLoader> m_pTemplateLoader;
     shared_ptr<IExpressionHandler> m_pExpressionHandler;
-    unique_ptr<Parser> m_pclExtending;
-    string m_sFilename;
-    shared_ptr<list<Parser>> m_plContexts;
-    CharacterParser m_clCharacterParser;
+    shared_ptr<Parser> m_pclExtending;
+    const string &m_sFileName;
+    stack<shared_ptr<Parser>> m_conContexts;
+    map<string, shared_ptr<MixinNode>> m_conMixins;
+    map<string, shared_ptr<BlockNode>> m_conBlocks;
     int m_nInMixin = 0;
-    shared_ptr<map<string, MixinNode>> m_pmMixins;
     int m_nInBlock = 0;
     PathHelper m_clPathHelper;
+    CharacterParser m_clCharacterParser;
 
   public:
     static const regex FILE_EXTENSION_PATTERN;
 
-    Parser(const string &filename,
-           shared_ptr<ITemplateLoader> templateLoader,
-           shared_ptr<IExpressionHandler> expressionHandler);
-    Parser(const string &src,
-           const string &filename,
-           shared_ptr<ITemplateLoader> templateLoader,
-           shared_ptr<IExpressionHandler> expressionHandler);
+    Parser(
+        const string &filename,
+        shared_ptr<ITemplateLoader> templateLoader,
+        shared_ptr<IExpressionHandler> expressionHandler);
+    Parser(
+        const string &src,
+        const string &filename,
+        shared_ptr<ITemplateLoader> templateLoader,
+        shared_ptr<IExpressionHandler> expressionHandler);
 
     shared_ptr<Node> parse();
-    void setBlocks(shared_ptr<map<string, BlockNode>> blocks);
-    map<string, BlockNode> &getBlocks();
-    void setContexts(shared_ptr<list<Parser>> contexts);
-    shared_ptr<list<Parser>> getContexts();
-    void setMixins(shared_ptr<map<string, MixinNode>> mixins);
+    void setBlocks(const map<string, shared_ptr<BlockNode>> &blocks);
+    map<string, shared_ptr<BlockNode>> &getBlocks();
+    void setContexts(const stack<shared_ptr<Parser>> &contexts);
+    stack<shared_ptr<Parser>> &getContexts();
+    void setMixins(const map<string, shared_ptr<MixinNode>> &mixins);
 
   private:
     shared_ptr<Node> parseExpr();
@@ -96,9 +101,9 @@ class Parser
     shared_ptr<BlockNode> parseYield();
     shared_ptr<Node> blockExpansion();
     shared_ptr<BlockNode> block();
-    shared_ptr<list<CaseConditionNode>> whenBlock();
+    shared_ptr<list<shared_ptr<CaseConditionNode>>> whenBlock();
     shared_ptr<Node> tag(shared_ptr<AttrsNode> tagNode);
-    shared_ptr<vector<Node>> parseInlineTagsInText(const string &str);
+    shared_ptr<vector<shared_ptr<Node>>> parseInlineTagsInText(const string &str);
     shared_ptr<CaseConditionNode> parseCaseCondition();
     shared_ptr<list<Attr>> convertToNodeAttributes(AttributeList &attr);
     shared_ptr<Token> lookahead(int i);
@@ -113,3 +118,4 @@ class Parser
 };
 } // namespace parser
 } // namespace pugcpp
+#endif

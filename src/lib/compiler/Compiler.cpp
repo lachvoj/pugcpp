@@ -1,7 +1,5 @@
 #include "Compiler.hpp"
 
-#include "IndentWriter.hpp"
-
 namespace pugcpp
 {
 namespace compiler

@@ -1,4 +1,5 @@
-#pragma once
+#ifndef CaseToken_hpp
+#define CaseToken_hpp
 
 #include "Token.hpp"
 
@@ -8,7 +9,7 @@ namespace lexer
 {
 namespace token
 {
-class CaseToken: public Token
+class CaseToken : public Token
 {
   public:
     CaseToken(const string &value, int lineNumber);
@@ -16,3 +17,4 @@ class CaseToken: public Token
 } // namespace token
 } // namespace lexer
 } // namespace pugcpp
+#endif

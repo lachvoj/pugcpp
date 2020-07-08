@@ -1,4 +1,5 @@
-#pragma once
+#ifndef IFilter_hpp
+#define IFilter_hpp
 
 #include <any>
 #include <string>
@@ -21,3 +22,4 @@ class IFilter
 };
 } // namespace filter
 } // namespace pugcpp
+#endif

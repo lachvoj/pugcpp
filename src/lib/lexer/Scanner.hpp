@@ -1,6 +1,8 @@
-#pragma once
+#ifndef Scanner_hpp
+#define Scanner_hpp
 
 #include <fstream>
+#include <memory>
 #include <regex>
 #include <string>
 
@@ -15,11 +17,11 @@ class Scanner
   private:
     string input_;
 
-    void initFromStream(ifstream &stream);
+    void initFromStream(istream &stream);
     bool isEmpty();
 
   public:
-    Scanner(ifstream &stream);
+    Scanner(istream &stream);
     Scanner(const string &input);
 
     void consume(int length);
@@ -30,10 +32,11 @@ class Scanner
     bool isNotLineBreak();
     string getPipelessText();
     const string &getInput() const;
-    regex getRegexForPattern(const string &sRegex);
+    shared_ptr<smatch> getMatcharForPattern(const string &sRegex);
     bool isIntendantionViolated();
     bool isBlankLine();
     bool isAdditionalBlankline();
 };
 } // namespace lexer
 } // namespace pugcpp
+#endif

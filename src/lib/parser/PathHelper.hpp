@@ -1,6 +1,15 @@
-#pragma once
+#ifndef PathHelper_hpp
+#define PathHelper_hpp
 
 #include <string>
+#if __GNUC__ < 8
+#include <experimental/filesystem>
+namespace fs = std::experimental::filesystem;
+#elif
+#include <filesystem>
+namespace fs = std::filesystem;
+#endif
+#include "../util/StringUtils.hpp"
 
 using namespace std;
 
@@ -15,3 +24,4 @@ class PathHelper
 };
 } // namespace parser
 } // namespace pugcpp
+#endif

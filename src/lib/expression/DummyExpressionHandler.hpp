@@ -1,4 +1,5 @@
-#pragma once
+#ifndef DummyExpressionHandler_hpp
+#define DummyExpressionHandler_hpp
 
 #include "IExpressionHandler.hpp"
 
@@ -21,3 +22,4 @@ class DummyExpressionHandler : public IExpressionHandler
 };
 } // namespace expression
 } // namespace pugcpp
+#endif

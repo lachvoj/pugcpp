@@ -25,6 +25,4 @@ void findInLine(const string &re)
 int main(int argc, char const *argv[])
 {
     string out = pugcpp::PugCpp::render("test.pug", nullptr);
-
-    return 0;
 }

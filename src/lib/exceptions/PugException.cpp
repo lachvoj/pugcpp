@@ -4,11 +4,12 @@ namespace pugcpp
 {
 namespace exceptions
 {
-PugException::PugException(const string &message,
-                           const string &filename,
-                           int lineNumber,
-                           shared_ptr<ITemplateLoader> templateLoader,
-                           const std::exception *e)
+PugException::PugException(
+    const string &message,
+    const string &filename,
+    int lineNumber,
+    shared_ptr<ITemplateLoader> templateLoader,
+    const std::exception *e)
 : Exception(message, e), m_sFilename(filename), m_nLineNumber(lineNumber), m_pTemplateLoader(templateLoader)
 {
 }

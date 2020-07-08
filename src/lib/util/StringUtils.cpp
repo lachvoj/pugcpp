@@ -1,6 +1,4 @@
-#include "StringUtils.hpp"
-
-#include <algorithm>
+#include "./StringUtils.hpp"
 
 namespace pugcpp
 {
@@ -65,6 +63,19 @@ string StringUtils::toUpperCase(const string &str)
     for_each(ret.begin(), ret.end(), [](char &c) { c = ::toupper(c); });
 
     return ret;
+}
+
+void StringUtils::replace(string &str, const string &from, const string &to)
+{
+    if (from.empty())
+        return;
+
+    size_t start_pos = 0;
+    while ((start_pos = str.find(from, start_pos)) != std::string::npos)
+    {
+        str.replace(start_pos, from.length(), to);
+        start_pos += to.length(); // In case 'to' contains 'from', like replacing 'x' with 'yx'
+    }
 }
 
 } // namespace util

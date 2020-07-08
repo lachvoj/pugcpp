@@ -1,4 +1,5 @@
-#pragma once
+#ifndef Deferred_hpp
+#define Deferred_hpp
 
 #include "Token.hpp"
 
@@ -8,7 +9,7 @@ namespace lexer
 {
 namespace token
 {
-class Deferred: public Token
+class Deferred : public Token
 {
   public:
     Deferred(const string &value, int lineNumber);
@@ -16,3 +17,4 @@ class Deferred: public Token
 } // namespace token
 } // namespace lexer
 } // namespace pugcpp
+#endif

@@ -1,4 +1,5 @@
-#pragma once
+#ifndef Expression_hpp
+#define Expression_hpp
 
 #include "Token.hpp"
 
@@ -8,7 +9,7 @@ namespace lexer
 {
 namespace token
 {
-class Expression: public Token
+class Expression : public Token
 {
   private:
     bool escape_;
@@ -22,3 +23,4 @@ class Expression: public Token
 } // namespace token
 } // namespace lexer
 } // namespace pugcpp
+#endif

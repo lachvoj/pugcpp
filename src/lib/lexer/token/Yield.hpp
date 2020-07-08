@@ -1,4 +1,5 @@
-#pragma once
+#ifndef Yield_hpp
+#define Yield_hpp
 
 #include "Token.hpp"
 
@@ -8,7 +9,7 @@ namespace lexer
 {
 namespace token
 {
-class Yield: public Token
+class Yield : public Token
 {
   public:
     Yield(const string &value, int lineNumber);
@@ -16,3 +17,4 @@ class Yield: public Token
 } // namespace token
 } // namespace lexer
 } // namespace pugcpp
+#endif

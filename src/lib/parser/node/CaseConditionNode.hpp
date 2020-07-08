@@ -1,4 +1,5 @@
-#pragma once
+#ifndef CaseConditionNode_hpp
+#define CaseConditionNode_hpp
 
 namespace pugcpp
 {
@@ -14,3 +15,4 @@ class CaseConditionNode
 } // namespace node
 } // namespace parser
 } // namespace pugcpp
+#endif

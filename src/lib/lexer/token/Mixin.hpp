@@ -1,4 +1,5 @@
-#pragma once
+#ifndef Mixin_hpp
+#define Mixin_hpp
 
 #include "Token.hpp"
 
@@ -8,7 +9,7 @@ namespace lexer
 {
 namespace token
 {
-class Mixin: public Token
+class Mixin : public Token
 {
   private:
     string arguments_;
@@ -22,3 +23,4 @@ class Mixin: public Token
 } // namespace token
 } // namespace lexer
 } // namespace pugcpp
+#endif

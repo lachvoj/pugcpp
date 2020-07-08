@@ -1,4 +1,5 @@
-#pragma once
+#ifndef Include_hpp
+#define Include_hpp
 
 #include "Token.hpp"
 
@@ -8,7 +9,7 @@ namespace lexer
 {
 namespace token
 {
-class Include: public Token
+class Include : public Token
 {
   private:
     string filter_;
@@ -25,3 +26,4 @@ class Include: public Token
 } // namespace token
 } // namespace lexer
 } // namespace pugcpp
+#endif

@@ -1,4 +1,5 @@
-#pragma once
+#ifndef Dot_hpp
+#define Dot_hpp
 
 #include "Token.hpp"
 
@@ -8,7 +9,7 @@ namespace lexer
 {
 namespace token
 {
-class Dot: public Token
+class Dot : public Token
 {
   public:
     Dot(int lineNumber);
@@ -16,3 +17,4 @@ class Dot: public Token
 } // namespace token
 } // namespace lexer
 } // namespace pugcpp
+#endif

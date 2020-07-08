@@ -1,8 +1,12 @@
-#pragma once
+#ifndef AttributeLexer_hpp
+#define AttributeLexer_hpp
 
 #include <memory>
 #include <queue>
+#include <regex>
 #include <string>
+
+#include "../util/StringUtils.hpp"
 
 #include "token/AttributeList.hpp"
 
@@ -49,9 +53,9 @@ class AttributeLexer
 
   public:
     AttributeLexer();
-    ~AttributeLexer();
 
     const AttributeList &getToken(const string &input, int lineno);
 };
 } // namespace lexer
 } // namespace pugcpp
+#endif

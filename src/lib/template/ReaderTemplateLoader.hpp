@@ -1,4 +1,9 @@
-#pragma once
+#ifndef ReaderTemplateLoader_hpp
+#define ReaderTemplateLoader_hpp
+
+#include <stdexcept>
+
+#include "../util/StringUtils.hpp"
 
 #include "ITemplateLoader.hpp"
 
@@ -28,3 +33,4 @@ class ReaderTemplateLoader
 
 } // namespace tmpl
 } // namespace pugcpp
+#endif

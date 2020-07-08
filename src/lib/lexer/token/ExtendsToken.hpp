@@ -1,4 +1,5 @@
-#pragma once
+#ifndef ExtendsToken_hpp
+#define ExtendsToken_hpp
 
 #include "Token.hpp"
 
@@ -8,7 +9,7 @@ namespace lexer
 {
 namespace token
 {
-class ExtendsToken: public Token
+class ExtendsToken : public Token
 {
   public:
     ExtendsToken(const string &value, int lineNumber);
@@ -16,3 +17,4 @@ class ExtendsToken: public Token
 } // namespace token
 } // namespace lexer
 } // namespace pugcpp
+#endif

@@ -6,7 +6,7 @@ namespace lexer
 {
 namespace token
 {
-Outdent::Outdent(const string &value, int lineNumber) : Token::Token(value, lineNumber, e_Outdent)
+Outdent::Outdent(int lineNumber) : Token::Token(lineNumber, e_Outdent)
 {
 }
 } // namespace token

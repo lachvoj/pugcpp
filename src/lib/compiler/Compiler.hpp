@@ -1,4 +1,5 @@
-#pragma once
+#ifndef Compiler_hpp
+#define Compiler_hpp
 
 #include <memory>
 
@@ -7,10 +8,33 @@
 #include "../parser/node/Node.hpp"
 #include "../template/PugTemplate.hpp"
 
+#include "IndentWriter.hpp"
+
 using namespace std;
 
 namespace pugcpp
 {
+// forward declarations
+namespace tmpl
+{
+class PugTemplate;
+}
+namespace expression
+{
+class IExpressionHandler;
+}
+namespace model
+{
+class PugModel;
+}
+namespace parser
+{
+namespace node
+{
+class Node;
+}
+} // namespace parser
+
 namespace compiler
 {
 using namespace parser::node;
@@ -37,3 +61,4 @@ class Compiler
 };
 } // namespace compiler
 } // namespace pugcpp
+#endif

@@ -1,4 +1,5 @@
-#pragma once
+#ifndef While_hpp
+#define While_hpp
 
 #include "Token.hpp"
 
@@ -8,7 +9,7 @@ namespace lexer
 {
 namespace token
 {
-class While: public Token
+class While : public Token
 {
   public:
     While(const string &value, int lineNumber);
@@ -16,3 +17,4 @@ class While: public Token
 } // namespace token
 } // namespace lexer
 } // namespace pugcpp
+#endif

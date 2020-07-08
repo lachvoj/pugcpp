@@ -1,8 +1,11 @@
-#pragma once
+#ifndef IndentWriter_hpp
+#define IndentWriter_hpp
 
 #include <memory>
 #include <sstream>
 #include <string>
+
+#include "../util/StringUtils.hpp"
 
 using namespace std;
 
@@ -47,3 +50,4 @@ class IndentWriter
 
 } // namespace compiler
 } // namespace pugcpp
+#endif

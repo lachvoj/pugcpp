@@ -1,4 +1,5 @@
-#pragma once
+#ifndef MixinBlock_hpp
+#define MixinBlock_hpp
 
 #include "Token.hpp"
 
@@ -8,7 +9,7 @@ namespace lexer
 {
 namespace token
 {
-class MixinBlock: public Token
+class MixinBlock : public Token
 {
   public:
     MixinBlock(const string &value, int lineNumber);
@@ -16,3 +17,4 @@ class MixinBlock: public Token
 } // namespace token
 } // namespace lexer
 } // namespace pugcpp
+#endif

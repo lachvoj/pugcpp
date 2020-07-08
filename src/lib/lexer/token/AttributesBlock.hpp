@@ -1,4 +1,5 @@
-#pragma once
+#ifndef AttributesBlock_hpp
+#define AttributesBlock_hpp
 
 #include "Token.hpp"
 
@@ -8,7 +9,7 @@ namespace lexer
 {
 namespace token
 {
-class AttributesBlock: public Token
+class AttributesBlock : public Token
 {
   public:
     AttributesBlock(const string &value, int lineNumber);
@@ -16,3 +17,4 @@ class AttributesBlock: public Token
 } // namespace token
 } // namespace lexer
 } // namespace pugcpp
+#endif

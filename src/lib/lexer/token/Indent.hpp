@@ -1,4 +1,5 @@
-#pragma once
+#ifndef Indent_hpp
+#define Indent_hpp
 
 #include "Token.hpp"
 
@@ -8,7 +9,7 @@ namespace lexer
 {
 namespace token
 {
-class Indent: public Token
+class Indent : public Token
 {
   public:
     Indent(const string &value, int lineNumber);
@@ -16,3 +17,4 @@ class Indent: public Token
 } // namespace token
 } // namespace lexer
 } // namespace pugcpp
+#endif

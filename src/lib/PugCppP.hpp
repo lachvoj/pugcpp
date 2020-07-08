@@ -1,4 +1,5 @@
-#pragma once
+#ifndef PugCppP_hpp
+#define PugCppP_hpp
 
 #include <any>
 #include <istream>
@@ -6,7 +7,11 @@
 #include <ostream>
 #include <string>
 
+#include "expression/DummyExpressionHandler.hpp"
 #include "expression/IExpressionHandler.hpp"
+#include "parser/Parser.hpp"
+#include "parser/node/Node.hpp"
+#include "template/FileTemplateLoader.hpp"
 #include "template/ITemplateLoader.hpp"
 #include "template/PugTemplate.hpp"
 
@@ -29,8 +34,10 @@ class PugCppP
 
   private:
     static const string encodingUTF8;
-    static shared_ptr<PugTemplate> createTemplate(const string &filename,
-                                                  shared_ptr<ITemplateLoader> loader,
-                                                  shared_ptr<IExpressionHandler> expressionHandler);
+    static shared_ptr<PugTemplate> createTemplate(
+        const string &filename,
+        shared_ptr<ITemplateLoader> loader,
+        shared_ptr<IExpressionHandler> expressionHandler);
 };
 } // namespace pugcpp
+#endif

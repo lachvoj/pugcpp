@@ -1,4 +1,5 @@
-#pragma once
+#ifndef HashUtils_hpp
+#define HashUtils_hpp
 
 #include <any>
 #include <utility>
@@ -43,3 +44,4 @@ struct pair_hash
         return seed;
     }
 };
+#endif

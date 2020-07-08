@@ -1,4 +1,5 @@
-#pragma once
+#ifndef Comment_hpp
+#define Comment_hpp
 
 #include "Token.hpp"
 
@@ -8,7 +9,7 @@ namespace lexer
 {
 namespace token
 {
-class Comment: public Token
+class Comment : public Token
 {
   public:
     Comment(const string &value, int lineNumber);
@@ -17,3 +18,4 @@ class Comment: public Token
 } // namespace token
 } // namespace lexer
 } // namespace pugcpp
+#endif

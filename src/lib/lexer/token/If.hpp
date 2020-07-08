@@ -1,4 +1,5 @@
-#pragma once
+#ifndef If_hpp
+#define If_hpp
 
 #include "Token.hpp"
 
@@ -8,7 +9,7 @@ namespace lexer
 {
 namespace token
 {
-class If: public Token
+class If : public Token
 {
   private:
     bool inverseCondition_;
@@ -25,3 +26,4 @@ class If: public Token
 } // namespace token
 } // namespace lexer
 } // namespace pugcpp
+#endif

@@ -1,4 +1,5 @@
-#pragma once
+#ifndef ExpressionException_hpp
+#define ExpressionException_hpp
 
 #include "Exception.hpp"
 
@@ -19,3 +20,4 @@ class ExpressionException : public Exception
 
 } // namespace exceptions
 } // namespace pugcpp
+#endif

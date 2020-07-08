@@ -1,4 +1,5 @@
-#pragma once
+#ifndef Attr_hpp
+#define Attr_hpp
 
 #include <any>
 #include <string>
@@ -20,7 +21,6 @@ class Attr
 
   public:
     Attr(const string &name, const any &value, bool escaped);
-    ~Attr();
 
     const string &getName() const;
     any getValue() const;
@@ -30,3 +30,4 @@ class Attr
 } // namespace node
 } // namespace parser
 } // namespace pugcpp
+#endif

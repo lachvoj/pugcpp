@@ -1,4 +1,5 @@
-#pragma once
+#ifndef Interpolation_hpp
+#define Interpolation_hpp
 
 #include "Token.hpp"
 
@@ -8,7 +9,7 @@ namespace lexer
 {
 namespace token
 {
-class Interpolation: public Token
+class Interpolation : public Token
 {
   public:
     Interpolation(const string &value, int lineNumber);
@@ -16,3 +17,4 @@ class Interpolation: public Token
 } // namespace token
 } // namespace lexer
 } // namespace pugcpp
+#endif

@@ -1,4 +1,5 @@
-#pragma once
+#ifndef AttributeList_hpp
+#define AttributeList_hpp
 
 #include <list>
 
@@ -13,7 +14,7 @@ namespace lexer
 {
 namespace token
 {
-class AttributeList: public Token
+class AttributeList : public Token
 {
   private:
     list<Attribute> attributes_ = {};
@@ -30,3 +31,4 @@ class AttributeList: public Token
 } // namespace token
 } // namespace lexer
 } // namespace pugcpp
+#endif

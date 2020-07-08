@@ -1,4 +1,5 @@
-#pragma once
+#ifndef Call_hpp
+#define Call_hpp
 
 #include "Token.hpp"
 
@@ -8,7 +9,7 @@ namespace lexer
 {
 namespace token
 {
-class Call: public Token
+class Call : public Token
 {
   private:
     string arguments_;
@@ -22,3 +23,4 @@ class Call: public Token
 } // namespace token
 } // namespace lexer
 } // namespace pugcpp
+#endif

@@ -1,9 +1,11 @@
-#pragma once
+#ifndef PugException_hpp
+#define PugException_hpp
 
 #include <memory>
 #include <string>
 
 #include "../template/ITemplateLoader.hpp"
+
 #include "Exception.hpp"
 
 using namespace std;
@@ -23,15 +25,13 @@ class PugException : public Exception
     shared_ptr<tmpl::ITemplateLoader> m_pTemplateLoader;
 
   public:
-    PugException(const string &message,
-                 const string &filename,
-                 int lineNumber,
-                 shared_ptr<tmpl::ITemplateLoader> templateLoader,
-                 const std::exception *e);
+    PugException(
+        const string &message,
+        const string &filename,
+        int lineNumber,
+        shared_ptr<tmpl::ITemplateLoader> templateLoader,
+        const std::exception *e);
     PugException(const string &message);
-    ~PugException()
-    {
-    }
     const char *what() const noexcept override;
 
     const string &getFilename();
@@ -39,3 +39,4 @@ class PugException : public Exception
 };
 } // namespace exceptions
 } // namespace pugcpp
+#endif
