@@ -10,7 +10,7 @@ AttributeList::AttributeList(int lineNumber) : Token::Token(lineNumber, e_Attrib
 {
 }
 
-const list<Attribute> &AttributeList::attributes() const
+const vector<Attribute> &AttributeList::getAttributes() const
 {
     return attributes_;
 }
@@ -22,7 +22,10 @@ void AttributeList::addAttribute(const string &name, const string &value, bool e
 
 void AttributeList::addExpressionAttribute(const string &name, const string &expression, bool escapedAttr)
 {
-    // TODO: implement this
+    ExpressionString es(expression);
+    es.setEscape(escapedAttr);
+    any value = es;
+    attributes_.push_back(Attribute(name, value, escapedAttr));
 }
 
 void AttributeList::addBoolAttribute(const string &name, bool value)

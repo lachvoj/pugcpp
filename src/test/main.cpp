@@ -1,3 +1,5 @@
+#include <chrono>
+#include <functional>
 #include <iostream>
 #include <regex>
 #include <string>
@@ -22,7 +24,39 @@ void findInLine(const string &re)
     cout << sm[0].length() << endl;
 }
 
+string replace(const string &input, regex &rgx, function<string(smatch &)> callback)
+{
+    string ret = "";
+    smatch matcher;
+
+    string in = input;
+    while (regex_search(in, matcher, rgx))
+    {
+        ret += matcher.prefix();
+        ret += callback(matcher);
+        in = matcher.suffix();
+    }
+    ret += in;
+
+    return ret;
+}
+
 int main(int argc, char const *argv[])
 {
+    // regex rgx("test");
+    // string out = replace(input_, rgx, [](smatch &m){
+    //     string match = m.str(0);
+
+    //     return "mega";
+    // });
+    auto t1 = std::chrono::high_resolution_clock::now();
+
     string out = pugcpp::PugCpp::render("test.pug", nullptr);
+
+    auto t2 = std::chrono::high_resolution_clock::now();
+    auto duration = std::chrono::duration_cast<std::chrono::microseconds>(t2 - t1).count();
+
+    cout << "duration: " << duration << " us" << endl;
+    cout << "rendered:" << endl;
+    cout << out << endl;
 }

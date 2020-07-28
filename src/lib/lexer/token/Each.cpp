@@ -10,24 +10,29 @@ Each::Each(const string &value, int lineNumber) : Token::Token(value, lineNumber
 {
 }
 
-const string &Each::code() const
+Each::Each(const string &value, int lineNumber, const string &key, const string &code)
+: Token::Token(value, lineNumber, e_Each), key_(key), code_(code)
+{
+}
+
+const string &Each::getCode() const
 {
     return code_;
 }
 
-string &Each::code()
+void Each::setCode(const string &code)
 {
-    return code_;
+    code_ = code;
 }
 
-const string &Each::key() const
+const string &Each::getKey() const
 {
     return key_;
 }
 
-string &Each::key()
+void Each::setKey(const string &key)
 {
-    return key_;
+    key_ = key;
 }
 } // namespace token
 } // namespace lexer

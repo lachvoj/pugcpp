@@ -10,14 +10,18 @@ namespace parser
 {
 namespace node
 {
+MixinNode::MixinNode() : CallNode(e_MixinNode)
+{
+}
+
 void MixinNode::setRest(const string &rest)
 {
-    m_sRest = rest;
+    rest_ = rest;
 }
 
 const string &MixinNode::getRest() const
 {
-    return m_sRest;
+    return rest_;
 }
 
 void MixinNode::execute(IndentWriter &writer, PugModel &model, PugTemplate &tmplt)

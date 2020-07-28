@@ -6,24 +6,32 @@ namespace parser
 {
 namespace node
 {
+CallNode::CallNode() : AttrsNode(e_CallNode)
+{
+}
+
+CallNode::CallNode(NodeType type) : AttrsNode(type)
+{
+}
+
 list<string> &CallNode::getArguments()
 {
-    return m_conArguments;
+    return arguments_;
 }
 
 void CallNode::setArguments(const string &arguments)
 {
-    m_conArguments.clear();
+    arguments_.clear();
 }
 
 bool CallNode::isCall()
 {
-    return m_bCall;
+    return call_;
 }
 
 void CallNode::setCall(bool call)
 {
-    m_bCall = call;
+    call_ = call;
 }
 
 void CallNode::execute(IndentWriter &writer, PugModel &model, PugTemplate &tmplt)

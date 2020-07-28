@@ -10,21 +10,20 @@
 #include <vector>
 
 #include "../filter/IFilter.hpp"
-#include "../parser/node/MixinNode.hpp"
 #include "../util/HashUtils.hpp"
 
 using namespace std;
 
 namespace pugcpp
 {
-// //forward declaration
-// namespace parser
-// {
-// namespace node
-// {
-// class MixinNode;
-// } // namespace node
-// } // namespace parser
+//forward declaration
+namespace parser
+{
+namespace node
+{
+class MixinNode;
+} // namespace node
+} // namespace parser
 
 namespace model
 {

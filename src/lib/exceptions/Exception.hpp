@@ -2,7 +2,12 @@
 #define Exception_hpp
 
 #include <exception>
+#include <iostream>
 #include <string>
+
+#ifdef __linux__
+#include <execinfo.h>
+#endif
 
 using namespace std;
 
@@ -12,15 +17,21 @@ namespace exceptions
 {
 class Exception : public exception
 {
+  private:
+
   protected:
-    string m_sError;
-    std::exception m_clThrowable;
+    string error_;
+    std::exception *throwable_;
+    bool printStack_ = true;
 
   public:
-    Exception(const string &error);
-    Exception(const string &error, const std::exception *e);
+    Exception(const string &error, bool printStack = true);
+    Exception(const string &error, std::exception *e);
 
     const char *what() const noexcept override;
+    const string &getMessage() const noexcept;
+    string getStackTrace();
+    void printStackTrace();
 };
 
 } // namespace exceptions

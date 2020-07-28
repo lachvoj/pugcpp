@@ -22,8 +22,8 @@ class PugParserException : public PugException
         const string &filename,
         int lineNumber,
         shared_ptr<ITemplateLoader> templateLoader,
-        const string &expected,
-        const string &got);
+        TokenType expected,
+        TokenType got);
 
     PugParserException(
         const string &filename,

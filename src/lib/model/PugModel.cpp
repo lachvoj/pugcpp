@@ -1,4 +1,6 @@
-#include "PugModel.hpp"
+#include "./PugModel.hpp"
+
+#include "../parser/node/MixinNode.hpp"
 
 namespace pugcpp
 {

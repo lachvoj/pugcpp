@@ -21,6 +21,7 @@ namespace node
 class AssigmentNode : public Node
 {
   public:
+    AssigmentNode();
     void execute(compiler::IndentWriter &writer, model::PugModel &model, tmpl::PugTemplate &tmplt) override;
 };
 } // namespace node

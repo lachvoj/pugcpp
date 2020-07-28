@@ -24,7 +24,7 @@ class Attr
 
     const string &getName() const;
     any getValue() const;
-    bool isEscaped();
+    const bool isEscaped() const;
 };
 
 } // namespace node

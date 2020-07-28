@@ -12,7 +12,7 @@ namespace token
 class Yield : public Token
 {
   public:
-    Yield(const string &value, int lineNumber);
+    Yield(int lineNumber);
 };
 } // namespace token
 } // namespace lexer

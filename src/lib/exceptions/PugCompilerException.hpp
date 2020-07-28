@@ -21,7 +21,7 @@ using namespace parser::node;
 class PugCompilerException : public PugException
 {
   public:
-    PugCompilerException(const Node &nd, shared_ptr<ITemplateLoader> templateLoader, const std::exception *e);
+    PugCompilerException(const Node &nd, shared_ptr<ITemplateLoader> templateLoader, std::exception *e);
     PugCompilerException(const Node &nd, shared_ptr<ITemplateLoader> templateLoader, const string &message);
 };
 } // namespace exceptions

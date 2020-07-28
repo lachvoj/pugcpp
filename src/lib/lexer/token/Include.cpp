@@ -10,24 +10,24 @@ Include::Include(const string &value, int lineNumber) : Token::Token(value, line
 {
 }
 
-const string &Include::filter() const
+const string &Include::getFilter() const
 {
     return filter_;
 }
 
-string &Include::filter()
+void Include::setFilter(const string &filter)
 {
-    return filter_;
+    filter_ = filter;
 }
 
-const Token &Include::attrs() const
+shared_ptr<Token> Include::getAttrs()
 {
     return attrs_;
 }
 
-Token &Include::attrs()
+void Include::setAttrs(shared_ptr<Token> attrs)
 {
-    return attrs_;
+    attrs_ = attrs;
 }
 } // namespace token
 } // namespace lexer

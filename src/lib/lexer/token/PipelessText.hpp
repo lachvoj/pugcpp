@@ -12,7 +12,7 @@ namespace token
 class PipelessText : public Token
 {
   public:
-    PipelessText(const string &value, int lineNumber);
+    PipelessText(int lineNumber);
 };
 } // namespace token
 } // namespace lexer

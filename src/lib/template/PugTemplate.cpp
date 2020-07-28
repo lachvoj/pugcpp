@@ -7,84 +7,93 @@ namespace tmpl
 using namespace util;
 using namespace lexer::token;
 
-void PugTemplate::process(PugModel &model, stringstream &writer)
+void PugTemplate::process(PugModel &model, ostringstream &writer)
 {
-    compiler::Compiler compiler(m_pRootNode);
-    compiler.setPrettyPrint(m_bPrettyPrint);
-    compiler.setTemplate(shared_ptr<PugTemplate>(this));
-    compiler.setExpressionHandler(m_pclExpressionHandler);
+    compiler::Compiler compiler(rootNode_, this, prettyPrint_);
+
     compiler.compile(model, writer);
 }
 
 void PugTemplate::setPrettyPrint(bool prettyPrint)
 {
-    m_bPrettyPrint = prettyPrint;
+    prettyPrint_ = prettyPrint;
 }
 
 bool PugTemplate::isPrettyPrint()
 {
-    return m_bPrettyPrint;
+    return prettyPrint_;
 }
 
 shared_ptr<Node> PugTemplate::getRootNode()
 {
-    return m_pRootNode;
+    return rootNode_;
 }
 
 void PugTemplate::setRootNode(shared_ptr<Node> rootNode)
 {
-    m_pRootNode = rootNode;
+    rootNode_ = rootNode;
 }
 
 bool PugTemplate::isTerese()
 {
-    return m_bTerse;
+    return terse_;
 }
 
 bool PugTemplate::isXml()
 {
-    return m_bXml;
+    return xml_;
 }
 
 void PugTemplate::setTemplateLoader(shared_ptr<ITemplateLoader> templateLoader)
 {
-    m_pclTemplateLoader = templateLoader;
+    templateLoader_ = templateLoader;
 }
 
 shared_ptr<ITemplateLoader> PugTemplate::getTemplateLoader()
 {
-    return m_pclTemplateLoader;
+    return templateLoader_;
 }
 
 void PugTemplate::setDoctype(const string &name)
 {
     string l_sName = name;
-    if (l_sName == "")
+    if (l_sName.empty())
     {
         l_sName = "default";
     }
-    // TODO: check l_sName unknown
-    m_sDoctypeLine = Doctypes::get(l_sName);
-    m_bTerse = ("<!doctype html>" == StringUtils::toLowerCase(m_sDoctypeLine));
-    m_bXml = StringUtils::startsWith(m_sDoctypeLine, "<?xml");
+    doctypeLine_ = Doctypes::get(l_sName);
+    if (doctypeLine_.empty())
+        doctypeLine_ = "<!DOCTYPE " + l_sName + ">";
+
+    terse_ = ("<!doctype html>" == StringUtils::toLowerCase(doctypeLine_));
+    xml_ = StringUtils::startsWith(doctypeLine_, "<?xml");
 }
 
 const string &PugTemplate::getDoctypeLine()
 {
+    return doctypeLine_;
 }
 
 void PugTemplate::setMode(pugcpp::PugCpp::Mode mode)
 {
+    terse_ = false;
+    xml_ = false;
+    switch (mode)
+    {
+    case PugCpp::Mode::HTML: terse_ = true; break;
+    case PugCpp::Mode::XML: xml_ = true; break;
+    default: break;
+    }
 }
 
 void PugTemplate::setExpressionHandler(shared_ptr<IExpressionHandler> expressionHandler)
 {
-    m_pclExpressionHandler = expressionHandler;
+    expressionHandler_ = expressionHandler;
 }
 
 shared_ptr<IExpressionHandler> PugTemplate::getExpressionHandler()
 {
-    return m_pclExpressionHandler;
+    return expressionHandler_;
 }
 
 } // namespace tmpl

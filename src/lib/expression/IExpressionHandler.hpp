@@ -24,9 +24,9 @@ using namespace model;
 class IExpressionHandler
 {
   public:
-    virtual bool evaluateBooleanExpression(const string &expression, PugModel model) = 0;
-    virtual any evaluateExpression(const string &expression, PugModel model) = 0;
-    virtual string evaluateStringExpression(const string &expression, PugModel model) = 0;
+    virtual bool evaluateBooleanExpression(const string &expression, PugModel &model) = 0;
+    virtual any evaluateExpression(const string &expression, PugModel &model) = 0;
+    virtual string evaluateStringExpression(const string &expression, PugModel &model) = 0;
     virtual void assertExpression(string expression) = 0;
     virtual void setCache(bool cache) = 0;
     virtual void clearCache() = 0;

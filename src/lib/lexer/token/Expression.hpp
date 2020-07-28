@@ -15,10 +15,10 @@ class Expression : public Token
     bool escape_;
 
   public:
-    Expression(const string &value, int lineNumber, bool escape);
+    Expression(const string &value, int lineNumber, bool escape = false);
 
-    const bool escape() const;
-    bool &escape();
+    const bool isEscape() const;
+    void setEscape(bool escape);
 };
 } // namespace token
 } // namespace lexer

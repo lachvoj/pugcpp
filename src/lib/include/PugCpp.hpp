@@ -19,8 +19,7 @@ class PugCpp
         XHTML
     };
 
-    static string render(const string &filename, map<string, any> *model);
-    static string render(const string &filename, map<string, any> *model, bool prettyPrint);
+    static string render(const string &filename, map<string, any> *model, bool prettyPrint = true, Mode = HTML);
 };
 } // namespace pugcpp
 #endif

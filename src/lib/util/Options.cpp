@@ -6,32 +6,32 @@ namespace util
 {
 int Options::getStart()
 {
-    return m_nStart;
+    return start_;
 }
 
 void Options::setStart(int start)
 {
-    m_nStart = start;
+    start_ = start;
 }
 
 int Options::getEnd()
 {
-    return m_nEnd;
+    return end_;
 }
 
 void Options::setEnd(int end)
 {
-    m_nEnd = end;
+    end_ = end;
 }
 
 bool Options::isIncludeLineComment()
 {
-    return m_bIncludeLineComment;
+    return includeLineComment_;
 }
 
 void Options::setIncludeLineComment(bool includeLineCommnet)
 {
-    m_bIncludeLineComment = includeLineCommnet;
+    includeLineComment_ = includeLineCommnet;
 }
 
 } // namespace util

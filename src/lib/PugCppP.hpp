@@ -10,6 +10,7 @@
 #include "expression/DummyExpressionHandler.hpp"
 #include "expression/IExpressionHandler.hpp"
 #include "parser/Parser.hpp"
+#include "parser/node/MixinNode.hpp"
 #include "parser/node/Node.hpp"
 #include "template/FileTemplateLoader.hpp"
 #include "template/ITemplateLoader.hpp"
@@ -26,15 +27,16 @@ using namespace expression;
 class PugCppP
 {
   public:
-    static shared_ptr<PugTemplate> getTemplate(const string &filename);
-    static shared_ptr<PugTemplate> getTemplate(const string &filename, const string &extension);
-    static shared_ptr<PugTemplate> getTemplate(istream &reader, const string &name);
-    static shared_ptr<PugTemplate> getTemplate(istream &reader, const string &name, const string &extension);
-    static string templateToString(PugTemplate &tmpl, map<string, any> *model);
+    static void getTemplate(PugTemplate &ret, const string &filename);
+    static void getTemplate(PugTemplate &ret, const string &filename, const string &extension);
+    static void getTemplate(PugTemplate &ret, istream &reader, const string &name);
+    static void getTemplate(PugTemplate &ret, istream &reader, const string &name, const string &extension);
+    static string templateToString(PugTemplate &tmplt, map<string, any> *model);
 
   private:
     static const string encodingUTF8;
-    static shared_ptr<PugTemplate> createTemplate(
+    static void createTemplate(
+        PugTemplate &ret,
         const string &filename,
         shared_ptr<ITemplateLoader> loader,
         shared_ptr<IExpressionHandler> expressionHandler);

@@ -10,13 +10,13 @@ Mixin::Mixin(const string &value, int lineNumber) : Token::Token(value, lineNumb
 {
 }
 
-const string &Mixin::arguments() const
+const string &Mixin::getArguments() const
 {
     return arguments_;
 }
-string &Mixin::arguments()
+void Mixin::setArguments(const string &arguments)
 {
-    return arguments_;
+    arguments_ = arguments;
 }
 } // namespace token
 } // namespace lexer

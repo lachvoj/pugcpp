@@ -8,6 +8,15 @@ namespace lexer
 {
 using namespace util;
 
+Scanner::Scanner(istream &stream)
+{
+    initFromStream(stream);
+}
+
+Scanner::Scanner(const string &input) : input_(input)
+{
+}
+
 void Scanner::initFromStream(istream &stream)
 {
     string sb = "";
@@ -44,18 +53,9 @@ bool Scanner::isEmpty()
     return input_.empty();
 }
 
-Scanner::Scanner(istream &stream)
-{
-    initFromStream(stream);
-}
-
-Scanner::Scanner(const string &input) : input_(input)
-{
-}
-
 void Scanner::consume(int length)
 {
-    input_ = input_.substr(length);
+    input_.erase(0, length);
 }
 
 string Scanner::findInLine(const string &re)
@@ -109,13 +109,15 @@ const string &Scanner::getInput() const
     return input_;
 }
 
-shared_ptr<smatch> Scanner::getMatcharForPattern(const string &sRegex)
+void Scanner::getMatcherForPattern(smatch &matcher, const string &sRegex)
 {
     regex re(sRegex);
-    shared_ptr<smatch> sm = make_shared<smatch>();
-    regex_search(input_, *sm, re);
+    regex_search(input_, matcher, re);
+}
 
-    return sm;
+void Scanner::getMatcherForPattern(smatch &matcher, const regex &regex)
+{
+    regex_search(input_, matcher, regex);
 }
 
 bool Scanner::isIntendantionViolated()

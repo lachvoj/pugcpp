@@ -6,7 +6,7 @@ namespace lexer
 {
 namespace token
 {
-MixinBlock::MixinBlock(const string &value, int lineNumber) : Token::Token(value, lineNumber, e_MixinBlock)
+MixinBlock::MixinBlock(int lineNumber) : Token::Token(lineNumber, e_MixinBlock)
 {
 }
 } // namespace token

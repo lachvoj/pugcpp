@@ -50,8 +50,8 @@ void AttributeLexer::parse(const char c)
 
         default:
             states_.push(KEY);
-            value_ = StringUtils::trim(value_);
-            key_ = StringUtils::trim(key_);
+            StringUtils::argTrim(value_);
+            StringUtils::argTrim(key_);
             if ("" == key_)
             {
                 return;

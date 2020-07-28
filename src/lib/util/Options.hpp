@@ -8,9 +8,9 @@ namespace util
 class Options
 {
   private:
-    int m_nStart = 0;
-    int m_nEnd = 0;
-    bool m_bIncludeLineComment = false;
+    int start_ = 0;
+    int end_ = 0;
+    bool includeLineComment_ = false;
 
   public:
     int getStart();

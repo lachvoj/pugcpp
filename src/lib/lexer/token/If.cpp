@@ -6,30 +6,30 @@ namespace lexer
 {
 namespace token
 {
-If::If(const string &value, int lineNumber, bool inverseCondition = false, bool alternativeCondition = false)
+If::If(const string &value, int lineNumber, bool inverseCondition, bool alternativeCondition)
 : Token::Token(value, lineNumber, e_If), inverseCondition_(inverseCondition),
   alternativeCondition_(alternativeCondition)
 {
 }
 
-const bool &If::inverseCondition() const
+const bool If::isInverseCondition() const
 {
     return inverseCondition_;
 }
 
-bool If::inverseCondition()
+void If::setInverseCondition(bool inverseCondition)
 {
-    return inverseCondition_;
+    inverseCondition_ = inverseCondition;
 }
 
-const bool &If::alternativeCondition() const
+const bool If::isAlternativeCondition() const
 {
     return alternativeCondition_;
 }
 
-bool If::alternativeCondition()
+void If::setAlternativeCondition(bool alternativeCondition)
 {
-    return alternativeCondition_;
+    alternativeCondition_ = alternativeCondition;
 }
 } // namespace token
 } // namespace lexer

@@ -32,7 +32,8 @@ class Scanner
     bool isNotLineBreak();
     string getPipelessText();
     const string &getInput() const;
-    shared_ptr<smatch> getMatcharForPattern(const string &sRegex);
+    void getMatcherForPattern(smatch &matcher, const string &sRegex);
+    void getMatcherForPattern(smatch &matcher, const regex &regex);
     bool isIntendantionViolated();
     bool isBlankLine();
     bool isAdditionalBlankline();

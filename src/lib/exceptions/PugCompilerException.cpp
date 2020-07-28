@@ -7,7 +7,7 @@ namespace exceptions
 PugCompilerException::PugCompilerException(
     const Node &nd,
     shared_ptr<ITemplateLoader> templateLoader,
-    const std::exception *e)
+    std::exception *e)
 : PugException((e != nullptr) ? string(e->what()) : "", nd.getFileName(), nd.getLineNumber(), templateLoader, e)
 {
 }

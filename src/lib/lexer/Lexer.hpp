@@ -7,6 +7,7 @@
 #include <memory>
 #include <queue>
 #include <regex>
+#include <stack>
 #include <string>
 
 #include "../exceptions/PugLexerException.hpp"
@@ -14,14 +15,50 @@
 #include "../template/ITemplateLoader.hpp"
 #include "../util/CharacterParser.hpp"
 #include "../util/FileSystem.hpp"
+#include "../util/Options.hpp"
 
 #include "Scanner.hpp"
+#include "token/Assignment.hpp"
+#include "token/AttributeList.hpp"
+#include "token/AttributesBlock.hpp"
+#include "token/Block.hpp"
+#include "token/BlockCode.hpp"
+#include "token/BufferedComment.hpp"
+#include "token/Call.hpp"
+#include "token/CaseToken.hpp"
 #include "token/Colon.hpp"
 #include "token/Comment.hpp"
+#include "token/CssClass.hpp"
+#include "token/CssId.hpp"
+#include "token/Default.hpp"
+#include "token/Deferred.hpp"
+#include "token/Doctype.hpp"
+#include "token/Doctypes.hpp"
+#include "token/Dot.hpp"
+#include "token/Each.hpp"
+#include "token/Else.hpp"
+#include "token/ElseIf.hpp"
 #include "token/Eos.hpp"
+#include "token/Expression.hpp"
+#include "token/ExtendsToken.hpp"
+#include "token/Filter.hpp"
+#include "token/ForTag.hpp"
+#include "token/If.hpp"
+#include "token/Include.hpp"
+#include "token/Indent.hpp"
+#include "token/Interpolation.hpp"
+#include "token/Mixin.hpp"
+#include "token/MixinBlock.hpp"
+#include "token/Newline.hpp"
 #include "token/Outdent.hpp"
+#include "token/PipelessText.hpp"
+#include "token/Tag.hpp"
 #include "token/Text.hpp"
 #include "token/Token.hpp"
+#include "token/UnbufferedComment.hpp"
+#include "token/When.hpp"
+#include "token/While.hpp"
+#include "token/Yield.hpp"
 
 using namespace std;
 
@@ -45,26 +82,22 @@ class Lexer
         STRING
     };
 
-    static const regex m_rgCleanRe;
-    static const regex m_rgDoubleQuotedRe;
-    static const regex m_rgQuotedRe;
-    static const map<char, char> m_conClosingBrackets;
+    static const regex cleanRe;
+    static const regex doubleQuotedRe;
+    static const regex quotedRe;
+    static const map<char, char> closingBrackets;
 
-    int m_nLastIndents = 0;
-    int m_nLineno = 1;
-    bool m_bPipeless = false;
-    bool m_bAttributeMode;
-    string m_sFilename;
-    string m_sIndentType;
-    string m_sIndentRe;
-    unique_ptr<Scanner> m_pclScanner;
-    shared_ptr<ITemplateLoader> m_pclTemplateLoader;
-    shared_ptr<CharacterParser> m_pclCharacterParser;
-    shared_ptr<IExpressionHandler> m_pclExpressionHandler;
-    queue<int> m_conIndentStack;
-    queue<string> m_conOptions;
-    deque<shared_ptr<Token>> m_conDeferredTokens;
-    deque<shared_ptr<Token>> m_conStash;
+    int lneno_ = 1;
+    bool pipeless_ = false;
+    string fileName_;
+    string indentRe_;
+    unique_ptr<Scanner> scanner_;
+    shared_ptr<ITemplateLoader> templateLoader_;
+    CharacterParser characterParser_;
+    shared_ptr<IExpressionHandler> expressionHandler_;
+    stack<int> indentStack_;
+    queue<shared_ptr<Token>> deferredTokens_;
+    deque<shared_ptr<Token>> stash_;
 
   public:
     Lexer(
@@ -81,12 +114,12 @@ class Lexer
     const bool getPipeless() const;
     void setPipeless(bool pipeless);
     const bool isEndOfAttribute(
-        int i,
+        const int i,
         const string &str,
         const string &key,
         const string &val,
-        Loc loc,
-        CharacterParser::State state) const;
+        const Loc &loc,
+        const CharacterParser::State &state) const;
     void consume(int len);
     void defer(shared_ptr<Token> tok);
     shared_ptr<Token> lookahead(int n);
@@ -98,48 +131,47 @@ class Lexer
     shared_ptr<CharacterParser::Match> bracketExpression();
     shared_ptr<CharacterParser::Match> bracketExpression(int skip);
     string scan(const string &regexp, int group = 1);
-    string interpolate(const string &attr, const string &quote);
+    string interpolate(const string &attr, const char quote);
     string ensurePugExtension(const string &templateName, const ITemplateLoader &templateLoader);
     bool assertNestingCorrect(const string &exp);
-    shared_ptr<Token> stashed();
-    shared_ptr<Token> deferred();
-    shared_ptr<Token> blank();
-    shared_ptr<Token> eos();
-    shared_ptr<Token> comment();
-    shared_ptr<Token> code();
-    shared_ptr<Token> interpolation();
-    shared_ptr<Token> tag();
-    shared_ptr<Token> yield();
-    shared_ptr<Token> filter();
-    shared_ptr<Token> each();
-    shared_ptr<Token> whileToken();
-    shared_ptr<Token> conditional();
-    shared_ptr<Token> doctype();
-    shared_ptr<Token> id();
-    shared_ptr<Token> className();
-    shared_ptr<Token> text();
-    shared_ptr<Token> textFail();
-    shared_ptr<Token> fail();
-    shared_ptr<Token> extendsToken();
-    shared_ptr<Token> prepend();
-    shared_ptr<Token> append();
-    shared_ptr<Token> block();
-    shared_ptr<Token> mixinBlock();
-    shared_ptr<Token> blockCode();
-    shared_ptr<Token> include();
-    shared_ptr<Token> includeFiltered();
-    shared_ptr<Token> caseToken();
-    shared_ptr<Token> when();
-    shared_ptr<Token> defaultToken();
-    shared_ptr<Token> assignment();
-    shared_ptr<Token> dot();
-    shared_ptr<Token> mixin();
-    shared_ptr<Token> call();
-    shared_ptr<Token> attrs();
-    shared_ptr<Token> attributesBlock();
-    shared_ptr<Token> indent();
-    shared_ptr<Token> pipelessText();
-    shared_ptr<Token> colon();
+    void stashed(shared_ptr<Token> &ret);
+    void deferred(shared_ptr<Token> &ret);
+    void blank(shared_ptr<Token> &ret);
+    void eos(shared_ptr<Token> &ret);
+    void comment(shared_ptr<Token> &ret);
+    void code(shared_ptr<Token> &ret);
+    void interpolation(shared_ptr<Token> &ret);
+    void tag(shared_ptr<Token> &ret);
+    void yield(shared_ptr<Token> &ret);
+    void filter(shared_ptr<Token> &ret);
+    void each(shared_ptr<Token> &ret);
+    void whileToken(shared_ptr<Token> &ret);
+    void conditional(shared_ptr<Token> &ret);
+    void doctype(shared_ptr<Token> &ret);
+    void id(shared_ptr<Token> &ret);
+    void className(shared_ptr<Token> &ret);
+    void text(shared_ptr<Token> &ret);
+    void textFail(shared_ptr<Token> &ret);
+    void extendsToken(shared_ptr<Token> &ret);
+    void prepend(shared_ptr<Token> &ret);
+    void append(shared_ptr<Token> &ret);
+    void block(shared_ptr<Token> &ret);
+    void mixinBlock(shared_ptr<Token> &ret);
+    void blockCode(shared_ptr<Token> &ret);
+    void include(shared_ptr<Token> &ret);
+    void includeFiltered(shared_ptr<Token> &ret);
+    void caseToken(shared_ptr<Token> &ret);
+    void when(shared_ptr<Token> &ret);
+    void defaultToken(shared_ptr<Token> &ret);
+    void assignment(shared_ptr<Token> &ret);
+    void dot(shared_ptr<Token> &ret);
+    void mixin(shared_ptr<Token> &ret);
+    void call(shared_ptr<Token> &ret);
+    void attrs(shared_ptr<Token> &ret);
+    void attributesBlock(shared_ptr<Token> &ret);
+    void indent(shared_ptr<Token> &ret);
+    void pipelessText(shared_ptr<Token> &ret);
+    void colon(shared_ptr<Token> &ret);
 };
 } // namespace lexer
 } // namespace pugcpp

@@ -6,7 +6,7 @@ namespace lexer
 {
 namespace token
 {
-Doctypes::PugDocTypeMap_T Doctypes::m_ = {
+const map<string, string> Doctypes::s_conTypeMap = {
     {"default", "<!DOCTYPE html>"},
     {"xml", "<?xml version=\"1.0\" encoding=\"utf-8\" ?>"},
     {"transitional",
@@ -26,9 +26,16 @@ Doctypes::PugDocTypeMap_T Doctypes::m_ = {
      "<!DOCTYPE html PUBLIC \"-//WAPFORUM//DTD XHTML Mobile 1.2//EN\" "
      "\"http://www.openmobilealliance.org/tech/DTD/xhtml-mobile12.dtd\">"}};
 
+const string Doctypes::s_sEmpty = "";
+
 const string &Doctypes::get(const string &pugDocType)
 {
-    return Doctypes::m_[pugDocType];
+    auto elemIt = s_conTypeMap.find(pugDocType);
+    
+    if (elemIt == s_conTypeMap.end())
+        return s_sEmpty;
+
+    return elemIt->second;
 }
 } // namespace token
 } // namespace lexer

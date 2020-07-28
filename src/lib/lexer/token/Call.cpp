@@ -10,12 +10,12 @@ Call::Call(const string &value, int lineNumber) : Token::Token(value, lineNumber
 {
 }
 
-string &Call::arguments()
+void Call::setArguments(const string &arguments)
 {
-    return arguments_;
+    arguments_ = arguments;
 }
 
-const string &Call::arguments() const
+const string &Call::getArguments() const
 {
     return arguments_;
 }

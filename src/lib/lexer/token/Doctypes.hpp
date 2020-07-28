@@ -14,12 +14,13 @@ namespace token
 {
 class Doctypes
 {
-    typedef map<string, string> PugDocTypeMap_T;
 
   private:
-    static PugDocTypeMap_T m_;
+    static const map<string, string> s_conTypeMap;
+    static const string s_sEmpty;
 
   public:
+    Doctypes() = delete;
     static const string &get(const string &pugDocType);
 };
 } // namespace token

@@ -21,7 +21,7 @@ any Attr::getValue() const
     return value_;
 }
 
-bool Attr::isEscaped()
+const bool Attr::isEscaped() const
 {
     return escaped_;
 }

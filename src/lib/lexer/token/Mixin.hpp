@@ -17,8 +17,8 @@ class Mixin : public Token
   public:
     Mixin(const string &value, int lineNumber);
 
-    const string &arguments() const;
-    string &arguments();
+    const string &getArguments() const;
+    void setArguments(const string &arguments);
 };
 } // namespace token
 } // namespace lexer

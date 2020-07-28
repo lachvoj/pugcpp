@@ -12,13 +12,13 @@ namespace node
 class MixinNode : public CallNode
 {
   private:
-    string m_sRest;
+    string rest_;
 
   public:
+    MixinNode();
     void setRest(const string &reset);
     const string &getRest() const;
     void execute(IndentWriter &writer, PugModel &model, PugTemplate &tmplt);
-
 };
 } // namespace node
 } // namespace parser

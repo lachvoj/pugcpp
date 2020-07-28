@@ -6,41 +6,39 @@ namespace compiler
 {
 using namespace util;
 
-IndentWriter::IndentWriter(stringstream &writer) : m_pWriter(writer)
+IndentWriter::IndentWriter(ostringstream &writer) : writer_(writer)
 {
 }
 
-IndentWriter &IndentWriter::add(const string &str)
+void IndentWriter::add(const string &str)
 {
-    return append(str);
+    append(str);
 }
 
-IndentWriter &IndentWriter::append(const string &str)
+void IndentWriter::append(const string &str)
 {
     write(str);
-
-    return *this;
 }
 
 void IndentWriter::write(const string &string)
 {
-    m_pWriter << string;
-    m_bEmpty = false;
+    writer_ << string;
+    empty_ = false;
 }
 
 void IndentWriter::increment()
 {
-    m_nIndent++;
+    indent_++;
 }
 
 void IndentWriter::decrement()
 {
-    m_nIndent--;
+    indent_--;
 }
 
 string IndentWriter::toString()
 {
-    return m_pWriter.str();
+    return writer_.str();
 }
 
 void IndentWriter::newline()
@@ -48,7 +46,7 @@ void IndentWriter::newline()
     if (!isPp())
         return;
 
-    write("\n" + StringUtils::repeat(m_sPp, m_nIndent));
+    write("\n" + StringUtils::repeat(pp_, indent_));
 }
 
 void IndentWriter::prettyIndent(int offset, bool newline)
@@ -57,47 +55,47 @@ void IndentWriter::prettyIndent(int offset, bool newline)
         return;
 
     string newlineChar = newline ? "\n" : "";
-    write(newlineChar + StringUtils::repeat(m_sPp, m_nIndent + offset - 1));
+    write(newlineChar + StringUtils::repeat(pp_, indent_ + offset - 1));
 }
 
 void IndentWriter::setUseIndent(bool useIndent)
 {
-    m_bUseIndent = useIndent;
+    useIndent_ = useIndent;
 }
 
 void IndentWriter::setEscape(bool escape)
 {
-    m_bEscape = escape;
+    escape_ = escape;
 }
 
 bool IndentWriter::isEscape()
 {
-    return m_bEscape;
+    return escape_;
 }
 
 bool IndentWriter::isPp()
 {
-    return (m_sPp.length() != 0 && m_bUseIndent);
+    return (pp_.length() != 0 && useIndent_);
 }
 
 void IndentWriter::setCompiledTag(bool compiledTag)
 {
-    m_bCompiledTag = compiledTag;
+    compiledTag_ = compiledTag;
 }
 
 bool IndentWriter::isCompiledTag()
 {
-    return m_bCompiledTag;
+    return compiledTag_;
 }
 
 void IndentWriter::setCompiledDoctype(bool compiledDoctype)
 {
-    m_bCompiledDoctype = compiledDoctype;
+    compiledDoctype_ = compiledDoctype;
 }
 
 bool IndentWriter::isCompiledDoctype()
 {
-    return m_bCompiledDoctype;
+    return compiledDoctype_;
 }
 } // namespace compiler
 } // namespace pugcpp

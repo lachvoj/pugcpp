@@ -16,12 +16,12 @@ class If : public Token
     bool alternativeCondition_;
 
   public:
-    If(const string &value, int lineNumber, bool inverseCondition, bool alternativeCondition);
+    If(const string &value, int lineNumber, bool inverseCondition = false, bool alternativeCondition = false);
 
-    const bool &inverseCondition() const;
-    bool inverseCondition();
-    const bool &alternativeCondition() const;
-    bool alternativeCondition();
+    const bool isInverseCondition() const;
+    void setInverseCondition(bool inverseCondition);
+    const bool isAlternativeCondition() const;
+    void setAlternativeCondition(bool alternativeCondition);
 };
 } // namespace token
 } // namespace lexer

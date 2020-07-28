@@ -17,8 +17,8 @@ class Call : public Token
   public:
     Call(const string &value, int lineNumber);
 
-    string &arguments();
-    const string &arguments() const;
+    void setArguments(const string &arguments);
+    const string &getArguments() const;
 };
 } // namespace token
 } // namespace lexer

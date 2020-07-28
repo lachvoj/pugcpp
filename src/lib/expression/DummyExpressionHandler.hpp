@@ -13,9 +13,9 @@ class DummyExpressionHandler : public IExpressionHandler
 {
   private:
   public:
-    bool evaluateBooleanExpression(const string &expression, PugModel model);
-    any evaluateExpression(const string &expression, PugModel model);
-    string evaluateStringExpression(const string &expression, PugModel model);
+    bool evaluateBooleanExpression(const string &expression, PugModel &model);
+    any evaluateExpression(const string &expression, PugModel &model);
+    string evaluateStringExpression(const string &expression, PugModel &model);
     void assertExpression(string expression);
     void setCache(bool cache);
     void clearCache();

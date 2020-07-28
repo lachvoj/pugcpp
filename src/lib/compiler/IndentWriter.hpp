@@ -16,23 +16,22 @@ namespace compiler
 class IndentWriter
 {
   private:
-    int m_nIndent = 0;
-    int m_nParentIndents = 0;
-    bool m_bUseIndent = false;
-    bool m_bEmpty = true;
-    stringstream &m_pWriter;
-    string m_sPp = "  ";
-    bool m_bEscape;
-    bool m_bCompiledTag;
-    bool m_bCompiledDoctype;
+    int indent_ = 0;
+    bool useIndent_ = false;
+    bool empty_ = true;
+    ostringstream &writer_;
+    string pp_ = "  ";
+    bool escape_ = false;
+    bool compiledTag_ = false;
+    bool compiledDoctype_ = false;
 
     void write(const string &string);
 
   public:
-    IndentWriter(stringstream &writer);
+    IndentWriter(ostringstream &writer);
 
-    IndentWriter &add(const string &string);
-    IndentWriter &append(const string &string);
+    void add(const string &string);
+    void append(const string &string);
     void increment();
     void decrement();
     string toString();

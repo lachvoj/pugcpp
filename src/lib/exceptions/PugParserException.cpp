@@ -8,9 +8,14 @@ PugParserException::PugParserException(
     const string &filename,
     int lineNumber,
     shared_ptr<ITemplateLoader> templateLoader,
-    const string &expected,
-    const string &got)
-: PugException("expected " + expected + "but got " + got, filename, lineNumber, templateLoader, nullptr)
+    TokenType expected,
+    TokenType got)
+: PugException(
+      "expected " + Token::getTypeNameFromTokenType(expected) + "but got " + Token::getTypeNameFromTokenType(got),
+      filename,
+      lineNumber,
+      templateLoader,
+      nullptr)
 {
 }
 
@@ -19,7 +24,7 @@ PugParserException::PugParserException(
     int lineNumber,
     shared_ptr<ITemplateLoader> templateLoader,
     const Token &token)
-: PugException("unknown token " + to_string(token.getType()), filename, lineNumber, templateLoader, nullptr)
+: PugException("unknown token " + token.getTypeName(), filename, lineNumber, templateLoader, nullptr)
 {
 }
 

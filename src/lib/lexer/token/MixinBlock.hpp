@@ -12,7 +12,7 @@ namespace token
 class MixinBlock : public Token
 {
   public:
-    MixinBlock(const string &value, int lineNumber);
+    MixinBlock(int lineNumber);
 };
 } // namespace token
 } // namespace lexer

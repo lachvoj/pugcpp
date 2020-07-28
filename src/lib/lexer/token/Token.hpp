@@ -16,7 +16,7 @@ enum TokenType
 {
     e_Default = 0,
     e_AttributeList,
-    e_AttributeBlock,
+    e_AttributesBlock,
     e_Block,
     e_BlockCode,
     e_BufferedComment,
@@ -58,7 +58,8 @@ enum TokenType
 class Token
 {
   private:
-    TokenType type_;
+    static const vector<string> tokenTypeNames;
+    const TokenType type_;
     string value_;
     vector<string> values_;
     int lineNumber_;
@@ -74,22 +75,24 @@ class Token
     Token(const string &value, int lineNumber, bool buffer, TokenType type = e_Default);
 
     const TokenType getType() const;
-    string &value();
-    const string &value() const;
-    const int lineNumber() const;
-    bool &buffer();
-    const bool buffer() const;
-    string &mode();
-    const string &mode() const;
+    const string &getValue() const;
+    void setValue(const string &value);
+    const int getLineNumber() const;
+    const bool isBuffer() const;
+    void setBuffer(bool buffer);
+    const string &getMode() const;
+    void setMode(const string &mode);
     const string &toString() const;
-    string &name();
-    const string &name() const;
-    int &indents();
-    const int indents() const;
-    bool &selfClosing();
-    const bool selfClosing() const;
-    vector<string> &values();
-    const vector<string> &values() const;
+    const string &getName() const;
+    void setName(const string &name);
+    const int getIndents() const;
+    void setIndents(int indents);
+    const bool isSelfClosing() const;
+    void setSelfClosing(bool selfClosing);
+    const vector<string> &getValues() const;
+    void setValues(vector<string> &values);
+    const string &getTypeName() const;
+    static const string &getTypeNameFromTokenType(const TokenType tokenType);
 };
 } // namespace token
 } // namespace lexer

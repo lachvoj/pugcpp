@@ -20,8 +20,8 @@ namespace util
 class CharacterParser
 {
   private:
-    static const regex m_clPattern;
-    static const set<string> m_conKeywords;
+    static const regex pattern;
+    static const set<string> keywords;
 
   public:
     class SyntaxError : public exceptions::Exception
@@ -33,20 +33,20 @@ class CharacterParser
     class State
     {
       private:
-        bool m_bLineComment = false;
-        bool m_bBlockComment = false;
-        bool m_bSingleQuote = false;
-        bool m_bDoubleQuote = false;
-        bool m_bRegexp = false;
-        bool m_bRegexpStart = false;
-        bool m_bEscaped = false;
+        bool lineComment_ = false;
+        bool blockComment_ = false;
+        bool singleQuote_ = false;
+        bool doubleQuote_ = false;
+        bool regexp_ = false;
+        bool regexpStart_ = false;
+        bool escaped_ = false;
 
-        int m_nRoundDepth = 0;
-        int m_nCurlyDepth = 0;
-        int m_nSquareDepth = 0;
-        string m_sHistory = "";
-        char m_nLastChar = 0;
-        string m_sSrc = "";
+        int roundDepth_ = 0;
+        int curlyDepth_ = 0;
+        int squareDepth_ = 0;
+        string history_ = "";
+        char lastChar_ = 0;
+        string src_ = "";
 
       public:
         const bool isString() const;
@@ -83,10 +83,10 @@ class CharacterParser
     class Match
     {
       private:
-        int m_nStart;
-        int m_nEnd;
+        int start_;
+        int end_;
         // TODO: check if pointer or reference is sufficient
-        string m_sSrc;
+        string src_;
 
       public:
         Match(int start, int end, const string &src);
@@ -104,16 +104,16 @@ class CharacterParser
     shared_ptr<State> parse(const string &src, shared_ptr<State> state);
     shared_ptr<State> parse(const string &src, shared_ptr<State> state, shared_ptr<Options> options);
     shared_ptr<Match> parseMax(const string &src);
-    shared_ptr<Match> parseMax(const string &src, shared_ptr<Options> options);
+    shared_ptr<Match> parseMax(const string &src, Options *options);
     shared_ptr<Match> parseMaxBracket(const string &src, char bracket);
-    shared_ptr<Match> parseMaxBracket(const string &src, char bracket, shared_ptr<Options> options);
+    shared_ptr<Match> parseMaxBracket(const string &src, char bracket, Options *options);
     shared_ptr<Match> parseUntil(const string &src, const string &delimiter);
-    shared_ptr<Match> parseUntil(const string &src, const string &delimiter, shared_ptr<Options> options);
-    shared_ptr<State> parseChar(char character, shared_ptr<State> state);
+    shared_ptr<Match> parseUntil(const string &src, const string &delimiter, Options *options);
+    void parseChar(char character, shared_ptr<State> &state);
     shared_ptr<State> defaultState();
-    bool isPunctuator(char character);
-    bool isKeyword(const string &id);
-    bool isRegexp(const string &history);
+    static bool isPunctuator(char character);
+    static bool isKeyword(const string &id);
+    static bool isRegexp(const string &history);
 };
 } // namespace util
 } // namespace pugcpp

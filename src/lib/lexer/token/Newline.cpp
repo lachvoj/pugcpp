@@ -6,7 +6,7 @@ namespace lexer
 {
 namespace token
 {
-Newline::Newline(const string &value, int lineNumber) : Token::Token(value, lineNumber, e_Newline)
+Newline::Newline(int lineNumber) : Token::Token(lineNumber, e_Newline)
 {
 }
 } // namespace token

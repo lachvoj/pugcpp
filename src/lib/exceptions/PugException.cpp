@@ -9,8 +9,8 @@ PugException::PugException(
     const string &filename,
     int lineNumber,
     shared_ptr<ITemplateLoader> templateLoader,
-    const std::exception *e)
-: Exception(message, e), m_sFilename(filename), m_nLineNumber(lineNumber), m_pTemplateLoader(templateLoader)
+    std::exception *e)
+: Exception(message, e), fileName_(filename), lineNumber_(lineNumber), templateLoader_(templateLoader)
 {
 }
 
@@ -20,17 +20,17 @@ PugException::PugException(const string &message) : Exception(message)
 
 const char *PugException::what() const noexcept
 {
-    return m_sError.c_str();
+    return error_.c_str();
 }
 
 const string &PugException::getFilename()
 {
-    return m_sFilename;
+    return fileName_;
 }
 
-int PugException::getLienNumber()
+int PugException::getLineNumber()
 {
-    return m_nLineNumber;
+    return lineNumber_;
 }
 } // namespace exceptions
 } // namespace pugcpp

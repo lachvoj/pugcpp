@@ -14,9 +14,9 @@ namespace tmpl
 class ReaderTemplateLoader
 {
   private:
-    istream &m_pclReader;
-    string m_sName;
-    string m_sExtension = "pug";
+    istream &reader_;
+    string name_;
+    string extension_ = "pug";
 
   public:
     ReaderTemplateLoader(istream &reader, const string &name);

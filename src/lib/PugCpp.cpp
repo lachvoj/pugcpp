@@ -1,68 +1,66 @@
-#include "include/PugCpp.hpp"
-
 #include "./PugCppP.hpp"
+
+#include "include/PugCpp.hpp"
 
 namespace pugcpp
 {
 // PugCpp
-string PugCpp::render(const string &filename, map<string, any> *model)
+string PugCpp::render(const string &filename, map<string, any> *model, bool prettyPrint, Mode mode)
 {
-    return render(filename, model, false);
-}
+    PugTemplate tmpl;
+    PugCppP::getTemplate(tmpl, filename);
+    tmpl.setPrettyPrint(prettyPrint);
+    tmpl.setMode(mode);
 
-string PugCpp::render(const string &filename, map<string, any> *model, bool prettyPrint)
-{
-    shared_ptr<PugTemplate> tmpl = PugCppP::getTemplate(filename);
-    tmpl->setPrettyPrint(prettyPrint);
-
-    return PugCppP::templateToString(*tmpl, model);
+    return PugCppP::templateToString(tmpl, model);
 }
 
 // PugCppP
 const string PugCppP::encodingUTF8 = "UTF-8";
 
-shared_ptr<PugTemplate> PugCppP::getTemplate(const string &filename)
+void PugCppP::getTemplate(PugTemplate &ret, const string &filename)
 {
     return createTemplate(
-        filename, make_shared<FileTemplateLoader>("", encodingUTF8), make_shared<DummyExpressionHandler>());
+        ret, filename, make_shared<FileTemplateLoader>("", encodingUTF8), make_shared<DummyExpressionHandler>());
 }
 
-shared_ptr<PugTemplate> PugCppP::getTemplate(const string &filename, const string &extension)
+void PugCppP::getTemplate(PugTemplate &ret, const string &filename, const string &extension)
 {
     return createTemplate(
-        filename, make_shared<FileTemplateLoader>("", encodingUTF8, extension), make_shared<DummyExpressionHandler>());
+        ret,
+        filename,
+        make_shared<FileTemplateLoader>("", encodingUTF8, extension),
+        make_shared<DummyExpressionHandler>());
 }
 
-shared_ptr<PugTemplate> PugCppP::getTemplate(istream &reader, const string &name)
+void PugCppP::getTemplate(PugTemplate &ret, istream &reader, const string &name)
 {
 }
 
-shared_ptr<PugTemplate> PugCppP::getTemplate(istream &reader, const string &name, const string &extension)
+void PugCppP::getTemplate(PugTemplate &ret, istream &reader, const string &name, const string &extension)
 {
 }
 
-string PugCppP::templateToString(PugTemplate &tmpl, map<string, any> *model)
+string PugCppP::templateToString(PugTemplate &tmplt, map<string, any> *model)
 {
     model::PugModel pugModel(model);
-    stringstream writer;
+    ostringstream writer(ios_base::out | ios_base::ate);
 
-    tmpl.process(pugModel, writer);
+    tmplt.process(pugModel, writer);
 
     return writer.str();
 }
 
-shared_ptr<PugTemplate> PugCppP::createTemplate(
+void PugCppP::createTemplate(
+    PugTemplate &ret,
     const string &filename,
     shared_ptr<ITemplateLoader> loader,
     shared_ptr<IExpressionHandler> expressionHandler)
 {
     parser::Parser parser(filename, loader, expressionHandler);
     shared_ptr<Node> root = parser.parse();
-    shared_ptr<PugTemplate> tmpl = make_shared<PugTemplate>();
-    tmpl->setExpressionHandler(expressionHandler);
-    tmpl->setTemplateLoader(loader);
-    tmpl->setRootNode(root);
-
-    return tmpl;
+    ret.setExpressionHandler(expressionHandler);
+    ret.setTemplateLoader(loader);
+    ret.setRootNode(root);
 }
 } // namespace pugcpp

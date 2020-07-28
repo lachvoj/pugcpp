@@ -6,19 +6,19 @@ namespace lexer
 {
 namespace token
 {
-Expression::Expression(const string &value, int lineNumber, bool escape = false)
+Expression::Expression(const string &value, int lineNumber, bool escape)
 : Token::Token(value, lineNumber, e_Expression), escape_(escape)
 {
 }
 
-const bool Expression::escape() const
+const bool Expression::isEscape() const
 {
     return escape_;
 }
 
-bool &Expression::escape()
+void Expression::setEscape(bool escape)
 {
-    return escape_;
+    escape_ = escape;
 }
 
 } // namespace token

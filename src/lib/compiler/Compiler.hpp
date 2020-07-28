@@ -3,7 +3,7 @@
 
 #include <memory>
 
-#include "../expression/IExpressionHandler.hpp"
+#include "../exceptions/Exception.hpp"
 #include "../model/PugModel.hpp"
 #include "../parser/node/Node.hpp"
 #include "../template/PugTemplate.hpp"
@@ -39,25 +39,25 @@ namespace compiler
 {
 using namespace parser::node;
 using namespace tmpl;
-using namespace expression;
 using namespace model;
+using namespace exceptions;
 
 class Compiler
 {
   private:
-    shared_ptr<Node> m_pRootNode;
-    bool m_bPrettyPrint;
-    shared_ptr<PugTemplate> m_pTemplate;
-    shared_ptr<IExpressionHandler> m_pExpressionHandler;
+    shared_ptr<Node> rootNode_;
+    bool prettyPrint_;
+    PugTemplate *template_;
 
   public:
     Compiler(shared_ptr<Node> rootNode);
+    Compiler(shared_ptr<Node> rootNode, PugTemplate *tmplt);
+    Compiler(shared_ptr<Node> rootNode, PugTemplate *tmplt, bool prettyPrint);
 
     string compileToString(PugModel &model);
-    void compile(PugModel &model, stringstream &w);
+    void compile(PugModel &model, ostringstream &w);
     void setPrettyPrint(bool prettyPrint);
-    void setTemplate(shared_ptr<PugTemplate> pugTemplate);
-    void setExpressionHandler(shared_ptr<IExpressionHandler> expressionHandler);
+    void setTemplate(PugTemplate *pugTemplate);
 };
 } // namespace compiler
 } // namespace pugcpp

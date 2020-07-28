@@ -41,16 +41,16 @@ using namespace model;
 class PugTemplate
 {
   private:
-    bool m_bPrettyPrint = false;
-    shared_ptr<Node> m_pRootNode;
-    bool m_bTerse = false;
-    bool m_bXml = false;
-    shared_ptr<ITemplateLoader> m_pclTemplateLoader;
-    shared_ptr<IExpressionHandler> m_pclExpressionHandler;
-    string m_sDoctypeLine;
+    bool prettyPrint_ = false;
+    shared_ptr<Node> rootNode_;
+    bool terse_ = false;
+    bool xml_ = false;
+    shared_ptr<ITemplateLoader> templateLoader_;
+    shared_ptr<IExpressionHandler> expressionHandler_;
+    string doctypeLine_;
 
   public:
-    void process(PugModel &model, stringstream &writer);
+    void process(PugModel &model, ostringstream &writer);
     void setPrettyPrint(bool prettyPrint);
     bool isPrettyPrint();
     shared_ptr<Node> getRootNode();

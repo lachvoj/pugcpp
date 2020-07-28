@@ -20,9 +20,9 @@ class PugException : public Exception
 {
   private:
     static const long serialVersionUID = -8189536050437574552L;
-    string m_sFilename;
-    int m_nLineNumber;
-    shared_ptr<tmpl::ITemplateLoader> m_pTemplateLoader;
+    string fileName_;
+    int lineNumber_;
+    shared_ptr<tmpl::ITemplateLoader> templateLoader_;
 
   public:
     PugException(
@@ -30,12 +30,12 @@ class PugException : public Exception
         const string &filename,
         int lineNumber,
         shared_ptr<tmpl::ITemplateLoader> templateLoader,
-        const std::exception *e);
+        std::exception *e);
     PugException(const string &message);
     const char *what() const noexcept override;
 
     const string &getFilename();
-    int getLienNumber();
+    int getLineNumber();
 };
 } // namespace exceptions
 } // namespace pugcpp

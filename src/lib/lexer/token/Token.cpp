@@ -6,6 +6,46 @@ namespace lexer
 {
 namespace token
 {
+const vector<string> Token::tokenTypeNames({"Default",
+                                            "AttributeList",
+                                            "AttributesBlock",
+                                            "Block",
+                                            "BlockCode",
+                                            "BufferedComment",
+                                            "Call",
+                                            "CaseToken",
+                                            "Colon",
+                                            "Comment",
+                                            "CssClass",
+                                            "CssId",
+                                            "Deferred",
+                                            "Doctype",
+                                            "Dot",
+                                            "Else",
+                                            "ElseIf",
+                                            "Eos",
+                                            "Expression",
+                                            "ExtendsToken",
+                                            "Filter",
+                                            "ForTag",
+                                            "If",
+                                            "Include",
+                                            "Indent",
+                                            "Interpolation",
+                                            "Mixin",
+                                            "MixinBlock",
+                                            "Newline",
+                                            "Outdent",
+                                            "PipelessText",
+                                            "Tag",
+                                            "Text",
+                                            "UnbufferedComment",
+                                            "When",
+                                            "While",
+                                            "Yield",
+                                            "Assignment",
+                                            "Each"});
+
 Token::Token(int lineNumber /*= 0*/, TokenType type /*= e_Default*/) : lineNumber_(lineNumber), type_(type)
 {
 }
@@ -25,39 +65,39 @@ const TokenType Token::getType() const
     return type_;
 }
 
-string &Token::value()
+const string &Token::getValue() const
 {
     return value_;
 }
 
-const string &Token::value() const
+void Token::setValue(const string &value)
 {
-    return value_;
+    value_ = value;
 }
 
-const int Token::lineNumber() const
+const int Token::getLineNumber() const
 {
     return lineNumber_;
 }
 
-bool &Token::buffer()
+const bool Token::isBuffer() const
 {
     return buffer_;
 }
 
-const bool Token::buffer() const
+void Token::setBuffer(bool buffer)
 {
-    return buffer_;
+    buffer_ = buffer;
 }
 
-string &Token::mode()
+const string &Token::getMode() const
 {
     return mode_;
 }
 
-const string &Token::mode() const
+void Token::setMode(const string &mode)
 {
-    return mode_;
+    mode_ = mode;
 }
 
 const string &Token::toString() const
@@ -65,44 +105,54 @@ const string &Token::toString() const
     return value_;
 }
 
-string &Token::name()
+const string &Token::getName() const
 {
     return name_;
 }
 
-const string &Token::name() const
+void Token::setName(const string &name)
 {
-    return name_;
+    name_ = name;
 }
 
-int &Token::indents()
+const int Token::getIndents() const
 {
     return indents_;
 }
 
-const int Token::indents() const
+void Token::setIndents(int indents)
 {
-    return indents_;
+    indents_ = indents;
 }
 
-bool &Token::selfClosing()
+const bool Token::isSelfClosing() const
 {
     return selfClosing_;
 }
 
-const bool Token::selfClosing() const
+void Token::setSelfClosing(bool selfClosing)
 {
-    return selfClosing_;
+    selfClosing_ = selfClosing;
 }
 
-vector<string> &Token::values()
+const vector<string> &Token::getValues() const
 {
     return values_;
 }
 
-const vector<string> &Token::values() const
+void Token::setValues(vector<string> &values)
 {
-    return values_;
+    values_ = values;
+}
+
+const string &Token::getTypeName() const
+{
+    return getTypeNameFromTokenType(type_);
+}
+
+const string &Token::getTypeNameFromTokenType(const TokenType tokenType)
+{
+    return tokenTypeNames.at(tokenType);
 }
 
 } // namespace token

@@ -17,11 +17,12 @@ class Each : public Token
 
   public:
     Each(const string &value, int lineNumber);
+    Each(const string &value, int lineNumber, const string &key, const string &code);
 
-    const string &code() const;
-    string &code();
-    const string &key() const;
-    string &key();
+    const string &getCode() const;
+    void setCode(const string &code);
+    const string &getKey() const;
+    void setKey(const string &key);
 };
 } // namespace token
 } // namespace lexer

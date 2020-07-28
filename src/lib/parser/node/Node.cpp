@@ -6,102 +6,114 @@ namespace parser
 {
 namespace node
 {
+Node::Node(NodeType type) : type_(type)
+{
+}
+
+const NodeType Node::getType() const
+{
+    return type_;
+}
+
 void Node::setLineNumber(int lineNumber)
 {
-    m_nLlineNumber = lineNumber;
+    lineNumber_ = lineNumber;
 }
 
 int Node::getLineNumber() const
 {
-    return m_nLlineNumber;
+    return lineNumber_;
 }
 
 void Node::setValue(const string &value)
 {
-    m_sValue = value;
+    value_ = value;
 }
 
 const string &Node::getValue() const
 {
-    return m_sValue;
+    return value_;
 }
 
 void Node::setName(const string &name)
 {
-    m_sName = name;
+    name_ = name;
 }
 
 const string &Node::getName() const
 {
-    return m_sName;
+    return name_;
 }
 
-void Node::push(shared_ptr<Node> node)
+void Node::push(const shared_ptr<Node> &node)
 {
     if (!node)
         throw runtime_error("Null node!");
 
-    m_clNodes.push_front(node);
+    nodes_.push_back(node);
 }
 
-void Node::setNodes(list<shared_ptr<Node>> &nodes)
+void Node::setNodes(vector<shared_ptr<Node>> &nodes)
 {
-    m_clNodes = nodes;
+    nodes_ = nodes;
 }
 
-list<shared_ptr<Node>> &Node::getNodes()
+vector<shared_ptr<Node>> &Node::getNodes()
 {
-    return m_clNodes;
+    return nodes_;
 }
 
 shared_ptr<Node> Node::pollNode()
 {
     shared_ptr<Node> ret;
 
-    if (m_clNodes.empty())
+    if (nodes_.empty())
         return ret;
 
-    ret = m_clNodes.front();
-    m_clNodes.pop_front();
+    ret = nodes_.front();
+    nodes_.erase(nodes_.begin());
 
     return ret;
 }
 
 bool Node::hasNodes()
 {
-    return !m_clNodes.empty();
+    return !nodes_.empty();
 }
 
 bool Node::hasBlock()
 {
-    return m_pBlock != nullptr;
+    return block_ != nullptr;
 }
 
-void Node::setBlock(shared_ptr<Node> block)
+void Node::setBlock(const shared_ptr<Node> &block)
 {
-    m_pBlock = block;
+    block_ = block;
 }
 
 shared_ptr<Node> Node::getBlock()
 {
-    return m_pBlock;
+    return block_;
 }
 
 void Node::setFileName(const string &fileName)
 {
-    m_sFileName = &fileName;
+    fileName_ = &fileName;
+}
+
+void Node::setFileName(string const *fileName)
+{
+    fileName_ = fileName;
 }
 
 const string &Node::getFileName() const
 {
-    return *m_sFileName;
+    return *fileName_;
 }
 
 shared_ptr<Node> Node::clone()
 {
-    // TODO: check this!!!
-    shared_ptr<Node> clone(this);
-    return clone;
+    // TODO:
 }
 
 } // namespace node

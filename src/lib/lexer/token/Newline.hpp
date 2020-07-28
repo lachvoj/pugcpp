@@ -12,7 +12,7 @@ namespace token
 class Newline : public Token
 {
   public:
-    Newline(const string &value, int lineNumber);
+    Newline(int lineNumber);
 };
 } // namespace token
 } // namespace lexer

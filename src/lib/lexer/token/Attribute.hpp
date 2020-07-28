@@ -21,9 +21,9 @@ class Attribute
   public:
     Attribute(const string &name, const any &value, bool escape);
 
-    const string &name() const;
-    const any &value() const;
-    const bool escaped() const;
+    const string &getName() const;
+    const any &getValue() const;
+    const bool isEscaped() const;
 };
 } // namespace token
 } // namespace lexer
