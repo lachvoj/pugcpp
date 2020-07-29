@@ -11,7 +11,7 @@ Each::Each(const string &value, int lineNumber) : Token::Token(value, lineNumber
 }
 
 Each::Each(const string &value, int lineNumber, const string &key, const string &code)
-: Token::Token(value, lineNumber, e_Each), key_(key), code_(code)
+: Token::Token(value, lineNumber, e_Each), code_(code), key_(key)
 {
 }
 

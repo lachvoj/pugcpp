@@ -10,7 +10,7 @@ string PathHelper::resolvePath(const string &parentName, const string &templateN
 {
 
     string filePath;
-    if (StringUtils::startsWith(templateName, "" + fs::path::preferred_separator))
+    if (StringUtils::startsWith(templateName, string(1, fs::path::preferred_separator)))
     {
         filePath = templateName.substr(1);
     }

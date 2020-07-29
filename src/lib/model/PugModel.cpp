@@ -66,9 +66,13 @@ void PugModel::setMixin(const string &name, const MixinNode &node)
     mixins_.insert(pair<string, MixinNode>(name, node));
 }
 
-MixinNode &PugModel::getMixin(const string &name)
+MixinNode *PugModel::getMixin(const string &name)
 {
-    return mixins_.find(name)->second;
+    auto found  = mixins_.find(name);
+    if (found == mixins_.end())
+        return nullptr;
+    
+    return &(found->second);
 }
 
 void PugModel::clear()

@@ -16,7 +16,7 @@ using namespace std;
 
 namespace pugcpp
 {
-//forward declaration
+// forward declaration
 namespace parser
 {
 namespace node
@@ -48,7 +48,7 @@ class PugModel
     void pushScope();
     void popScope();
     void setMixin(const string &name, const MixinNode &node);
-    MixinNode &getMixin(const string &name);
+    MixinNode *getMixin(const string &name);
     void clear();
     bool containsKey(const string &key);
     bool containsValue(const any *value);

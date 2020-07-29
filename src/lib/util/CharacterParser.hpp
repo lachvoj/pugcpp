@@ -83,15 +83,15 @@ class CharacterParser
     class Match
     {
       private:
-        int start_;
-        int end_;
+        size_t start_;
+        size_t end_;
         // TODO: check if pointer or reference is sufficient
         string src_;
 
       public:
-        Match(int start, int end, const string &src);
-        const int getStart() const;
-        const int getEnd() const;
+        Match(size_t start, size_t end, const string &src);
+        const size_t getStart() const;
+        const size_t getEnd() const;
         const string &getSrc() const;
     };
 

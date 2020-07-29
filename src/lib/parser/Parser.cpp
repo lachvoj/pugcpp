@@ -165,6 +165,11 @@ void Parser::parseComment(shared_ptr<Node> &ret)
 
 void Parser::parseMixin(shared_ptr<Node> &ret)
 {
+    shared_ptr<Mixin> tok = static_pointer_cast<Mixin>(expect(e_Mixin));
+    shared_ptr<MixinNode> nd = make_shared<MixinNode>();
+    nd->setName(tok->getValue());
+    nd->setLineNumber(tok->getLineNumber());
+    nd->setFileName(fileName_);
 }
 
 void Parser::parseCall(shared_ptr<Node> &ret)

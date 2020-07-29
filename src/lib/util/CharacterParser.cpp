@@ -161,16 +161,16 @@ const char CharacterParser::State::getLastChar() const
     return lastChar_;
 }
 
-CharacterParser::Match::Match(int start, int end, const string &src) : start_(start), end_(end), src_(src)
+CharacterParser::Match::Match(size_t start, size_t end, const string &src) : start_(start), end_(end), src_(src)
 {
 }
 
-const int CharacterParser::Match::getStart() const
+const size_t CharacterParser::Match::getStart() const
 {
     return start_;
 }
 
-const int CharacterParser::Match::getEnd() const
+const size_t CharacterParser::Match::getEnd() const
 {
     return end_;
 }
@@ -256,8 +256,8 @@ shared_ptr<CharacterParser::Match> CharacterParser::parseMax(const string &src, 
     if (options == nullptr)
         options = &opt;
 
-    int start = options->getStart();
-    int index = start;
+    size_t start = options->getStart();
+    size_t index = start;
     shared_ptr<CharacterParser::State> state = defaultState();
 
     while (state->getRoundDepth() >= 0 && state->getCurlyDepth() >= 0 && state->getSquareDepth() >= 0)
@@ -269,7 +269,7 @@ shared_ptr<CharacterParser::Match> CharacterParser::parseMax(const string &src, 
         parseChar(src[index], state);
         ++index;
     }
-    int end = index - 1;
+    size_t end = index - 1;
 
     return make_shared<CharacterParser::Match>(start, end, src.substr(start, end - start));
 }
@@ -292,8 +292,8 @@ shared_ptr<CharacterParser::Match> CharacterParser::parseMaxBracket(const string
     if (options == nullptr)
         options = &opt;
 
-    int start = options->getStart();
-    int index = start;
+    size_t start = options->getStart();
+    size_t index = start;
     shared_ptr<CharacterParser::State> state = defaultState();
 
     while (getStateProp(*state, bracket) >= 0)
@@ -305,7 +305,7 @@ shared_ptr<CharacterParser::Match> CharacterParser::parseMaxBracket(const string
         }
         parseChar(src[index++], state);
     }
-    int end = index - 1;
+    size_t end = index - 1;
 
     return make_shared<CharacterParser::Match>(start, end, src.substr(start, end - start));
 }

@@ -10,13 +10,13 @@ namespace tmpl
 using namespace util;
 
 FileTemplateLoader::FileTemplateLoader(const string &folderPath, const string &encoding)
-: folderPath_(folderPath), encoding_(encoding)
+: encoding_(encoding), folderPath_(folderPath)
 {
     validateFolderPath(folderPath);
 }
 
 FileTemplateLoader::FileTemplateLoader(const string &folderPath, const string &encoding, const string &extension)
-: folderPath_(folderPath), encoding_(encoding), extension_(extension)
+: encoding_(encoding), folderPath_(folderPath), extension_(extension)
 {
     validateFolderPath(folderPath);
 }

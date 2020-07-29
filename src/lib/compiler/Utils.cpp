@@ -322,7 +322,7 @@ void Utils::escapeHtml4(string &str)
     {
         const int searchLength = item.first.length();
         int searchStart = 0;
-        int pos = 0;
+        auto pos = 0;
         while ((pos = str.find(item.first, searchStart)) != string::npos)
         {
             buf.append(str.substr(searchStart, pos - searchStart));
@@ -354,7 +354,7 @@ void Utils::prepareInterpolate(vector<any> &ret, const string &str, bool xmlEsca
         int openBrackets = 1;
         bool closingBracketFound = false;
         int matcherEnd = matcher.position(0) + matcher.length(0);
-        int closingBracketIndex = matcherEnd;
+        auto closingBracketIndex = matcherEnd;
         while (!closingBracketFound && closingBracketIndex < in.length())
         {
             char currentChar = in[closingBracketIndex];

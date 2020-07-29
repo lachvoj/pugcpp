@@ -95,7 +95,7 @@ class Node
     void setFileName(const string &fileName);
     void setFileName(string const *fileName);
     const string &getFileName() const;
-    shared_ptr<Node> clone();
+    // shared_ptr<Node> clone();
 };
 } // namespace node
 } // namespace parser

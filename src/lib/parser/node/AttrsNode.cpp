@@ -121,9 +121,9 @@ bool AttrsNode::isTerese(PugTemplate &tmplt)
     return (isSelfClosing(tmplt) && tmplt.isTerese());
 }
 
-shared_ptr<AttrsNode> AttrsNode::clone()
-{
-}
+// shared_ptr<AttrsNode> AttrsNode::clone()
+// {
+// }
 
 string AttrsNode::visitAttributes(PugModel &model, PugTemplate &tmplt)
 {

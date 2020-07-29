@@ -7,19 +7,19 @@ namespace util
 {
 string StringReplacer::replace(const string &input, const regex &rgx, function<string(smatch &)> callback)
 {
-    string ret = "";
+    ostringstream ret;
     string in = input;
     smatch matcher;
 
     while (regex_search(in, matcher, rgx))
     {
-        ret += matcher.prefix();
-        ret += callback(matcher);
-        in = matcher.suffix();
+        ret << matcher.prefix();
+        ret << callback(matcher);
+        in = move(matcher.suffix());
     }
-    ret += in;
+    ret << in;
 
-    return ret;
+    return ret.str();
 }
 
 string StringUtils::ltrim(const string &str, const string &chars /*= "\t\n\v\f\r "*/)
@@ -44,7 +44,7 @@ string StringUtils::trim(const string &str, const string &chars /*= "\t\n\v\f\r 
     argLtrim(s, chars);
     argRtrim(s, chars);
 
-    return s;
+    return move(s);
 }
 
 void StringUtils::argLtrim(string &str, const string &chars /*= "\t\n\v\f\r "*/)
@@ -110,17 +110,12 @@ string StringUtils::toUpperCase(const string &str)
     return ret;
 }
 
-void StringUtils::replaceAll(string &str, const string &from, const string &to)
+void StringUtils::replaceAll(string &str, const string &fromRegex, const string &to)
 {
-    if (from.empty())
+    if (fromRegex.empty() || str.empty())
         return;
 
-    size_t start_pos = 0;
-    while ((start_pos = str.find(from, start_pos)) != std::string::npos)
-    {
-        str.replace(start_pos, from.length(), to);
-        start_pos += to.length(); // In case 'to' contains 'from', like replacing 'x' with 'yx'
-    }
+    str = move(regex_replace(str, regex(fromRegex), to));
 }
 
 // template <typename CON>

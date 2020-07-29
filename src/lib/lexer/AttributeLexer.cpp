@@ -15,7 +15,7 @@ const AttributeList &AttributeLexer::getToken(const string &input, int lineno)
 {
     token_ = make_shared<AttributeList>(lineno);
 
-    for (int i = 0; i < input.length(); ++i)
+    for (auto i = 0; i < input.length(); ++i)
     {
         parse(input[i]);
     }

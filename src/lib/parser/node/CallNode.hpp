@@ -3,10 +3,17 @@
 
 #include <list>
 
+#include "../../compiler/IndentWriter.hpp"
+#include "../../exceptions/ExpressionException.hpp"
+#include "../../exceptions/PugCompilerException.hpp"
+#include "../../model/PugModel.hpp"
+#include "../../template/PugTemplate.hpp"
+#include "../../util/ArgumentSplitter.hpp"
+
 #include "AttrsNode.hpp"
-// #include "../../compiler/IndentWriter.hpp"
-// #include "../../model/PugModel.hpp"
-// #include "../../template/PugTemplate.hpp"
+#include "ConditionalNode.hpp"
+#include "IfConditionNode.hpp"
+#include "MixinBlockNode.hpp"
 
 using namespace std;
 
@@ -16,11 +23,18 @@ namespace parser
 {
 namespace node
 {
+using namespace util;
+using namespace exceptions;
+
 class CallNode : public AttrsNode
 {
   private:
     bool dynamicMixins_ = false;
     bool call_ = false;
+
+    void getInjectionPoints(vector<shared_ptr<MixinBlockNode>> &ret, const shared_ptr<Node> &block);
+    void writeVariables(PugModel &model, shared_ptr<MixinNode> &mixin, PugTemplate &tmplt);
+    void writeAttributes(PugModel &model, shared_ptr<MixinNode> &mixin, PugTemplate &tmplt);
 
   protected:
     list<string> arguments_;
@@ -29,6 +43,7 @@ class CallNode : public AttrsNode
   public:
     CallNode();
     list<string> &getArguments();
+    void setArguments(const list<string> &arguments);
     void setArguments(const string &arguments);
     bool isCall();
     void setCall(bool call);

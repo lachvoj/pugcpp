@@ -6,8 +6,8 @@
 #include <list>
 #include <regex>
 #include <set>
+#include <sstream>
 #include <string>
-#include <type_traits>
 #include <vector>
 
 using namespace std;
@@ -39,7 +39,7 @@ class StringUtils
     static bool isNotBlank(const string &str);
     static string toLowerCase(const string &str);
     static string toUpperCase(const string &str);
-    static void replaceAll(string &str, const string &from, const string &to);
+    static void replaceAll(string &str, const string &fromRegex, const string &to);
     // template <typename CON>
     // static string join(const CON &container, const string &delimiter = " ");
     static string join(const vector<string> &container, const string &delimiter = " ");

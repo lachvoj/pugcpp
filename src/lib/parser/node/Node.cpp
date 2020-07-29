@@ -111,10 +111,10 @@ const string &Node::getFileName() const
     return *fileName_;
 }
 
-shared_ptr<Node> Node::clone()
-{
-    // TODO:
-}
+// shared_ptr<Node> Node::clone()
+// {
+//     // TODO:
+// }
 
 } // namespace node
 } // namespace parser

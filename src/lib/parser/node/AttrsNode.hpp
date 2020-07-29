@@ -89,7 +89,7 @@ class AttrsNode : public Node
     void setCodeNode(shared_ptr<Node> codeNode);
     bool hasCodeNode();
     bool isTerese(PugTemplate &tmplt);
-    shared_ptr<AttrsNode> clone();
+    // shared_ptr<AttrsNode> clone();
 };
 } // namespace node
 } // namespace parser

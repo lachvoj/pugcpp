@@ -16,11 +16,9 @@ Lexer::Lexer(
     const string &filename,
     shared_ptr<ITemplateLoader> templateLoader,
     shared_ptr<IExpressionHandler> expressionHandler)
-: templateLoader_(templateLoader), expressionHandler_(expressionHandler)
+: templateLoader_(templateLoader), expressionHandler_(expressionHandler),
+  fileName_(ensurePugExtension(filename, *templateLoader_)), scanner_(templateLoader->getReader(fileName_))
 {
-    fileName_ = ensurePugExtension(filename, *templateLoader_);
-    istream &reader = templateLoader->getReader(fileName_);
-    scanner_ = make_unique<Scanner>(reader);
 }
 
 Lexer::Lexer(
@@ -28,10 +26,9 @@ Lexer::Lexer(
     const string &filename,
     shared_ptr<ITemplateLoader> templateLoader,
     shared_ptr<IExpressionHandler> expressionHandler)
-: templateLoader_(templateLoader), expressionHandler_(expressionHandler)
+: templateLoader_(templateLoader), expressionHandler_(expressionHandler),
+  fileName_(ensurePugExtension(filename, *templateLoader_)), scanner_(input)
 {
-    fileName_ = ensurePugExtension(filename, *templateLoader_);
-    scanner_ = make_unique<Scanner>(input);
 }
 
 const int Lexer::getLineno() const
@@ -50,7 +47,7 @@ void Lexer::setPipeless(bool pipeless)
 }
 
 const bool Lexer::isEndOfAttribute(
-    const int i,
+    const size_t i,
     const string &str,
     const string &key,
     const string &val,
@@ -111,7 +108,7 @@ const bool Lexer::isEndOfAttribute(
 
 void Lexer::consume(int len)
 {
-    scanner_->consume(len);
+    scanner_.consume(len);
 }
 
 void Lexer::defer(shared_ptr<Token> tok)
@@ -284,8 +281,7 @@ shared_ptr<Token> Lexer::next()
     if (token)
         return token;
 
-    throw PugLexerException(
-        "unexpected text: " + scanner_->getInput().substr(0, 5), fileName_, lneno_, templateLoader_);
+    throw PugLexerException("unexpected text: " + scanner_.getInput().substr(0, 5), fileName_, lneno_, templateLoader_);
 
     return token;
 }
@@ -320,7 +316,7 @@ shared_ptr<CharacterParser::Match> Lexer::bracketExpression()
 
 shared_ptr<CharacterParser::Match> Lexer::bracketExpression(int skip)
 {
-    char start = scanner_->getInput().at(skip);
+    char start = scanner_.getInput().at(skip);
     if (start != '(' && start != '{' && start != '[')
     {
         throw PugLexerException("unrecognized start character", fileName_, getLineno(), templateLoader_);
@@ -332,17 +328,14 @@ shared_ptr<CharacterParser::Match> Lexer::bracketExpression(int skip)
     shared_ptr<CharacterParser::Match> range;
     try
     {
-        range = characterParser_.parseMax(scanner_->getInput(), &opt);
+        range = characterParser_.parseMax(scanner_.getInput(), &opt);
     }
     catch (const CharacterParser::SyntaxError &e)
     {
         throw PugLexerException(
-            string(e.what()) + " See" + scanner_->getInput().substr(0, 5),
-            fileName_,
-            getLineno(),
-            templateLoader_);
+            string(e.what()) + " See" + scanner_.getInput().substr(0, 5), fileName_, getLineno(), templateLoader_);
     }
-    char foundEnd = scanner_->getInput().at(range->getEnd());
+    char foundEnd = scanner_.getInput().at(range->getEnd());
     if (foundEnd != end)
         throw PugLexerException(
             "start character `" + string(1, start) + "` does not match end character `" + string(1, foundEnd) + "`.",
@@ -353,12 +346,12 @@ shared_ptr<CharacterParser::Match> Lexer::bracketExpression(int skip)
     return range;
 }
 
-string Lexer::scan(const string &regexp, int group)
+string Lexer::scan(const string &regexp, size_t group)
 {
     smatch matcher;
     string str = "";
 
-    scanner_->getMatcherForPattern(matcher, regexp);
+    scanner_.getMatcherForPattern(matcher, regexp);
     if (!matcher.empty() && matcher.size() > group)
     {
         str = matcher.str(group);
@@ -425,8 +418,7 @@ bool Lexer::assertNestingCorrect(const string &exp)
     }
     catch (const CharacterParser::SyntaxError &e)
     {
-        throw PugLexerException(
-            "Nesting must match on expression `" + exp + "`", fileName_, lneno_, templateLoader_);
+        throw PugLexerException("Nesting must match on expression `" + exp + "`", fileName_, lneno_, templateLoader_);
     }
 
     return true;
@@ -454,7 +446,7 @@ void Lexer::blank(shared_ptr<Token> &ret)
 {
     smatch matcher;
 
-    scanner_->getMatcherForPattern(matcher, "^\\n *\\n");
+    scanner_.getMatcherForPattern(matcher, "^\\n *\\n");
     if (!matcher.empty())
     {
         consume(matcher.position(0) + matcher.length(0) - 1);
@@ -469,7 +461,7 @@ void Lexer::blank(shared_ptr<Token> &ret)
 
 void Lexer::eos(shared_ptr<Token> &ret)
 {
-    if (scanner_->getInput().length() > 0)
+    if (scanner_.getInput().length() > 0)
         return;
 
     if (indentStack_.size() > 0)
@@ -486,7 +478,7 @@ void Lexer::eos(shared_ptr<Token> &ret)
 void Lexer::comment(shared_ptr<Token> &ret)
 {
     smatch matcher;
-    scanner_->getMatcherForPattern(matcher, "^\\/\\/(-)?([^\\n]*)");
+    scanner_.getMatcherForPattern(matcher, "^\\/\\/(-)?([^\\n]*)");
 
     if (matcher.empty() || matcher.size() < 3)
         return;
@@ -500,7 +492,7 @@ void Lexer::comment(shared_ptr<Token> &ret)
 void Lexer::code(shared_ptr<Token> &ret)
 {
     smatch matcher;
-    scanner_->getMatcherForPattern(matcher, "^(!?=|-)[ \\t]*([^\\n]+)");
+    scanner_.getMatcherForPattern(matcher, "^(!?=|-)[ \\t]*([^\\n]+)");
 
     if (matcher.empty() || matcher.size() < 3)
         return;
@@ -527,7 +519,7 @@ void Lexer::code(shared_ptr<Token> &ret)
 void Lexer::interpolation(shared_ptr<Token> &ret)
 {
     smatch matcher;
-    scanner_->getMatcherForPattern(matcher, "^#\\{");
+    scanner_.getMatcherForPattern(matcher, "^#\\{");
 
     if (matcher.empty())
         return;
@@ -547,7 +539,7 @@ void Lexer::interpolation(shared_ptr<Token> &ret)
 void Lexer::tag(shared_ptr<Token> &ret)
 {
     smatch matcher;
-    scanner_->getMatcherForPattern(matcher, "^(\\w[-:\\w]*)(\\/?)");
+    scanner_.getMatcherForPattern(matcher, "^(\\w[-:\\w]*)(\\/?)");
 
     if (matcher.empty() || matcher.size() < 3)
         return;
@@ -558,7 +550,7 @@ void Lexer::tag(shared_ptr<Token> &ret)
     {
         name.pop_back();
         defer(make_shared<Colon>(lneno_));
-        while (' ' == scanner_->getInput().front())
+        while (' ' == scanner_.getInput().front())
             consume(1);
     }
     shared_ptr<Tag> tok = make_shared<Tag>(name, lneno_);
@@ -571,7 +563,7 @@ void Lexer::tag(shared_ptr<Token> &ret)
 void Lexer::yield(shared_ptr<Token> &ret)
 {
     smatch matcher;
-    scanner_->getMatcherForPattern(matcher, "^yield *");
+    scanner_.getMatcherForPattern(matcher, "^yield *");
 
     if (matcher.empty())
         return;
@@ -593,7 +585,7 @@ void Lexer::filter(shared_ptr<Token> &ret)
 void Lexer::each(shared_ptr<Token> &ret)
 {
     smatch matcher;
-    scanner_->getMatcherForPattern(
+    scanner_.getMatcherForPattern(
         matcher, "^(?:- *)?(?:each|for) +([a-zA-Z_$][\\w$]*)(?: *, *([a-zA-Z_$][\\w$]*))? * in *([^\\n]+)");
 
     if (matcher.empty() || matcher.size() < 4)
@@ -613,7 +605,7 @@ void Lexer::whileToken(shared_ptr<Token> &ret)
 void Lexer::conditional(shared_ptr<Token> &ret)
 {
     smatch matcher;
-    scanner_->getMatcherForPattern(matcher, "^(if|unless|else if|else)\\b([^\\n]*)");
+    scanner_.getMatcherForPattern(matcher, "^(if|unless|else if|else)\\b([^\\n]*)");
 
     if (matcher.empty() || matcher.size() < 3)
         return;
@@ -633,11 +625,10 @@ void Lexer::doctype(shared_ptr<Token> &ret)
 {
     string val = scan("^!!! *([^\\n]+)?");
     if (StringUtils::isNotBlank(val))
-        throw PugLexerException(
-            "`!!!` is deprecated, you must now use `doctype`", fileName_, lneno_, templateLoader_);
+        throw PugLexerException("`!!!` is deprecated, you must now use `doctype`", fileName_, lneno_, templateLoader_);
 
     smatch matcher;
-    scanner_->getMatcherForPattern(matcher, "^(?:doctype) *([^\\n]+)?");
+    scanner_.getMatcherForPattern(matcher, "^(?:doctype) *([^\\n]+)?");
     if (matcher.empty() || matcher.size() < 2)
         return;
 
@@ -713,7 +704,7 @@ void Lexer::append(shared_ptr<Token> &ret)
 void Lexer::block(shared_ptr<Token> &ret)
 {
     smatch matcher;
-    scanner_->getMatcherForPattern(matcher, "^block\\b *(?:(prepend|append) +)?([^\\n]+)");
+    scanner_.getMatcherForPattern(matcher, "^block\\b *(?:(prepend|append) +)?([^\\n]+)");
 
     if (matcher.empty() || matcher.size() < 3)
         return;
@@ -728,7 +719,7 @@ void Lexer::block(shared_ptr<Token> &ret)
 void Lexer::mixinBlock(shared_ptr<Token> &ret)
 {
     smatch matcher;
-    scanner_->getMatcherForPattern(matcher, "^block[ \\t]*(\\n|$)");
+    scanner_.getMatcherForPattern(matcher, "^block[ \\t]*(\\n|$)");
 
     if (matcher.empty() || matcher.size() < 2)
         return;
@@ -740,7 +731,7 @@ void Lexer::mixinBlock(shared_ptr<Token> &ret)
 void Lexer::blockCode(shared_ptr<Token> &ret)
 {
     smatch matcher;
-    scanner_->getMatcherForPattern(matcher, "^-\\n");
+    scanner_.getMatcherForPattern(matcher, "^-\\n");
 
     if (matcher.empty())
         return;
@@ -760,7 +751,7 @@ void Lexer::include(shared_ptr<Token> &ret)
 void Lexer::includeFiltered(shared_ptr<Token> &ret)
 {
     smatch matcher;
-    scanner_->getMatcherForPattern(matcher, "^include:([\\w\\-]+)([\\( ])");
+    scanner_.getMatcherForPattern(matcher, "^include:([\\w\\-]+)([\\( ])");
 
     if (matcher.empty() || matcher.size() < 3)
         return;
@@ -771,13 +762,13 @@ void Lexer::includeFiltered(shared_ptr<Token> &ret)
     shared_ptr<Token> att;
     if (g2 == "(")
         attrs(att);
-    if (g2 != " " && scanner_->getInput()[0] != ' ')
+    if (g2 != " " && scanner_.getInput()[0] != ' ')
         throw PugLexerException(
-            "expected space after include:filter but got " + string(1, scanner_->getInput()[0]),
+            "expected space after include:filter but got " + string(1, scanner_.getInput()[0]),
             fileName_,
             lneno_,
             templateLoader_);
-    scanner_->getMatcherForPattern(matcher, "^ *([^\\n]+)");
+    scanner_.getMatcherForPattern(matcher, "^ *([^\\n]+)");
     if (matcher.empty() || matcher.size() < 2 || StringUtils::trim(matcher.str(1)).empty())
         throw PugLexerException("missing path for include:filter", fileName_, lneno_, templateLoader_);
     shared_ptr<Include> tok = make_shared<Include>(matcher.str(1), lneno_);
@@ -812,7 +803,7 @@ void Lexer::defaultToken(shared_ptr<Token> &ret)
 void Lexer::assignment(shared_ptr<Token> &ret)
 {
     smatch matcher;
-    scanner_->getMatcherForPattern(matcher, "^(\\w+) += *([^;\\n]+)( *;? *)");
+    scanner_.getMatcherForPattern(matcher, "^(\\w+) += *([^;\\n]+)( *;? *)");
 
     if (matcher.empty() || matcher.size() < 3)
         return;
@@ -828,7 +819,7 @@ void Lexer::dot(shared_ptr<Token> &ret)
     pipeless_ = true;
     smatch matcher;
 
-    scanner_->getMatcherForPattern(matcher, "^\\.");
+    scanner_.getMatcherForPattern(matcher, "^\\.");
     if (matcher.empty())
         return;
 
@@ -839,7 +830,7 @@ void Lexer::dot(shared_ptr<Token> &ret)
 void Lexer::mixin(shared_ptr<Token> &ret)
 {
     smatch matcher;
-    scanner_->getMatcherForPattern(matcher, "^mixin +([-\\w]+)(?: *\\((.*)\\))? *");
+    scanner_.getMatcherForPattern(matcher, "^mixin +([-\\w]+)(?: *\\((.*)\\))? *");
 
     if (matcher.empty() || matcher.size() < 3)
         return;
@@ -853,7 +844,7 @@ void Lexer::mixin(shared_ptr<Token> &ret)
 void Lexer::call(shared_ptr<Token> &ret)
 {
     smatch matcher;
-    scanner_->getMatcherForPattern(matcher, "^\\+(\\s*)(([-\\w]+)|(#\\{))");
+    scanner_.getMatcherForPattern(matcher, "^\\+(\\s*)(([-\\w]+)|(#\\{))");
 
     if (matcher.empty() || matcher.size() < 5)
         return;
@@ -881,7 +872,7 @@ void Lexer::call(shared_ptr<Token> &ret)
         }
         tok = make_shared<Call>("#{" + match->getSrc() + "}", lneno_);
     }
-    scanner_->getMatcherForPattern(matcher, "^ *\\(");
+    scanner_.getMatcherForPattern(matcher, "^ *\\(");
     if (!matcher.empty())
     {
         shared_ptr<CharacterParser::Match> range = bracketExpression(matcher.length(0) - 1);
@@ -908,11 +899,11 @@ void Lexer::call(shared_ptr<Token> &ret)
 
 void Lexer::attrs(shared_ptr<Token> &ret)
 {
-    if (scanner_->getInput()[0] != '(')
+    if (scanner_.getInput()[0] != '(')
         return;
 
     int index = bracketExpression()->getEnd();
-    string str = scanner_->getInput().substr(1, index - 1);
+    string str = scanner_.getInput().substr(1, index - 1);
     shared_ptr<AttributeList> tok = make_shared<AttributeList>(lneno_);
 
     assertNestingCorrect(str);
@@ -928,7 +919,7 @@ void Lexer::attrs(shared_ptr<Token> &ret)
 
     lneno_ += StringUtils::occurences(str, "\n");
 
-    for (int i = 0; i <= str.length(); ++i)
+    for (size_t i = 0; i <= str.length(); ++i)
     {
         if (isEndOfAttribute(i, str, key, val, loc, *state))
         {
@@ -1046,7 +1037,7 @@ void Lexer::attrs(shared_ptr<Token> &ret)
         }
     }
 
-    if (!scanner_->getInput().empty() && scanner_->getInput()[0] == '/')
+    if (!scanner_.getInput().empty() && scanner_.getInput()[0] == '/')
     {
         consume(1);
         tok->setSelfClosing(true);
@@ -1058,7 +1049,7 @@ void Lexer::attrs(shared_ptr<Token> &ret)
 void Lexer::attributesBlock(shared_ptr<Token> &ret)
 {
     smatch matcher;
-    scanner_->getMatcherForPattern(matcher, "^&attributes\\b");
+    scanner_.getMatcherForPattern(matcher, "^&attributes\\b");
 
     if (matcher.empty() || matcher.length(0) == 0)
         return;
@@ -1074,20 +1065,20 @@ void Lexer::indent(shared_ptr<Token> &ret)
     smatch matcher;
 
     if (!indentRe_.empty())
-        scanner_->getMatcherForPattern(matcher, indentRe_);
+        scanner_.getMatcherForPattern(matcher, indentRe_);
     else
     {
         string re;
 
         // tabs
         re = "^\\n(\\t*) *";
-        scanner_->getMatcherForPattern(matcher, re);
+        scanner_.getMatcherForPattern(matcher, re);
 
         // spaces
         if (!matcher.empty() && matcher.length(1) == 0)
         {
             re = "^\\n( *)";
-            scanner_->getMatcherForPattern(matcher, re);
+            scanner_.getMatcherForPattern(matcher, re);
         }
 
         // established
@@ -1102,18 +1093,15 @@ void Lexer::indent(shared_ptr<Token> &ret)
     lneno_++;
     consume(indents + 1);
 
-    const string &input = scanner_->getInput();
+    const string &input = scanner_.getInput();
     if (input.length() > 0 && (input[0] == ' ' || input[0] == '\t'))
     {
         throw PugLexerException(
-            "Invalid indentation, you can use tabs or spaces but not both",
-            fileName_,
-            lneno_,
-            templateLoader_);
+            "Invalid indentation, you can use tabs or spaces but not both", fileName_, lneno_, templateLoader_);
     }
 
     // blank line
-    if (scanner_->isBlankLine())
+    if (scanner_.isBlankLine())
     {
         pipeless_ = false;
 
@@ -1155,29 +1143,29 @@ void Lexer::pipelessText(shared_ptr<Token> &ret)
     smatch matcher;
     if (!indentRe_.empty())
     {
-        scanner_->getMatcherForPattern(matcher, indentRe_);
+        scanner_.getMatcherForPattern(matcher, indentRe_);
     }
     else
     {
         string re;
         // tabs
         re = "^\\n(\\t*) *";
-        scanner_->getMatcherForPattern(matcher, re);
+        scanner_.getMatcherForPattern(matcher, re);
 
         // spaces
         if (!matcher.empty() && matcher.length(1) == 0)
         {
             re = "^\\n( *)";
-            scanner_->getMatcherForPattern(matcher, re);
+            scanner_.getMatcherForPattern(matcher, re);
         }
         // established
         if (!matcher.empty() && matcher.length(1) > 0)
             indentRe_ = re;
     }
-    if (matcher.empty() || !matcher.length(1) > 0)
+    if (matcher.empty() || !(matcher.length(1) > 0))
         return;
 
-    int indents = matcher.length(1);
+    auto indents = matcher.length(1);
     if (indents == 0 || (indentStack_.size() > 0 && indents <= indentStack_.top()))
         return;
 
@@ -1187,13 +1175,13 @@ void Lexer::pipelessText(shared_ptr<Token> &ret)
 
     do
     {
-        int i = scanner_->getInput().find('\n', 1);
+        auto i = scanner_.getInput().find('\n', 1);
         if (i == string::npos)
-            i = scanner_->getInput().length() - 1;
+            i = scanner_.getInput().length() - 1;
         else
             --i;
-        string str = scanner_->getInput().substr(1, i);
-        int indentLength = indent.length();
+        string str = scanner_.getInput().substr(1, i);
+        auto indentLength = indent.length();
         if (str.length() <= indentLength)
             indentLength = str.length();
         isMatch = (str.substr(0, indentLength) == indent || StringUtils::trim(str).length() == 0);
@@ -1203,8 +1191,8 @@ void Lexer::pipelessText(shared_ptr<Token> &ret)
             ++lneno_;
             consume(str.length() + 1);
         }
-    } while (scanner_->getInput().length() > 0 && isMatch);
-    while (scanner_->getInput().length() == 0 && tokens.back() == "")
+    } while (scanner_.getInput().length() > 0 && isMatch);
+    while (scanner_.getInput().length() == 0 && tokens.back() == "")
     {
         tokens.pop_back();
     }

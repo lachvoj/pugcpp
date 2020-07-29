@@ -32,7 +32,7 @@ void MixinNode::execute(IndentWriter &writer, PugModel &model, PugTemplate &tmpl
     }
     else
     {
-        model.setMixin(getName(), *this);
+        model.setMixin(name_, *this);
     }
 }
 } // namespace node

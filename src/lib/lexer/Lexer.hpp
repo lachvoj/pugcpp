@@ -91,10 +91,10 @@ class Lexer
     bool pipeless_ = false;
     string fileName_;
     string indentRe_;
-    unique_ptr<Scanner> scanner_;
+    Scanner scanner_;
     shared_ptr<ITemplateLoader> templateLoader_;
-    CharacterParser characterParser_;
     shared_ptr<IExpressionHandler> expressionHandler_;
+    CharacterParser characterParser_;
     stack<int> indentStack_;
     queue<shared_ptr<Token>> deferredTokens_;
     deque<shared_ptr<Token>> stash_;
@@ -114,7 +114,7 @@ class Lexer
     const bool getPipeless() const;
     void setPipeless(bool pipeless);
     const bool isEndOfAttribute(
-        const int i,
+        const size_t i,
         const string &str,
         const string &key,
         const string &val,
@@ -128,11 +128,11 @@ class Lexer
     shared_ptr<list<shared_ptr<Token>>> getTokens();
 
   private:
+    static string ensurePugExtension(const string &templateName, const ITemplateLoader &templateLoader);
     shared_ptr<CharacterParser::Match> bracketExpression();
     shared_ptr<CharacterParser::Match> bracketExpression(int skip);
-    string scan(const string &regexp, int group = 1);
+    string scan(const string &regexp, size_t group = 1);
     string interpolate(const string &attr, const char quote);
-    string ensurePugExtension(const string &templateName, const ITemplateLoader &templateLoader);
     bool assertNestingCorrect(const string &exp);
     void stashed(shared_ptr<Token> &ret);
     void deferred(shared_ptr<Token> &ret);
