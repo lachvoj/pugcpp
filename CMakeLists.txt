@@ -11,6 +11,8 @@ set(SRC_DIR ${CMAKE_SOURCE_DIR}/src)
 set(LIB_SRC_DIR ${SRC_DIR}/lib)
 set(TEST_SRC_DIR ${SRC_DIR}/test)
 set(PROJECT_INCLUDE_DIR )
+set(ADDITIONAL_COMPILE_FLAGS "-Wall -g")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${ADDITIONAL_COMPILE_FLAGS}")
 
 # message(src dir: ${SRC_DIR})
 # message(lib src dir: ${LIB_SRC_DIR})
@@ -19,13 +21,13 @@ set(PROJECT_INCLUDE_DIR )
 # custom targets
 add_custom_target(debug
     COMMAND ${CMAKE_COMMAND} -DCMAKE_BUILD_TYPE=Debug ${CMAKE_SOURCE_DIR}
-    COMMAND ${CMAKE_COMMAND} --build ${CMAKE_SOURCE_DIR} --target all -- -j 3
+    COMMAND ${CMAKE_COMMAND} --build ${CMAKE_SOURCE_DIR} --target all -- -j4
     COMMENT "Switch CMAKE_BUILD_TYPE to Debug"
 )
 
 add_custom_target(release
     COMMAND ${CMAKE_COMMAND} -DCMAKE_BUILD_TYPE=Release ${CMAKE_SOURCE_DIR}
-    COMMAND ${CMAKE_COMMAND} --build ${CMAKE_SOURCE_DIR} --target all -- -j 3
+    COMMAND ${CMAKE_COMMAND} --build ${CMAKE_SOURCE_DIR} --target all -- -j4
     COMMENT "Switch CMAKE_BUILD_TYPE to Release"
 )
 
@@ -36,6 +38,14 @@ add_custom_target(doc
 
 add_custom_target(formatSources
     COMMAND find src/ -iname *.hpp -o -iname *.cpp | xargs clang-format -i -style=file
+    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+)
+
+#if missing headers install g++-8 !!!
+add_custom_target(runStaticAnalysis
+    COMMAND ${CMAKE_COMMAND} -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_FLAGS_SA:STRING="-stdlib=libstdc++" -DCMAKE_BUILD_TYPE=SA ${CMAKE_SOURCE_DIR}
+    COMMAND scan-build -o ./saResults make -j4
+    COMMAND ${CMAKE_COMMAND} -DCMAKE_CXX_COMPILER=g++ -DCMAKE_C_COMPILER=gcc ${CMAKE_SOURCE_DIR}
     WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
 )
 
