@@ -90,16 +90,6 @@ void Token::setBuffer(bool buffer)
     buffer_ = buffer;
 }
 
-const string &Token::getMode() const
-{
-    return mode_;
-}
-
-void Token::setMode(const string &mode)
-{
-    mode_ = mode;
-}
-
 const string &Token::toString() const
 {
     return value_;

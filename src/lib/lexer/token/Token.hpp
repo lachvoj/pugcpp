@@ -64,7 +64,6 @@ class Token
     vector<string> values_;
     int lineNumber_;
     bool buffer_ = false;
-    string mode_;
     string name_;
     int indents_;
     bool selfClosing_ = false;
@@ -80,8 +79,6 @@ class Token
     const int getLineNumber() const;
     const bool isBuffer() const;
     void setBuffer(bool buffer);
-    const string &getMode() const;
-    void setMode(const string &mode);
     const string &toString() const;
     const string &getName() const;
     void setName(const string &name);

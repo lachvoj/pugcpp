@@ -43,7 +43,7 @@ string Exception::getStackTrace()
     size = backtrace(array, wantedSize);
     strings = backtrace_symbols(array, size);
     ret += "\nStack trace: \n";
-    for (auto j = 0; j < size; ++j)
+    for (size_t j = 0; j < size; ++j)
     {
         ret += string(strings[j]) + "\n";
     }

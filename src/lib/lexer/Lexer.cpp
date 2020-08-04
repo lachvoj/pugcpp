@@ -16,8 +16,8 @@ Lexer::Lexer(
     const string &filename,
     shared_ptr<ITemplateLoader> templateLoader,
     shared_ptr<IExpressionHandler> expressionHandler)
-: templateLoader_(templateLoader), expressionHandler_(expressionHandler),
-  fileName_(ensurePugExtension(filename, *templateLoader_)), scanner_(templateLoader->getReader(fileName_))
+: fileName_(filename), scanner_(templateLoader->getReader(fileName_)), templateLoader_(templateLoader),
+  expressionHandler_(expressionHandler)
 {
 }
 
@@ -26,8 +26,7 @@ Lexer::Lexer(
     const string &filename,
     shared_ptr<ITemplateLoader> templateLoader,
     shared_ptr<IExpressionHandler> expressionHandler)
-: templateLoader_(templateLoader), expressionHandler_(expressionHandler),
-  fileName_(ensurePugExtension(filename, *templateLoader_)), scanner_(input)
+: fileName_(filename), scanner_(input), templateLoader_(templateLoader), expressionHandler_(expressionHandler)
 {
 }
 
@@ -62,7 +61,7 @@ const bool Lexer::isEndOfAttribute(
     {
         if (str[i] == ' ' || str[i] == '\n')
         {
-            for (int x = i; x < str.length(); ++x)
+            for (size_t x = i; x < str.length(); ++x)
             {
                 if (str[x] != ' ' && str[x] != '\n')
                 {
@@ -91,7 +90,7 @@ const bool Lexer::isEndOfAttribute(
         }
         if (str[i] == ' ' || str[i] == '\n')
         {
-            for (int x = i; x < str.length(); ++x)
+            for (size_t x = i; x < str.length(); ++x)
             {
                 if (str[x] != ' ' && str[x] != '\n')
                 {
@@ -116,12 +115,14 @@ void Lexer::defer(shared_ptr<Token> tok)
     deferredTokens_.push(tok);
 }
 
-shared_ptr<Token> Lexer::lookahead(int n)
+shared_ptr<Token> &Lexer::lookahead(int n)
 {
+    shared_ptr<Token> tok;
     int fetch = n - stash_.size();
     while (fetch > 0)
     {
-        stash_.push_back(next());
+        next(tok);
+        stash_.push_back(tok);
         fetch = fetch - 1;
     }
     n = n - 1;
@@ -129,169 +130,164 @@ shared_ptr<Token> Lexer::lookahead(int n)
     return stash_.at(n);
 }
 
-shared_ptr<Token> Lexer::next()
+void Lexer::next(shared_ptr<Token> &token)
 {
-    shared_ptr<Token> token;
-
     deferred(token);
     if (token)
-        return token;
+        return;
 
     blank(token);
     if (token)
-        return token;
+        return;
 
     eos(token);
     if (token)
-        return token;
+        return;
 
     pipelessText(token);
     if (token)
-        return token;
+        return;
 
     yield(token);
     if (token)
-        return token;
+        return;
 
     doctype(token);
     if (token)
-        return token;
+        return;
 
     interpolation(token);
     if (token)
-        return token;
+        return;
 
     caseToken(token);
     if (token)
-        return token;
+        return;
 
     when(token);
     if (token)
-        return token;
+        return;
 
     defaultToken(token);
     if (token)
-        return token;
+        return;
 
     extendsToken(token);
     if (token)
-        return token;
+        return;
 
     append(token);
     if (token)
-        return token;
+        return;
 
     prepend(token);
     if (token)
-        return token;
+        return;
 
     block(token);
     if (token)
-        return token;
+        return;
 
     mixinBlock(token);
     if (token)
-        return token;
+        return;
 
     include(token);
     if (token)
-        return token;
+        return;
 
     includeFiltered(token);
     if (token)
-        return token;
+        return;
 
     mixin(token);
     if (token)
-        return token;
+        return;
 
     call(token);
     if (token)
-        return token;
+        return;
 
     conditional(token);
     if (token)
-        return token;
+        return;
 
     each(token);
     if (token)
-        return token;
+        return;
 
     whileToken(token);
     if (token)
-        return token;
+        return;
 
     tag(token);
     if (token)
-        return token;
+        return;
 
     filter(token);
     if (token)
-        return token;
+        return;
 
     blockCode(token);
     if (token)
-        return token;
+        return;
 
     code(token);
     if (token)
-        return token;
+        return;
 
     id(token);
     if (token)
-        return token;
+        return;
 
     className(token);
     if (token)
-        return token;
+        return;
 
     attrs(token);
     if (token)
-        return token;
+        return;
 
     attributesBlock(token);
     if (token)
-        return token;
+        return;
 
     indent(token);
     if (token)
-        return token;
+        return;
 
     text(token);
     if (token)
-        return token;
+        return;
 
     comment(token);
     if (token)
-        return token;
+        return;
 
     colon(token);
     if (token)
-        return token;
+        return;
 
     dot(token);
     if (token)
-        return token;
+        return;
 
     assignment(token);
     if (token)
-        return token;
+        return;
 
     textFail(token);
     if (token)
-        return token;
+        return;
 
     throw PugLexerException("unexpected text: " + scanner_.getInput().substr(0, 5), fileName_, lneno_, templateLoader_);
-
-    return token;
 }
 
-shared_ptr<Token> Lexer::advance()
+void Lexer::advance(shared_ptr<Token> &token)
 {
-    shared_ptr<Token> t;
-    stashed(t);
-
-    return t ? t : next();
+    stashed(token);
+    if (!token)
+        next(token);
 }
 
 shared_ptr<list<shared_ptr<Token>>> Lexer::getTokens()
@@ -299,11 +295,14 @@ shared_ptr<list<shared_ptr<Token>>> Lexer::getTokens()
     shared_ptr<Token> t;
     shared_ptr<list<shared_ptr<Token>>> ret;
 
-    while ((t = advance()))
+    advance(t);
+    while (t)
     {
         ret->push_back(t);
         if (t->getType() == TokenType::e_Eos)
             break;
+
+        advance(t);
     }
     return ret;
 }
@@ -394,15 +393,6 @@ string Lexer::interpolate(const string &attr, const char quote)
     });
 }
 
-string Lexer::ensurePugExtension(const string &templateName, const ITemplateLoader &templateLoader)
-{
-    if (FileSystem::getExtension(templateName).empty())
-    {
-        return templateName + "." + templateLoader.getExtension();
-    }
-    return templateName;
-}
-
 bool Lexer::assertNestingCorrect(const string &exp)
 {
     // this verifies that code is properly nested, but allows
@@ -455,7 +445,7 @@ void Lexer::blank(shared_ptr<Token> &ret)
         if (pipeless_)
             ret = make_shared<Text>("", lneno_);
         else
-            ret = next();
+            next(ret);
     }
 }
 
@@ -686,8 +676,9 @@ void Lexer::prepend(shared_ptr<Token> &ret)
     string name = scan("^prepend +([^\\n]+)");
     if (StringUtils::isNotBlank(name))
     {
-        ret = make_shared<Block>(name, lneno_);
-        ret->setMode("prepend");
+        shared_ptr<Block> tok = make_shared<Block>(name, lneno_);
+        tok->setMode("prepend");
+        ret = tok;
     }
 }
 
@@ -696,8 +687,9 @@ void Lexer::append(shared_ptr<Token> &ret)
     string name = scan("^append +([^\\n]+)");
     if (StringUtils::isNotBlank(name))
     {
-        ret = make_shared<Block>(name, lneno_);
-        ret->setMode("append");
+        shared_ptr<Block> tok = make_shared<Block>(name, lneno_);
+        tok->setMode("append");
+        ret = tok;
     }
 }
 
@@ -711,8 +703,9 @@ void Lexer::block(shared_ptr<Token> &ret)
 
     string val = matcher.str(1);
     string mode = StringUtils::isNotBlank(val) ? val : "replace";
-    ret = make_shared<Block>(matcher.str(2), lneno_);
-    ret->setMode(mode);
+    shared_ptr<Block> tok = make_shared<Block>(matcher.str(2), lneno_);
+    tok->setMode(mode);
+    ret = tok;
     consume(matcher.position(0) + matcher.length(0));
 }
 

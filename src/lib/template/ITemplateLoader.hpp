@@ -16,7 +16,7 @@ class ITemplateLoader
 {
   public:
     virtual long getLastModified(const string &name) = 0;
-    virtual istream &getReader(const string &name) = 0;
+    virtual unique_ptr<istream> getReader(const string &name) = 0;
     virtual const string &getExtension() const = 0;
 };
 } // namespace tmpl

@@ -46,8 +46,8 @@ class Compiler
 {
   private:
     shared_ptr<Node> rootNode_;
-    bool prettyPrint_ = false;
     PugTemplate *template_;
+    bool prettyPrint_ = false;
 
   public:
     Compiler(shared_ptr<Node> rootNode);

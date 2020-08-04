@@ -23,8 +23,8 @@ FileTemplateLoader::FileTemplateLoader(const string &folderPath, const string &e
 
 void FileTemplateLoader::validateFolderPath(const string &folderPath)
 {
-    FileSystem::exists(folderPath);
-    FileSystem::isRegularFile(folderPath);
+    if (!FileSystem::exists(folderPath) || !FileSystem::isDirectory(folderPath))
+        throw invalid_argument("The folder path '" + folderPath + "' does not exist");
 }
 
 long FileTemplateLoader::getLastModified(const string &name)
@@ -32,11 +32,12 @@ long FileTemplateLoader::getLastModified(const string &name)
     return FileSystem::lastModified(name);
 }
 
-istream &FileTemplateLoader::getReader(const string &name)
+unique_ptr<istream> FileTemplateLoader::getReader(const string &name)
 {
-    reader_.open(name);
+    unique_ptr<ifstream> rd = make_unique<ifstream>();
+    rd->open(name);
 
-    return (istream &)reader_;
+    return rd;
 }
 
 const string &FileTemplateLoader::getExtension() const

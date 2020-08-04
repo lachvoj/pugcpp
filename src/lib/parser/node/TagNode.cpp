@@ -28,7 +28,7 @@ const set<string> TagNode::inlineTags_ = {"a",
 
 TagNode::TagNode(NodeType type) : AttrsNode(type)
 {
-    block_ = static_pointer_cast<Node>(make_shared<BlockNode>());
+    block_ = make_shared<BlockNode>();
 }
 
 TagNode::TagNode() : TagNode(e_TagNode)

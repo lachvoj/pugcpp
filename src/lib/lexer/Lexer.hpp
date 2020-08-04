@@ -122,13 +122,12 @@ class Lexer
         const CharacterParser::State &state) const;
     void consume(int len);
     void defer(shared_ptr<Token> tok);
-    shared_ptr<Token> lookahead(int n);
-    shared_ptr<Token> next();
-    shared_ptr<Token> advance();
+    shared_ptr<Token> &lookahead(int n);
+    void next(shared_ptr<Token> &token);
+    void advance(shared_ptr<Token> &token);
     shared_ptr<list<shared_ptr<Token>>> getTokens();
 
   private:
-    static string ensurePugExtension(const string &templateName, const ITemplateLoader &templateLoader);
     shared_ptr<CharacterParser::Match> bracketExpression();
     shared_ptr<CharacterParser::Match> bracketExpression(int skip);
     string scan(const string &regexp, size_t group = 1);

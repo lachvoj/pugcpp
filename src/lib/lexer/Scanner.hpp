@@ -4,6 +4,7 @@
 #include <fstream>
 #include <memory>
 #include <regex>
+#include <sstream>
 #include <string>
 
 using namespace std;
@@ -17,11 +18,11 @@ class Scanner
   private:
     string input_;
 
-    void initFromStream(istream &stream);
+    void initFromStream(unique_ptr<istream> stream);
     bool isEmpty();
 
   public:
-    Scanner(istream &stream);
+    Scanner(unique_ptr<istream> stream);
     Scanner(const string &input);
 
     void consume(int length);

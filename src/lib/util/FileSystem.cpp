@@ -14,6 +14,11 @@ bool FileSystem::isRegularFile(const string &path)
     return fs::is_regular_file(path);
 }
 
+bool FileSystem::isDirectory(const string &path)
+{
+    return fs::is_directory(path);
+}
+
 string FileSystem::getExtension(const string &path)
 {
     return fs::path(path).extension();
@@ -26,6 +31,11 @@ long FileSystem::lastModified(const string &path)
     auto value = chrono::duration_cast<chrono::milliseconds>(epoch);
 
     return value.count();
+}
+
+char FileSystem::getPreferedSeparator()
+{
+    return fs::path::preferred_separator;
 }
 
 } // namespace util

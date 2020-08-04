@@ -8,27 +8,27 @@ namespace lexer
 {
 using namespace util;
 
-Scanner::Scanner(istream &stream)
+Scanner::Scanner(unique_ptr<istream> stream)
 {
-    initFromStream(stream);
+    initFromStream(move(stream));
 }
 
 Scanner::Scanner(const string &input) : input_(input)
 {
 }
 
-void Scanner::initFromStream(istream &stream)
+void Scanner::initFromStream(unique_ptr<istream> stream)
 {
-    string sb = "";
-    string s = "";
+    ostringstream sb;
+    string s;
     bool first = true;
     // TODO: catch io stream exceptions.
-    while (stream.peek() != EOF)
+    while (stream->peek() != EOF)
     {
-        getline(stream, s);
+        getline(*stream, s);
         if (!first)
         {
-            sb += "\n";
+            sb << "\n";
         }
         else
         {
@@ -37,11 +37,11 @@ void Scanner::initFromStream(istream &stream)
         first = false;
         if (!s.empty())
         {
-            sb += s;
+            sb << s;
         }
     }
 
-    input_ = sb;
+    input_ = sb.str();
     if (!input_.empty())
     {
         input_ = regex_replace(input_, regex("\\r\\n|\\r"), "\\n");

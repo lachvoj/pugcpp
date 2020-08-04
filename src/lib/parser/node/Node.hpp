@@ -61,6 +61,7 @@ enum NodeType
     e_TagNode,
     e_TextNode,
     e_WhileNode,
+    e_WhenNode
 };
 
 class Node

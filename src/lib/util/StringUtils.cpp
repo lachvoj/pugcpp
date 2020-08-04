@@ -44,7 +44,7 @@ string StringUtils::trim(const string &str, const string &chars /*= "\t\n\v\f\r 
     argLtrim(s, chars);
     argRtrim(s, chars);
 
-    return move(s);
+    return s;
 }
 
 void StringUtils::argLtrim(string &str, const string &chars /*= "\t\n\v\f\r "*/)
@@ -115,7 +115,7 @@ void StringUtils::replaceAll(string &str, const string &fromRegex, const string 
     if (fromRegex.empty() || str.empty())
         return;
 
-    str = move(regex_replace(str, regex(fromRegex), to));
+    str = regex_replace(str, regex(fromRegex), to);
 }
 
 // template <typename CON>
@@ -123,7 +123,7 @@ void StringUtils::replaceAll(string &str, const string &fromRegex, const string 
 // {
 //     static_assert(
 //         is_same<CON, vector<string>>::value || is_same<CON, set<string>>::value || is_same<CON,
-//         list<string>>::value);
+//         vector<string>>::value);
 
 //     string ret = "";
 //     for (auto it = container.begin(); it < container.end(); ++it)
@@ -136,15 +136,15 @@ void StringUtils::replaceAll(string &str, const string &fromRegex, const string 
 
 string StringUtils::join(const vector<string> &container, const string &delimiter)
 {
-    string ret = "";
+    ostringstream ret;
     for (auto it = container.begin(); it < container.end(); ++it)
     {
-        ret += *it;
+        ret << *it;
         if (it != container.end() - 1)
-            ret += delimiter;
+            ret << delimiter;
     }
 
-    return ret;
+    return ret.str();
 }
 
 int StringUtils::occurences(const string &fullString, const string &searchFor)

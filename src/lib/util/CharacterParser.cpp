@@ -236,7 +236,7 @@ shared_ptr<CharacterParser::State> CharacterParser::parse(
     {
         if (state->getRoundDepth() < 0 || state->getCurlyDepth() < 0 || state->getSquareDepth() < 0)
         {
-            throw SyntaxError("Mismatched Bracket: " + src[index - 1]);
+            throw SyntaxError("Mismatched Bracket: " + string(1, src[index - 1]));
         }
         parseChar(src[index++], state);
     }

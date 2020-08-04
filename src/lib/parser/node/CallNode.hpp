@@ -10,6 +10,7 @@
 #include "../../template/PugTemplate.hpp"
 #include "../../util/ArgumentSplitter.hpp"
 
+#include "Attr.hpp"
 #include "AttrsNode.hpp"
 #include "ConditionalNode.hpp"
 #include "IfConditionNode.hpp"
@@ -33,17 +34,17 @@ class CallNode : public AttrsNode
     bool call_ = false;
 
     void getInjectionPoints(vector<shared_ptr<MixinBlockNode>> &ret, const shared_ptr<Node> &block);
-    void writeVariables(PugModel &model, shared_ptr<MixinNode> &mixin, PugTemplate &tmplt);
-    void writeAttributes(PugModel &model, shared_ptr<MixinNode> &mixin, PugTemplate &tmplt);
+    void writeVariables(PugModel &model, MixinNode &mixin, PugTemplate &tmplt);
+    void writeAttributes(PugModel &model, MixinNode &mixin, PugTemplate &tmplt);
 
   protected:
-    list<string> arguments_;
+    vector<string> arguments_;
     CallNode(NodeType type);
 
   public:
     CallNode();
-    list<string> &getArguments();
-    void setArguments(const list<string> &arguments);
+    vector<string> &getArguments();
+    void setArguments(const vector<string> &arguments);
     void setArguments(const string &arguments);
     bool isCall();
     void setCall(bool call);

@@ -16,7 +16,7 @@ class ReaderTemplateLoader
   private:
     istream &reader_;
     string name_;
-    string extension_ = "pug";
+    string extension_ = ".pug";
 
   public:
     ReaderTemplateLoader(istream &reader, const string &name);

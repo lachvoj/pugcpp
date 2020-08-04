@@ -12,7 +12,7 @@ Parser::Parser(
     shared_ptr<tmpl::ITemplateLoader> templateLoader,
     shared_ptr<expression::IExpressionHandler> expressionHandler)
 : fileName_(filename), templateLoader_(templateLoader), expressionHandler_(expressionHandler),
-  lexer_(filename, templateLoader, expressionHandler)
+  lexer_(ensurePugExtension(filename, templateLoader->getExtension()), templateLoader, expressionHandler)
 {
 }
 
@@ -22,7 +22,7 @@ Parser::Parser(
     shared_ptr<tmpl::ITemplateLoader> templateLoader,
     shared_ptr<expression::IExpressionHandler> expressionHandler)
 : fileName_(filename), templateLoader_(templateLoader), expressionHandler_(expressionHandler),
-  lexer_(src, filename, templateLoader, expressionHandler)
+  lexer_(src, ensurePugExtension(filename, templateLoader->getExtension()), templateLoader, expressionHandler)
 {
 }
 
@@ -33,9 +33,9 @@ shared_ptr<Node> Parser::parse()
     block->setLineNumber(line());
     block->setFileName(fileName_);
 
-    while (peek()->getType() != e_Eos)
+    while (peekType() != e_Eos)
     {
-        if (peek()->getType() == e_Newline)
+        if (peekType() == e_Newline)
         {
             advance();
         }
@@ -90,9 +90,7 @@ void Parser::setMixins(const map<string, shared_ptr<MixinNode>> &mixins)
 
 void Parser::parseExpr(shared_ptr<Node> &ret)
 {
-    shared_ptr<Token> tok = peek();
-
-    switch (tok->getType())
+    switch (peekType())
     {
     case e_Tag: parseTag(ret); break;
     case e_Mixin: parseMixin(ret); break;
@@ -115,15 +113,16 @@ void Parser::parseExpr(shared_ptr<Node> &ret)
     case e_CssId: parseCssClassOrId(ret); break;
     case e_While: parseWhile(ret); break;
     case e_If: parseConditional(ret); break;
-
-    default: throw PugParserException(fileName_, line(), templateLoader_, *tok); break;
+    case e_Assignment: parseAssignment(ret); break;
+    default: throw PugParserException(fileName_, line(), templateLoader_, *(peek())); break;
     }
 }
 
 void Parser::parseBlockCode(shared_ptr<Node> &ret)
 {
-    shared_ptr<Token> tok = expect(TokenType::e_BlockCode);
-    shared_ptr<Token> body = peek();
+    shared_ptr<Token> tok;
+    expect(tok, TokenType::e_BlockCode);
+    shared_ptr<Token> &body = peek();
     string text = "";
     if (body->getType() == e_PipelessText)
     {
@@ -138,7 +137,8 @@ void Parser::parseBlockCode(shared_ptr<Node> &ret)
 
 void Parser::parseComment(shared_ptr<Node> &ret)
 {
-    shared_ptr<Token> tok = expect(TokenType::e_Comment);
+    shared_ptr<Token> tok;
+    expect(tok, TokenType::e_Comment);
     shared_ptr<Node> block;
 
     parseTextBlock(block);
@@ -165,7 +165,8 @@ void Parser::parseComment(shared_ptr<Node> &ret)
 
 void Parser::parseMixin(shared_ptr<Node> &ret)
 {
-    shared_ptr<Mixin> tok = static_pointer_cast<Mixin>(expect(e_Mixin));
+    shared_ptr<Mixin> tok;
+    expect(tok, e_Mixin);
     shared_ptr<MixinNode> nd = make_shared<MixinNode>();
     nd->setName(tok->getValue());
     nd->setLineNumber(tok->getLineNumber());
@@ -174,38 +175,250 @@ void Parser::parseMixin(shared_ptr<Node> &ret)
 
 void Parser::parseCall(shared_ptr<Node> &ret)
 {
+    shared_ptr<Call> tok;
+    expect(tok, e_Call);
+    shared_ptr<MixinNode> mixin = make_shared<MixinNode>();
+    mixin->setBlock(make_shared<BlockNode>());
+    mixin->setName(tok->getValue());
+    mixin->setLineNumber(tok->getLineNumber());
+    mixin->setFileName(fileName_);
+    mixin->setCall(true);
+
+    if (StringUtils::isNotBlank(tok->getArguments()))
+        mixin->setArguments(tok->getArguments());
+
+    shared_ptr<AttrsNode> atn = static_pointer_cast<AttrsNode>(mixin);
+    shared_ptr<Node> emptyNode;
+    tag(atn);
+    if (mixin->hasCodeNode())
+    {
+        mixin->getBlock()->push(mixin->getCodeNode());
+        mixin->setCodeNode(emptyNode);
+    }
+    if (mixin->hasBlock() && mixin->getBlock()->getNodes().empty())
+        mixin->setBlock(emptyNode);
+
+    ret = mixin;
 }
 
 void Parser::parseCssClassOrId(shared_ptr<Node> &ret)
 {
     lexer_.defer(make_shared<Tag>("div", line()));
-    lexer_.defer(advance());
+    shared_ptr<Token> tok;
+    advance(tok);
+    lexer_.defer(tok);
     parseExpr(ret);
 }
 
 void Parser::parseBlock(shared_ptr<Node> &ret)
 {
+    shared_ptr<Block> tok;
+    expect(tok, e_Block);
+    Block::E_MODE mode = tok->getMode();
+    const string &name = tok->getName();
+
+    inBlock_++;
+    shared_ptr<BlockNode> bn;
+    if (peekType() == e_Indent)
+        block(bn);
+    else
+    {
+        bn = make_shared<BlockNode>();
+        bn->setLineNumber(tok->getLineNumber());
+        bn->setFileName(fileName_);
+        shared_ptr<LiteralNode> nd = make_shared<LiteralNode>();
+        bn->push(nd);
+    }
+    inBlock_--;
+    bn->setName(name);
+    bn->setLineNumber(line());
+
+    shared_ptr<BlockNode> prevBn;
+    if (blocks_.find(name) != blocks_.end())
+        prevBn = blocks_[name];
+    else
+        prevBn = make_shared<BlockNode>();
+
+    if (prevBn->getMode() == Block::E_MODE::REPLACE)
+    {
+        blocks_[name] = prevBn;
+        ret = prevBn;
+        return;
+    }
+
+    vector<shared_ptr<Node>> allNodes;
+    vector<shared_ptr<Node>> &prepended = prevBn->getPrepended();
+    vector<shared_ptr<Node>> &nds = bn->getNodes();
+    vector<shared_ptr<Node>> &appended = prevBn->getAppended();
+    allNodes.reserve(prepended.size() + nds.size() + appended.size());
+    allNodes.insert(allNodes.end(), prepended.begin(), prepended.end());
+    allNodes.insert(allNodes.end(), nds.begin(), nds.end());
+    allNodes.insert(allNodes.end(), appended.begin(), appended.end());
+
+    if (mode == Block::E_MODE::APPEND)
+    {
+        vector<shared_ptr<Node>> appendedNodes;
+        vector<shared_ptr<Node>> &apnd = prevBn->getAppended();
+        appendedNodes.reserve(apnd.size() + nds.size());
+        if (prevBn->getParser() == this)
+        {
+            appendedNodes.insert(appendedNodes.end(), apnd.begin(), apnd.end());
+            appendedNodes.insert(appendedNodes.end(), nds.begin(), nds.end());
+        }
+        else
+        {
+            appendedNodes.insert(appendedNodes.end(), nds.begin(), nds.end());
+            appendedNodes.insert(appendedNodes.end(), apnd.begin(), apnd.end());
+        }
+        prevBn->setAppended(appendedNodes);
+    }
+    else if (mode == Block::E_MODE::PREPEND)
+    {
+        vector<shared_ptr<Node>> prependedNodes;
+        vector<shared_ptr<Node>> &prpnd = prevBn->getPrepended();
+        prependedNodes.reserve(prpnd.size() + nds.size());
+        if (prevBn->getParser() == this)
+        {
+            prependedNodes.insert(prependedNodes.end(), nds.begin(), nds.end());
+            prependedNodes.insert(prependedNodes.end(), prpnd.begin(), prpnd.end());
+        }
+        else
+        {
+            prependedNodes.insert(prependedNodes.end(), prpnd.begin(), prpnd.end());
+            prependedNodes.insert(prependedNodes.end(), nds.begin(), nds.end());
+        }
+        prevBn->setPrepended(prependedNodes);
+    }
+
+    bn->setNodes(allNodes);
+    bn->setAppended(prevBn->getAppended());
+    bn->setPrepended(prevBn->getPrepended());
+    bn->setMode(mode);
+    bn->setSubBlock((inBlock_ > 0));
+
+    blocks_[name] = bn;
+    ret = bn;
 }
 
 void Parser::parseMixinBlock(shared_ptr<Node> &ret)
 {
+    expect(e_MixinBlock);
+    if (inMixin_ == 0)
+        throw PugParserException(
+            fileName_, line(), templateLoader_, "Anonymous blocks are not allowed unless they are part of a mixin.");
+    ret = make_shared<MixinBlockNode>();
 }
 
 void Parser::parseInclude(shared_ptr<Node> &ret)
 {
+    shared_ptr<Include> tok;
+    expect(tok, e_Include);
+    string templateName = StringUtils::trim(tok->getValue());
+    string path = PathHelper::resolvePath(fileName_, templateName, templateLoader_->getExtension());
+
+    if (!tok->getFilter().empty())
+    {
+        try
+        {
+            unique_ptr<istream> reader = templateLoader_->getReader(path);
+            shared_ptr<FilterNode> nd = make_shared<FilterNode>();
+            nd->setValue(tok->getFilter());
+            nd->setLineNumber(line());
+            nd->setFileName(fileName_);
+            shared_ptr<TextNode> text = make_shared<TextNode>();
+            text->setValue(string(istreambuf_iterator<char>(*reader), {}));
+            shared_ptr<BlockNode> bl = make_shared<BlockNode>();
+            bl->getNodes().push_back(text);
+            shared_ptr<Node> bln = static_pointer_cast<Node>(bl);
+            nd->setTextBlock(bln);
+            ret = nd;
+            return;
+        }
+        catch (std::exception &e)
+        {
+            throw PugParserException(
+                fileName_,
+                line(),
+                templateLoader_,
+                "the included file [" + templateName + "] could not be opened\n" + string(e.what()));
+        }
+    }
+
+    // non-pug
+    string extension = FileSystem::getExtension(path);
+    if (templateLoader_->getExtension() != extension)
+    {
+        try
+        {
+            unique_ptr<istream> reader = templateLoader_->getReader(path);
+            shared_ptr<LiteralNode> nd = make_shared<LiteralNode>();
+            nd->setLineNumber(line());
+            nd->setFileName(fileName_);
+            nd->setValue(string(istreambuf_iterator<char>(*reader), {}));
+            ret = nd;
+            return;
+        }
+        catch (std::exception &e)
+        {
+            throw PugParserException(
+                fileName_,
+                line(),
+                templateLoader_,
+                "the included file [" + templateName + "] could not be opened\n" + string(e.what()));
+        }
+    }
+
+    shared_ptr<Parser> prs = createParser(templateName);
+    prs->setBlocks(blocks_); // TODO: check if hardcopy of content is required
+    prs->setMixins(mixins_);
+    contexts_.push(prs);
+    shared_ptr<Node> ast = prs->parse();
+    contexts_.pop();
+    if (ast)
+    {
+        ast->setFileName(path);
+        if (peekType() == e_Indent)
+        {
+            shared_ptr<BlockNode> blnd;
+            block(blnd);
+            static_pointer_cast<BlockNode>(ast)->getIncludeBlock().push(blnd);
+        }
+        ret = ast;
+    }
 }
 
 void Parser::parseExtends(shared_ptr<Node> &ret)
 {
+    shared_ptr<ExtendsToken> tok;
+    expect(tok, e_ExtendsToken);
+    string templateName = StringUtils::trim(tok->getValue());
+
+    shared_ptr<Parser> prs = createParser(templateName);
+    prs->setBlocks(blocks_);
+    prs->setContexts(contexts_);
+    extending_ = prs;
+
+    ret = make_shared<LiteralNode>();
 }
 
 void Parser::parseInterpolation(shared_ptr<Node> &ret)
 {
+    shared_ptr<Token> tok;
+    advance(tok);
+    shared_ptr<TagNode> nd = make_shared<TagNode>();
+    nd->setLineNumber(line());
+    nd->setFileName(fileName_);
+    nd->setName(tok->getValue());
+    nd->setBuffer(true);
+    shared_ptr<AttrsNode> atn = static_pointer_cast<AttrsNode>(nd);
+    tag(atn);
+    ret = nd;
 }
 
 void Parser::parseText(shared_ptr<Node> &ret)
 {
-    shared_ptr<Token> tok = expect(e_Text);
+    shared_ptr<Token> tok;
+    expect(tok, e_Text);
     vector<shared_ptr<Node>> tokens;
 
     parseInlineTagsInText(tokens, tok->getValue());
@@ -227,19 +440,61 @@ void Parser::parseText(shared_ptr<Node> &ret)
 
 void Parser::parseEach(shared_ptr<Node> &ret)
 {
+    shared_ptr<Each> tok;
+    expect(tok, e_Each);
+    shared_ptr<EachNode> nd = make_shared<EachNode>();
+    nd->setValue(tok->getValue());
+    nd->setKey(tok->getKey());
+    nd->setCode(tok->getCode());
+    nd->setLineNumber(tok->getLineNumber());
+    nd->setFileName(fileName_);
+    shared_ptr<BlockNode> bn;
+    block(bn);
+    nd->setBlock(bn);
+    if (peekType() == e_Else)
+    {
+        advance();
+        block(bn);
+        shared_ptr<Node> cbn = static_pointer_cast<Node>(bn);
+        nd->setElseNode(cbn);
+    }
+    ret = nd;
 }
 
 void Parser::parseWhile(shared_ptr<Node> &ret)
 {
+    shared_ptr<While> tok;
+    expect(tok, e_While);
+    shared_ptr<WhileNode> nd = make_shared<WhileNode>();
+    nd->setValue(tok->getValue());
+    nd->setLineNumber(tok->getLineNumber());
+    nd->setFileName(fileName_);
+    shared_ptr<BlockNode> bn;
+    block(bn);
+    if (!bn)
+    {
+        bn = make_shared<BlockNode>();
+    }
+    nd->setBlock(bn);
+    ret = nd;
 }
 
 void Parser::parseAssignment(shared_ptr<Node> &ret)
 {
+    shared_ptr<Assignment> tok;
+    expect(tok, e_Assignment);
+    shared_ptr<Node> nd = make_shared<AssigmentNode>();
+    nd->setName(tok->getName());
+    nd->setValue(tok->getValue());
+    nd->setLineNumber(tok->getLineNumber());
+    nd->setFileName(fileName_);
+    ret = nd;
 }
 
 void Parser::parseTag(shared_ptr<Node> &ret)
 {
-    shared_ptr<Token> tok = advance();
+    shared_ptr<Token> tok;
+    advance(tok);
     string name = tok->getValue();
     shared_ptr<TagNode> nd = make_shared<TagNode>();
     nd->setLineNumber(line());
@@ -258,10 +513,23 @@ void Parser::tag(shared_ptr<AttrsNode> &tagNode)
     bool isTagToken = true;
     while (isTagToken)
     {
-        switch (peek()->getType())
+        switch (peekType())
         {
-        case e_CssId: tagNode->setAttribute("id", advance()->getValue(), false); break;
-        case e_CssClass: tagNode->setAttribute("class", advance()->getValue(), false); break;
+        case e_CssId:
+        {
+            shared_ptr<Token> tok;
+            advance(tok);
+            tagNode->setAttribute("id", tok->getValue(), false);
+        }
+        break;
+        case e_CssClass:
+        {
+
+            shared_ptr<Token> tok;
+            advance(tok);
+            tagNode->setAttribute("class", tok->getValue(), false);
+        }
+        break;
         case e_AttributeList:
         {
             if (seenAttrs)
@@ -274,7 +542,8 @@ void Parser::tag(shared_ptr<AttrsNode> &tagNode)
                         ":\nYou should not have jade tags with multiple attributes.");
             }
             seenAttrs = true;
-            shared_ptr<AttributeList> tok = static_pointer_cast<AttributeList>(advance());
+            shared_ptr<AttributeList> tok;
+            advance(tok);
             const vector<Attribute> &attrs = tok->getAttributes();
             tagNode->setSelfClosing(tok->isSelfClosing());
 
@@ -284,23 +553,28 @@ void Parser::tag(shared_ptr<AttrsNode> &tagNode)
             }
         }
         break;
-        case e_AttributesBlock: tagNode->addAttributes(advance()->getValue()); break;
+        case e_AttributesBlock:
+        {
+
+            shared_ptr<Token> tok;
+            advance(tok);
+            tagNode->addAttributes(tok->getValue());
+        }
+        break;
 
         default: isTagToken = false; break;
         }
     }
 
     // check immediate '.'
-    bool dot = false;
-    if (peek()->getType() == e_Dot)
+    if (peekType() == e_Dot)
     {
-        dot = true;
         tagNode->setTextOnly(true);
         advance();
     }
 
     // (text | code | ':')?
-    switch (peek()->getType())
+    switch (peekType())
     {
     case e_Text:
     {
@@ -319,7 +593,9 @@ void Parser::tag(shared_ptr<AttrsNode> &tagNode)
     case e_Colon:
     {
         shared_ptr<BlockNode> block = make_shared<BlockNode>();
-        block->setLineNumber(advance()->getLineNumber());
+        shared_ptr<Token> tok;
+        advance(tok);
+        block->setLineNumber(tok->getLineNumber());
         block->setFileName(fileName_);
         shared_ptr<Node> expr;
         parseExpr(expr);
@@ -331,7 +607,7 @@ void Parser::tag(shared_ptr<AttrsNode> &tagNode)
     }
 
     // newline*
-    while (peek()->getType() == e_Newline)
+    while (peekType() == e_Newline)
     {
         advance();
     }
@@ -343,7 +619,7 @@ void Parser::tag(shared_ptr<AttrsNode> &tagNode)
             bl = static_pointer_cast<Node>(make_shared<BlockNode>());
         tagNode->setBlock(bl);
     }
-    else if (peek()->getType() == e_Indent)
+    else if (peekType() == e_Indent)
     {
         shared_ptr<BlockNode> bl;
         block(bl);
@@ -378,34 +654,146 @@ void Parser::parseTextBlock(shared_ptr<Node> &ret)
 
 void Parser::parseConditional(shared_ptr<Node> &ret)
 {
+    shared_ptr<If> tok;
+    expect(tok, e_If);
+    shared_ptr<ConditionalNode> nd = make_shared<ConditionalNode>();
+    nd->setLineNumber(tok->getLineNumber());
+    nd->setFileName(fileName_);
+
+    vector<shared_ptr<IfConditionNode>> &conditions = nd->getConditions();
+    shared_ptr<IfConditionNode> main = make_shared<IfConditionNode>(tok->getValue(), tok->getLineNumber());
+    main->setInverse(tok->isInverseCondition());
+    shared_ptr<BlockNode> bn;
+    block(bn);
+    main->setBlock(bn);
+    conditions.push_back(main);
+
+    while (peekType() == e_ElseIf)
+    {
+        shared_ptr<ElseIf> elifTok;
+        expect(elifTok, e_ElseIf);
+        shared_ptr<IfConditionNode> elifNd =
+            make_shared<IfConditionNode>(elifTok->getValue(), elifTok->getLineNumber());
+        block(bn);
+        elifNd->setBlock(bn);
+        conditions.push_back(elifNd);
+    }
+
+    if (peekType() == e_Else)
+    {
+        shared_ptr<ElseIf> elTok;
+        expect(elTok, e_ElseIf);
+        shared_ptr<IfConditionNode> elNd = make_shared<IfConditionNode>("", elTok->getLineNumber());
+        elNd->setDefault(true);
+        block(bn);
+        elNd->setBlock(bn);
+        conditions.push_back(elNd);
+    }
+    ret = nd;
 }
 
 void Parser::parseBlockExpansion(shared_ptr<Node> &ret)
 {
+    shared_ptr<BlockNode> bn;
+    if (peekType() != e_Colon)
+    {
+        block(bn);
+        ret = bn;
+        return;
+    }
+    advance();
+    bn = make_shared<BlockNode>();
+    shared_ptr<Node> nd;
+    parseExpr(nd);
+    bn->push(nd);
+    ret = bn;
 }
 
 void Parser::parseCase(shared_ptr<Node> &ret)
 {
+    shared_ptr<Token> tok;
+    expect(tok, e_CaseToken);
+    const string &val = tok->getValue();
+    shared_ptr<Node> nd = make_shared<CaseNode>();
+    nd->setValue(val);
+    nd->setLineNumber(line());
+
+    shared_ptr<BlockNode> bl = make_shared<BlockNode>();
+    bl->setLineNumber(line());
+    bl->setFileName(fileName_);
+    expect(e_Indent);
+    while (peekType() != e_Outdent)
+    {
+        switch (peekType())
+        {
+        case e_Comment:
+        case e_Newline: advance(); break;
+        case e_When:
+        {
+            shared_ptr<Node> when;
+            parseWhen(when);
+            bl->push(when);
+        }
+        break;
+        case e_Default:
+        {
+            shared_ptr<Node> dflt;
+            parseDefault(dflt);
+            bl->push(dflt);
+        }
+        break;
+        default:
+            throw PugParserException(
+                fileName_,
+                line(),
+                templateLoader_,
+                "Unexpected token \"" + Token::getTypeNameFromTokenType(peekType()) +
+                    "\", expected \"when\", \"default\" or \"newline\"");
+        }
+    }
+    expect(e_Outdent);
+    nd->setBlock(bl);
+    ret = nd;
 }
 
 void Parser::parseWhen(shared_ptr<Node> &ret)
 {
+    shared_ptr<Token> tok;
+    expect(tok, e_CaseToken);
+    const string &val = tok->getValue();
+    shared_ptr<CaseNode::When> nd = make_shared<CaseNode::When>();
+    nd->setValue(val);
+    if (peekType() != e_Newline)
+    {
+        shared_ptr<Node> ble;
+        parseBlockExpansion(ble);
+        nd->setBlock(ble);
+    }
+    ret = nd;
 }
 
 void Parser::parseDefault(shared_ptr<Node> &ret)
 {
+    expect(TokenType::e_Default);
+    shared_ptr<CaseNode::When> nd = make_shared<CaseNode::When>();
+    nd->setValue("default");
+    shared_ptr<Node> ble;
+    parseBlockExpansion(ble);
+    nd->setBlock(ble);
+    ret = nd;
 }
 
 void Parser::parseCode(shared_ptr<Node> &ret)
 {
-    shared_ptr<Expression> tok = static_pointer_cast<Expression>(expect(e_Expression));
+    shared_ptr<Expression> tok;
+    expect(tok, e_Expression);
     shared_ptr<ExpressionNode> nd = make_shared<ExpressionNode>();
     nd->setValue(tok->getValue());
     nd->setBuffer(tok->isBuffer());
     nd->setEscape(tok->isEscape());
     nd->setLineNumber(tok->getLineNumber());
     nd->setFileName(fileName_);
-    if (peek()->getType() == e_Indent)
+    if (peekType() == e_Indent)
     {
         shared_ptr<BlockNode> bl;
         block(bl);
@@ -416,7 +804,8 @@ void Parser::parseCode(shared_ptr<Node> &ret)
 
 void Parser::parseDoctype(shared_ptr<Node> &ret)
 {
-    shared_ptr<Token> tok = expect(TokenType::e_Doctype);
+    shared_ptr<Token> tok;
+    expect(tok, TokenType::e_Doctype);
     shared_ptr<DoctypeNode> nd = make_shared<DoctypeNode>();
     nd->setValue(tok->getValue());
     nd->setLineNumber(tok->getLineNumber());
@@ -426,19 +815,63 @@ void Parser::parseDoctype(shared_ptr<Node> &ret)
 
 void Parser::parseFilter(shared_ptr<Node> &ret)
 {
+    shared_ptr<Filter> tok;
+    expect(tok, e_Filter);
+    shared_ptr<AttributeList> attr;
+    accept(attr, e_AttributeList);
+    lexer_.setPipeless(true);
+    shared_ptr<Node> tNd;
+    parseTextBlock(tNd);
+    lexer_.setPipeless(false);
+
+    shared_ptr<FilterNode> nd;
+    nd->setValue(tok->getValue());
+    nd->setLineNumber(line());
+    nd->setFileName(fileName_);
+    if (tNd)
+        nd->setTextBlock(tNd);
+    else
+    {
+        shared_ptr<Node> bNd = static_pointer_cast<Node>(make_shared<BlockNode>());
+        nd->setTextBlock(bNd);
+    }
+    if (attr)
+        convertToNodeAttributes(nd->getAttributes(), *attr);
+
+    ret = nd;
 }
 
 void Parser::parseASTFilter(shared_ptr<Node> &ret)
 {
+    shared_ptr<Filter> tok;
+    expect(tok, e_Filter);
+    shared_ptr<AttributeList> attr;
+    accept(attr, e_AttributeList);
+    expect(e_Colon);
+
+    shared_ptr<FilterNode> nd = make_shared<FilterNode>();
+    shared_ptr<BlockNode> bn;
+    block(bn);
+    nd->setBlock(bn);
+    nd->setValue(tok->getValue());
+    nd->setLineNumber(line());
+    nd->setFileName(fileName_);
+    convertToNodeAttributes(nd->getAttributes(), *attr);
 }
 
 void Parser::parseYield(shared_ptr<Node> &ret)
 {
+    advance();
+    shared_ptr<BlockNode> nd = make_shared<BlockNode>();
+    nd->setLineNumber(line());
+    nd->setFileName(fileName_);
+    nd->setYield(true);
+    ret = nd;
 }
 
-shared_ptr<Node> Parser::blockExpansion()
-{
-}
+// shared_ptr<Node> Parser::blockExpansion()
+// {
+// }
 
 void Parser::block(shared_ptr<BlockNode> &ret)
 {
@@ -446,9 +879,9 @@ void Parser::block(shared_ptr<BlockNode> &ret)
     ret->setLineNumber(line());
     ret->setFileName(fileName_);
     expect(e_Indent);
-    while (peek()->getType() != e_Outdent)
+    while (peekType() != e_Outdent)
     {
-        if (peek()->getType() == e_Newline)
+        if (peekType() == e_Newline)
         {
             advance();
         }
@@ -466,9 +899,9 @@ void Parser::block(shared_ptr<BlockNode> &ret)
     expect(e_Outdent);
 }
 
-shared_ptr<list<shared_ptr<CaseConditionNode>>> Parser::whenBlock()
-{
-}
+// shared_ptr<list<shared_ptr<CaseConditionNode>>> Parser::whenBlock()
+// {
+// }
 
 void Parser::parseInlineTagsInText(vector<shared_ptr<Node>> &ret, const string &str)
 {
@@ -536,54 +969,106 @@ void Parser::parseInlineTagsInText(vector<shared_ptr<Node>> &ret, const string &
     }
 }
 
-shared_ptr<CaseConditionNode> Parser::parseCaseCondition()
+// shared_ptr<CaseConditionNode> Parser::parseCaseCondition()
+// {
+// }
+
+void Parser::convertToNodeAttributes(vector<Attr> &ret, AttributeList &attr)
 {
+    const vector<Attribute> &attributes = attr.getAttributes();
+    ret.reserve(attributes.size());
+    for (auto &attribute : attributes)
+    {
+        ret.push_back(Attr(attribute.getName(), attribute.getValue(), attribute.isEscaped()));
+    }
 }
 
-shared_ptr<list<Attr>> Parser::convertToNodeAttributes(AttributeList &attr)
-{
-}
-
-shared_ptr<Token> Parser::lookahead(int i)
+shared_ptr<Token> &Parser::lookahead(int i)
 {
     return lexer_.lookahead(i);
 }
 
-shared_ptr<Token> Parser::peek()
+shared_ptr<Token> &Parser::peek()
 {
-    return lookahead(1);
+    return lexer_.lookahead(1);
 }
 
-shared_ptr<Token> Parser::advance()
+TokenType Parser::peekType()
 {
-    return lexer_.advance();
+    return lexer_.lookahead(1)->getType();
 }
 
-shared_ptr<Token> Parser::accept(/*clazz*/)
+template <typename T>
+void Parser::advance(shared_ptr<T> &ret)
 {
+    lexer_.advance((shared_ptr<Token> &)ret);
 }
 
-shared_ptr<Token> Parser::expect(TokenType tokenType)
+void Parser::advance()
 {
-    shared_ptr<Token> tok = peek();
-
-    if (tok->getType() == tokenType)
-        return advance();
-
-    throw PugParserException(fileName_, line(), templateLoader_, tokenType, tok->getType());
-}
-
-shared_ptr<Parser> Parser::createParser(const string &templateName)
-{
-}
-
-string Parser::ensurePugExtension(const string &templateName)
-{
+    shared_ptr<Token> tok;
+    lexer_.advance(tok);
 }
 
 int Parser::line()
 {
     return lexer_.getLineno();
+}
+
+shared_ptr<Parser> Parser::createParser(const string &templateName)
+{
+    string tn = ensurePugExtension(templateName, templateLoader_->getExtension());
+    try
+    {
+        string resolvedPath = PathHelper::resolvePath(fileName_, templateName, templateLoader_->getExtension());
+        return make_shared<Parser>(resolvedPath, templateLoader_, expressionHandler_);
+    }
+    catch (const std::exception &e)
+    {
+        throw PugParserException(
+            fileName_,
+            line(),
+            templateLoader_,
+            "The template [" + templateName + "] could not be opened. Maybe it is located outside the base path?\n" +
+                string(e.what()));
+    }
+}
+
+string Parser::ensurePugExtension(const string &templateName, const string &extension)
+{
+    if (FileSystem::getExtension(templateName).empty())
+    {
+        return templateName + extension;
+    }
+    return templateName;
+}
+
+template <typename T>
+void Parser::accept(shared_ptr<T> &ret, TokenType tokenType)
+{
+    if (peekType() == tokenType)
+        lexer_.advance((shared_ptr<Token> &)ret);
+}
+
+template <typename T>
+void Parser::expect(shared_ptr<T> &ret, TokenType tokenType)
+{
+    TokenType type = peekType();
+    if (type != tokenType)
+    {
+        throw PugParserException(fileName_, line(), templateLoader_, tokenType, type);
+    }
+    advance(ret);
+}
+
+void Parser::expect(TokenType tokenType)
+{
+    TokenType type = peekType();
+    if (type != tokenType)
+    {
+        throw PugParserException(fileName_, line(), templateLoader_, tokenType, type);
+    }
+    advance();
 }
 } // namespace parser
 } // namespace pugcpp

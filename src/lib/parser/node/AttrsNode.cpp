@@ -24,9 +24,6 @@ const set<string> AttrsNode::selfClosingTags = {"area",
                                                 "source",
                                                 "track",
                                                 "wbr"};
-AttrsNode::AttrsNode() : AttrsNode(e_AttrsNode)
-{
-}
 
 AttrsNode::AttrsNode(NodeType type) : Node(type)
 {
@@ -154,23 +151,23 @@ string AttrsNode::visitAttributes(PugModel &model, PugTemplate &tmplt)
             // TODO: instance of list
         }
     }
-    map<string, unique_ptr<string>, AttrCmp> l_conAttrs;
+    map<string, string, AttrCmp> l_conAttrs;
     attrs(l_conAttrs, model, tmplt, newAttributes);
 
     return attrsToString(l_conAttrs);
 }
 
-string AttrsNode::attrsToString(const map<string, unique_ptr<string>, AttrCmp> &attrs)
+string AttrsNode::attrsToString(const map<string, string, AttrCmp> &attrs)
 {
     ostringstream os;
     for (const auto &entry : attrs)
     {
         os << " ";
         os << entry.first;
-        if (entry.second)
+        if (!entry.second.empty())
         {
             os << '=' << '"';
-            os << *(entry.second);
+            os << entry.second;
             os << '"';
         }
     }
@@ -179,7 +176,7 @@ string AttrsNode::attrsToString(const map<string, unique_ptr<string>, AttrCmp> &
 }
 
 void AttrsNode::attrs(
-    map<string, unique_ptr<string>, AttrCmp> &retAttrs,
+    map<string, string, AttrCmp> &retAttrs,
     PugModel &model,
     PugTemplate &tmplt,
     vector<Attr> &attrs)
@@ -200,12 +197,12 @@ void AttrsNode::attrs(
     }
     if (!classes.empty())
     {
-        retAttrs["class"] = make_unique<string>(StringUtils::join(classes, " "));
+        retAttrs["class"] = StringUtils::join(classes, " ");
     }
 }
 
 void AttrsNode::addAttributesToMap(
-    map<string, unique_ptr<string>, AttrCmp> &newAttributes,
+    map<string, string, AttrCmp> &newAttributes,
     vector<string> &classes,
     vector<bool> classEscaping,
     Attr &attribute,
@@ -214,14 +211,14 @@ void AttrsNode::addAttributesToMap(
 {
     const string &name = attribute.getName();
     bool escaped = attribute.isEscaped();
-    unique_ptr<string> value;
+    string value;
     any av = attribute.getValue();
     if ("class" == name)
     {
         if (string *val = any_cast<string>(&av))
         {
             escaped = attribute.isEscaped();
-            value = make_unique<string>(getInterpolatedAttributeValue(name, *val, escaped, md, tmplt));
+            value = getInterpolatedAttributeValue(name, *val, escaped, md, tmplt);
         }
         else if (ExpressionString *val = any_cast<ExpressionString>(&av))
         {
@@ -231,9 +228,9 @@ void AttrsNode::addAttributesToMap(
                 // TODO
             }
         }
-        if (StringUtils::isNotBlank(*value))
+        if (StringUtils::isNotBlank(value))
         {
-            classes.push_back(*value);
+            classes.push_back(value);
             classEscaping.push_back(escaped);
         }
         return;
@@ -245,7 +242,7 @@ void AttrsNode::addAttributesToMap(
     else if (string *val = any_cast<string>(&av))
     {
         escaped = attribute.isEscaped();
-        value = make_unique<string>(getInterpolatedAttributeValue(name, *val, escaped, md, tmplt));
+        value = getInterpolatedAttributeValue(name, *val, escaped, md, tmplt);
     }
     else if (bool *val = any_cast<bool>(&av))
     {
@@ -253,7 +250,7 @@ void AttrsNode::addAttributesToMap(
             return;
 
         if (!tmplt.isTerese())
-            value = make_unique<string>(name);
+            value = name;
     }
     newAttributes[name] = move(value);
 }

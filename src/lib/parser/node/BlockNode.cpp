@@ -30,12 +30,12 @@ void BlockNode::setYieldBlock(shared_ptr<BlockNode> yieldBlock)
     yieldBlock_ = yieldBlock;
 }
 
-const string &BlockNode::getMode()
+Block::E_MODE BlockNode::getMode()
 {
     return mode_;
 }
 
-void BlockNode::setMode(const string &mode)
+void BlockNode::setMode(Block::E_MODE mode)
 {
     mode_ = mode;
 }
@@ -60,12 +60,12 @@ void BlockNode::setAppended(vector<shared_ptr<Node>> &appended)
     appended_ = appended;
 }
 
-shared_ptr<Parser> BlockNode::getParser()
+const Parser *BlockNode::getParser() const
 {
     return parser_;
 }
 
-void BlockNode::setParser(shared_ptr<Parser> parser)
+void BlockNode::setParser(Parser *parser)
 {
     parser_ = parser;
 }

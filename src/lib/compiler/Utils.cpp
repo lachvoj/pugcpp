@@ -321,8 +321,8 @@ void Utils::escapeHtml4(string &str)
     for (auto item : html4Escapes)
     {
         const int searchLength = item.first.length();
-        int searchStart = 0;
-        auto pos = 0;
+        size_t searchStart = 0;
+        size_t pos = 0;
         while ((pos = str.find(item.first, searchStart)) != string::npos)
         {
             buf.append(str.substr(searchStart, pos - searchStart));
@@ -340,7 +340,7 @@ void Utils::prepareInterpolate(vector<any> &ret, const string &str, bool xmlEsca
 {
     smatch matcher;
     string in = str;
-    int start = 0;
+    size_t start = 0;
     while (regex_search(in, matcher, interpolationPattern))
     {
         string before = matcher.prefix();
@@ -351,10 +351,10 @@ void Utils::prepareInterpolate(vector<any> &ret, const string &str, bool xmlEsca
         bool escape = matcher[1].matched;
         string flag = matcher.str(2);
 
-        int openBrackets = 1;
+        size_t openBrackets = 1;
         bool closingBracketFound = false;
-        int matcherEnd = matcher.position(0) + matcher.length(0);
-        auto closingBracketIndex = matcherEnd;
+        size_t matcherEnd = matcher.position(0) + matcher.length(0);
+        size_t closingBracketIndex = matcherEnd;
         while (!closingBracketFound && closingBracketIndex < in.length())
         {
             char currentChar = in[closingBracketIndex];
@@ -395,27 +395,30 @@ void Utils::prepareInterpolate(vector<any> &ret, const string &str, bool xmlEsca
 
 string Utils::interpolate(vector<any> &prepared, PugModel &model, shared_ptr<IExpressionHandler> expressionHandler)
 {
-    string ret;
+    ostringstream ret;
 
     for (auto entry : prepared)
     {
         if (string *val = any_cast<string>(&entry))
         {
-            ret.append(*val);
+            ret << *val;
         }
         else if (ExpressionString *val = any_cast<ExpressionString>(&entry))
         {
-            string stringValue;
+            string *stringValue;
             string value = expressionHandler->evaluateStringExpression(val->getValue(), model);
             if (!value.empty())
-                stringValue = value;
-            if (!stringValue.empty() && val->isEscape())
-                escapeHtml4(stringValue);
-            ret.append(stringValue);
+                stringValue = &value;
+            if (!stringValue->empty())
+            {
+                if (val->isEscape())
+                    escapeHtml4(*stringValue);
+                ret << *stringValue;
+            }
         }
     }
 
-    return ret;
+    return ret.str();
 }
 
 string Utils::interpolate(

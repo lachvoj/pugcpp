@@ -34,20 +34,21 @@ using namespace compiler;
 
 class AttrsNode : public Node
 {
-  private:
-    static const set<string> selfClosingTags;
-
+  protected:
     struct AttrCmp
     {
         bool operator()(const string &lhs, const string &rhs) const;
     };
 
+  private:
+    static const set<string> selfClosingTags;
+
     bool textOnly_ = false;
 
     string attributeValueToString(any value);
-    string attrsToString(const map<string, unique_ptr<string>, AttrCmp> &attrs);
+    string attrsToString(const map<string, string, AttrCmp> &attrs);
     void addAttributesToMap(
-        map<string, unique_ptr<string>, AttrCmp> &newAttributes,
+        map<string, string, AttrCmp> &newAttributes,
         vector<string> &classes,
         vector<bool> classEscaping,
         Attr &attribute,
@@ -73,10 +74,10 @@ class AttrsNode : public Node
 
     AttrsNode(NodeType type);
     string visitAttributes(PugModel &model, PugTemplate &tmplt);
-    void attrs(map<string, unique_ptr<string>, AttrCmp> &retAttrs, PugModel &model, PugTemplate &tmplt, vector<Attr> &attrs);
+    void attrs(map<string, string, AttrCmp> &retAttrs, PugModel &model, PugTemplate &tmplt, vector<Attr> &attrs);
 
   public:
-    AttrsNode();
+    AttrsNode() = delete;
     string getAttribute(const string &key);
     void setAttribute(const string &key, any value, bool escaped);
     void addAttributes(const string &src);

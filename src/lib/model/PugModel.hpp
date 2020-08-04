@@ -30,7 +30,7 @@ namespace model
 using namespace filter;
 using namespace parser::node;
 
-class PugModel
+class PugModel : public map<string, any>
 {
   private:
     static const string LOCALS;
@@ -55,7 +55,7 @@ class PugModel
     list<pair<string, any>> entrySet();
     any get(const string &key);
     bool isEmpty();
-    list<string> keySet();
+    vector<string> keySet();
     any put(const string &key, const any &value);
     void putAll(const map<string, any> &m);
     bool remove(const string &key);

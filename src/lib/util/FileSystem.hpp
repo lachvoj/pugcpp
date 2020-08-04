@@ -19,14 +19,14 @@ namespace util
 {
 class FileSystem
 {
-  private:
-    FileSystem();
-
   public:
+    FileSystem() = delete;
     static bool exists(const string &path);
     static bool isRegularFile(const string &path);
+    static bool isDirectory(const string &path);
     static string getExtension(const string &path);
     static long lastModified(const string &path);
+    static char getPreferedSeparator();
 };
 } // namespace util
 } // namespace pugcpp

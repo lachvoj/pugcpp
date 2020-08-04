@@ -40,7 +40,7 @@ void PugModel::popScope()
         set<string> nonLocalVars = any_cast<set<string>>((*itNonLocalVars).second);
         deque<map<string, any>>::reverse_iterator rIterator = scopes_.rbegin();
         rIterator++;
-        int countFoundNonLocalVars = 0;
+        size_t countFoundNonLocalVars = 0;
         for (deque<map<string, any>>::reverse_iterator i = (rIterator + 1); (i + 1) != scopes_.rend(); ++i)
         {
 
@@ -147,9 +147,9 @@ bool PugModel::isEmpty()
     return (keySet().size() == 0);
 }
 
-list<string> PugModel::keySet()
+vector<string> PugModel::keySet()
 {
-    list<string> keys;
+    vector<string> keys;
     for (deque<map<string, any>>::reverse_iterator rIt = scopes_.rbegin(); (rIt + 1) != scopes_.rend();)
     {
         rIt++;
@@ -197,7 +197,7 @@ int PugModel::size()
 
 list<any> PugModel::values()
 {
-    list<string> ks = keySet();
+    vector<string> ks = keySet();
     list<any> ret(ks.size());
     for (string &key : ks)
     {
