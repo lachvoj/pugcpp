@@ -405,11 +405,11 @@ string Utils::interpolate(vector<any> &prepared, PugModel &model, shared_ptr<IEx
         }
         else if (ExpressionString *val = any_cast<ExpressionString>(&entry))
         {
-            string *stringValue;
+            string *stringValue = nullptr;
             string value = expressionHandler->evaluateStringExpression(val->getValue(), model);
             if (!value.empty())
                 stringValue = &value;
-            if (!stringValue->empty())
+            if (stringValue && !stringValue->empty())
             {
                 if (val->isEscape())
                     escapeHtml4(*stringValue);

@@ -11,7 +11,6 @@ using namespace model;
 
 class DummyExpressionHandler : public IExpressionHandler
 {
-  private:
   public:
     bool evaluateBooleanExpression(const string &expression, PugModel &model);
     any evaluateExpression(const string &expression, PugModel &model);

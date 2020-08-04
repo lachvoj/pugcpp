@@ -378,7 +378,7 @@ string Lexer::interpolate(const string &attr, const char quote)
                 if (expr[range->getEnd()] != '}')
                     return match.substr(0, 2) + interpolate(match.substr(2), quote);
                 expressionHandler_->assertExpression(range->getSrc());
-                return quote + " (" + range->getSrc() + ") " + quote +
+                return string(1, quote) + " (" + range->getSrc() + ") " + string(1, quote) +
                        interpolate(expr.substr(range->getEnd() + 1), quote);
             }
             catch (ExpressionException &ex)

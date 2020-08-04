@@ -23,7 +23,11 @@ using namespace model;
 
 class IExpressionHandler
 {
+  protected:
+    IExpressionHandler(){};
+
   public:
+    virtual ~IExpressionHandler(){};
     virtual bool evaluateBooleanExpression(const string &expression, PugModel &model) = 0;
     virtual any evaluateExpression(const string &expression, PugModel &model) = 0;
     virtual string evaluateStringExpression(const string &expression, PugModel &model) = 0;

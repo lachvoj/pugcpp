@@ -38,8 +38,7 @@ using namespace tmpl;
 
 enum NodeType
 {
-    e_Default = 0,
-    e_AssignmentNode,
+    e_AssignmentNode = 0,
     e_AttrsNode,
     e_BlockCommentNode,
     e_BlockNode,
@@ -77,6 +76,7 @@ class Node
     Node(NodeType type);
 
   public:
+    virtual ~Node(){};
     virtual void execute(IndentWriter &writer, PugModel &model, PugTemplate &tmplt) = 0;
     const NodeType getType() const;
     void setLineNumber(int lineNumber);

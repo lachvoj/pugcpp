@@ -76,11 +76,11 @@ void CallNode::writeVariables(PugModel &model, MixinNode &mixin, PugTemplate &tm
     for (size_t i = 0; i < names.size(); i++)
     {
         string &key = names[i];
-        string *value;
+        string *value = nullptr;
         any eVal;
         if (i < values.size())
             value = &values[i];
-        if (!value->empty())
+        if (value && !value->empty())
         {
             try
             {
@@ -102,11 +102,11 @@ void CallNode::writeVariables(PugModel &model, MixinNode &mixin, PugTemplate &tm
     vector<any> restArguments;
     for (size_t i = names.size(); i < arguments_.size(); ++i)
     {
-        string *value;
+        string *value = nullptr;
         any eVal;
         if (i < values.size())
             value = &values[i];
-        if (!value->empty())
+        if (value && !value->empty())
         {
             try
             {
