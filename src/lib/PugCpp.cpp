@@ -21,7 +21,7 @@ const string PugCppP::encodingUTF8 = "UTF-8";
 void PugCppP::getTemplate(PugTemplate &ret, const string &filename)
 {
     return createTemplate(
-        ret, filename, make_shared<FileTemplateLoader>(".", encodingUTF8), make_shared<DummyExpressionHandler>());
+        ret, filename, make_shared<FileTemplateLoader>(".", encodingUTF8), make_shared<V8ExpressionHandler>());
 }
 
 void PugCppP::getTemplate(PugTemplate &ret, const string &filename, const string &extension)
@@ -30,7 +30,7 @@ void PugCppP::getTemplate(PugTemplate &ret, const string &filename, const string
         ret,
         filename,
         make_shared<FileTemplateLoader>(".", encodingUTF8, extension),
-        make_shared<DummyExpressionHandler>());
+        make_shared<V8ExpressionHandler>());
 }
 
 void PugCppP::getTemplate(PugTemplate &ret, istream &reader, const string &name)

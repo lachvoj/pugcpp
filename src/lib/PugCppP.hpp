@@ -7,7 +7,7 @@
 #include <ostream>
 #include <string>
 
-#include "expression/DummyExpressionHandler.hpp"
+#include "expression/V8ExpressionHandler.hpp"
 #include "expression/IExpressionHandler.hpp"
 #include "parser/Parser.hpp"
 #include "parser/node/MixinNode.hpp"

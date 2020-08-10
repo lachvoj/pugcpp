@@ -41,3 +41,9 @@ cmake_install.cmake
 
 # Doxygen output
 doc/
+
+# Static analysis output
+saResults/
+
+# 3d party
+3d/
