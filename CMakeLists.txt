@@ -12,35 +12,11 @@ set(3D_PT_DIR ${CMAKE_SOURCE_DIR}/3d)
 set(LIB_SRC_DIR ${SRC_DIR}/lib)
 set(TEST_SRC_DIR ${SRC_DIR}/test)
 set(PROJECT_INCLUDE_DIR )
-set(ADDITIONAL_COMPILE_FLAGS "-Wall -g")
+set(ADDITIONAL_COMPILE_FLAGS "-Wall -g -DV8_COMPRESS_POINTERS")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${ADDITIONAL_COMPILE_FLAGS}")
 set(THREADS_PREFER_PTHREAD_FLAG ON)
 
 find_package(Threads REQUIRED)
-
-#download 3d party libs
-# #google cel-cpp
-# set(CEL_CPP_DIR ${3D_PT_DIR}/cel-cpp/)
-# find_path(CEL_CPP ${CEL_CPP_DIR}/celbulklib.a)
-# if((NOT CEL_CPP) OR (NOT EXISTS ${CEL_CPP}))
-#     message("Unable to find google cell-cpp lib on path: ${CEL_CPP_DIR}")
-#     execute_process(COMMAND git submodule update --init -- ${CEL_CPP_DIR})
-#     find_program(BAZEL bazel)
-#     if(NOT BAZEL)
-#         message(FATAL_ERROR "No bazel found!")
-#     endif()
-#     # execute_process(
-#     #     COMMAND bazel build //v1beta1:
-#     #     WORKING_DIRECTORY ${CEL_CPP_DIR}
-#     find_program(LIBTOOL libtool)
-#     if(NOT LIBTOOL)
-#         message(FATAL_ERROR "No libtool found!")
-#     endif()
-#     FILE(GLOB_RECURSE CEL_LIBS FOLLOW_SYMLINKS ${CEL_CPP_DIR}/bazel-bin/*.a )
-#     message("${CEL_LIBS}")
-#     # execute_process(COMMAND libtool -static -o ${CEL_CPP} ${CEL_LIBS})
-# else()
-# endif()
 
 #v8
 set(V8_DIR ${3D_PT_DIR}/v8)
@@ -59,11 +35,8 @@ if(NOT V8)
     endif()
     execute_process(COMMAND tools/dev/v8gen.py x64.release.sample  WORKING_DIRECTORY ${V8_DIR})
     execute_process(COMMAND ninja -C out.gn/x64.release.sample v8_monolith  WORKING_DIRECTORY ${V8_DIR})
+    find_library(V8 libv8_monolith.a PATHS ${V8_DIR}/out.gn/x64.release.sample/obj)
 endif()
-
-# message(src dir: ${SRC_DIR})
-# message(lib src dir: ${LIB_SRC_DIR})
-# message(test src dir: ${TEST_SRC_DIR})
 
 # custom targets
 add_custom_target(debug
