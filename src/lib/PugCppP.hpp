@@ -7,8 +7,8 @@
 #include <ostream>
 #include <string>
 
-#include "expression/V8ExpressionHandler.hpp"
 #include "expression/IExpressionHandler.hpp"
+#include "expression/V8ExpressionHandler.hpp"
 #include "parser/Parser.hpp"
 #include "parser/node/MixinNode.hpp"
 #include "parser/node/Node.hpp"

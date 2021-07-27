@@ -20,7 +20,7 @@ class BlockCommentNode : public Node
     BlockCommentNode();
     bool isBuffered();
     void setBuffered(bool buffered);
-    void execute(IndentWriter &writer, PugModel &model, PugTemplate &tmplt);
+    void execute(IndentWriter &writer, PugModel &model, PugTemplate &tmplt) override;
 };
 } // namespace node
 } // namespace parser

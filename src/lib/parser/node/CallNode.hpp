@@ -48,7 +48,7 @@ class CallNode : public AttrsNode
     void setArguments(const string &arguments);
     bool isCall();
     void setCall(bool call);
-    void execute(IndentWriter &writer, PugModel &model, PugTemplate &tmplt);
+    void execute(IndentWriter &writer, PugModel &model, PugTemplate &tmplt) override;
 };
 } // namespace node
 } // namespace parser

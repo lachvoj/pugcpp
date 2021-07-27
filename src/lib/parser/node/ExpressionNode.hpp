@@ -32,7 +32,7 @@ class ExpressionNode : public Node
     void setEscape(bool escape);
     void setBuffer(bool buffer);
     void setValue(const string &value);
-    void execute(IndentWriter &writer, PugModel &model, PugTemplate &tmplt);
+    void execute(IndentWriter &writer, PugModel &model, PugTemplate &tmplt) override;
 };
 } // namespace node
 } // namespace parser

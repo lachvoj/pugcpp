@@ -16,7 +16,7 @@ class MixinBlockNode : public Node
 {
   public:
     MixinBlockNode();
-    void execute(IndentWriter &writer, PugModel &model, PugTemplate &tmplt);
+    void execute(IndentWriter &writer, PugModel &model, PugTemplate &tmplt) override;
 };
 } // namespace node
 } // namespace parser

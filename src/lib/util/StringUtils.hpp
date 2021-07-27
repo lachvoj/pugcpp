@@ -25,6 +25,12 @@ class StringReplacer
 
 class StringUtils
 {
+  private:
+    // html utils
+    static const map<string, string> BASIC_ESCAPE;
+    static const map<string, string> ISO8859_1_ESCAPE;
+    static const map<string, string> HTML40_EXTENDED_ESCAPE;
+
   public:
     StringUtils() = delete;
     static string ltrim(const string &str, const string &chars = "\t\n\v\f\r ");
@@ -44,6 +50,9 @@ class StringUtils
     // static string join(const CON &container, const string &delimiter = " ");
     static string join(const vector<string> &container, const string &delimiter = " ");
     static int occurences(const string &fullString, const string &searchFor);
+
+    // html utils
+    static void escapeHtml4(string &str);
 };
 } // namespace util
 } // namespace pugcpp

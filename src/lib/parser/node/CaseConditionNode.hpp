@@ -13,9 +13,10 @@ class CaseConditionNode : public Node
 {
   private:
     bool defaultNode_ = false;
+
   public:
     CaseConditionNode();
-    void execute(IndentWriter &writer, PugModel &model, PugTemplate &tmplt);
+    void execute(IndentWriter &writer, PugModel &model, PugTemplate &tmplt) override;
     bool isDefault();
     void setDefault(bool defaultNode);
 };

@@ -31,7 +31,7 @@ const string Doctypes::s_sEmpty = "";
 const string &Doctypes::get(const string &pugDocType)
 {
     auto elemIt = s_conTypeMap.find(pugDocType);
-    
+
     if (elemIt == s_conTypeMap.end())
         return s_sEmpty;
 

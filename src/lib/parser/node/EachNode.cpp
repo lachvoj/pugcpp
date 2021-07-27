@@ -46,7 +46,7 @@ void EachNode::run(IndentWriter &writer, PugModel &model, any &result, PugTempla
     {
         runMap(*val, model, writer, tmplt);
     }
-    //TODO: other types
+    // TODO: other types
 }
 
 void EachNode::runMap(map<any, any> &result, PugModel &model, IndentWriter &writer, PugTemplate &tmplt)

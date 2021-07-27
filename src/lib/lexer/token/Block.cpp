@@ -20,7 +20,7 @@ void Block::setMode(const string &mode)
     string md = StringUtils::toLowerCase(mode);
     if (md == "append")
         mode_ = E_MODE::APPEND;
-    else if(md == "prepend")
+    else if (md == "prepend")
         mode_ = E_MODE::PREPEND;
     else
         mode_ = E_MODE::REPLACE;

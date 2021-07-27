@@ -18,7 +18,6 @@ namespace exceptions
 class Exception : public exception
 {
   private:
-
   protected:
     string error_;
     std::exception *throwable_;

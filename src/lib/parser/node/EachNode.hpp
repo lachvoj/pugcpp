@@ -46,7 +46,7 @@ class EachNode : public Node
     shared_ptr<Node> &getElseNode();
     void setElseNode(shared_ptr<Node> &elseNode);
 
-    void execute(IndentWriter &writer, PugModel &model, PugTemplate &tmplt);
+    void execute(IndentWriter &writer, PugModel &model, PugTemplate &tmplt) override;
 };
 } // namespace node
 } // namespace parser

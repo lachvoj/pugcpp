@@ -45,7 +45,7 @@ class TagNode : public AttrsNode
     bool canInline();
     bool isBuffer();
     void setBuffer(bool buffer);
-    void execute(IndentWriter &writer, PugModel &model, PugTemplate &tmplt);
+    void execute(IndentWriter &writer, PugModel &model, PugTemplate &tmplt) override;
 };
 } // namespace node
 } // namespace parser

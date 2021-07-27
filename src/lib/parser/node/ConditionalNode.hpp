@@ -39,7 +39,7 @@ class ConditionalNode : public Node
     vector<shared_ptr<IfConditionNode>> &getConditions();
     void setConditions(const vector<shared_ptr<IfConditionNode>> &conditions);
 
-    void execute(IndentWriter &writer, PugModel &model, PugTemplate &tmplt);
+    void execute(IndentWriter &writer, PugModel &model, PugTemplate &tmplt) override;
 };
 } // namespace node
 } // namespace parser

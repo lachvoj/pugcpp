@@ -42,7 +42,7 @@ class FilterNode : public Node
     bool hasTextBlock();
     shared_ptr<Node> getTextBlock();
     void setTextBlock(shared_ptr<Node> &textBlock);
-    void execute(IndentWriter &writer, PugModel &model, PugTemplate &tmplt);
+    void execute(IndentWriter &writer, PugModel &model, PugTemplate &tmplt) override;
 };
 } // namespace node
 } // namespace parser

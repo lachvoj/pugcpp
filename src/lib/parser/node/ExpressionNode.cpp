@@ -2,6 +2,7 @@
 
 #include "../../expression/IExpressionHandler.hpp"
 #include "../../template/PugTemplate.hpp"
+#include "../../util/StringUtils.hpp"
 
 namespace pugcpp
 {
@@ -37,7 +38,21 @@ void ExpressionNode::execute(IndentWriter &writer, PugModel &model, PugTemplate 
         if (!res.has_value() || !buffer_)
             return;
 
-        // TODO any to string
+        string str;
+        if (int *resi = any_cast<int>(&res))
+            str = to_string(*resi);
+        else if (double *resd = any_cast<double>(&res))
+        {
+            str = to_string(*resd);
+            str.erase(str.find_last_not_of('0') + 1, string::npos);
+        }
+        else if (string *ress = any_cast<string>(&res))
+            str = *ress;
+        else
+            throw ExpressionException("Unknown type.");
+        if (escape_)
+            StringUtils::escapeHtml4(str);
+        writer.append(str);
 
         if (hasBlock())
         {

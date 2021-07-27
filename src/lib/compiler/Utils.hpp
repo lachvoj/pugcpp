@@ -33,11 +33,6 @@ class Utils
 {
   private:
     static const regex interpolationPattern;
-    static const map<string, string> BASIC_ESCAPE;
-    static const map<string, string> ISO8859_1_ESCAPE;
-    static const map<string, string> HTML40_EXTENDED_ESCAPE;
-
-    static void escapeHtml4(string &str);
 
   public:
     Utils() = delete;

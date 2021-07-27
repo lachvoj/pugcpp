@@ -6,8 +6,7 @@ namespace lexer
 {
 namespace token
 {
-Attribute::Attribute(const string &name, const any &value, bool escape)
-: name_(name), value_(value), escaped_(escape)
+Attribute::Attribute(const string &name, const any &value, bool escape) : name_(name), value_(value), escaped_(escape)
 {
 }
 

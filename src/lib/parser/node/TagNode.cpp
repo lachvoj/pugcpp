@@ -6,25 +6,26 @@ namespace parser
 {
 namespace node
 {
-const set<string> TagNode::inlineTags_ = {"a",
-                                     "abbr",
-                                     "acronym",
-                                     "b",
-                                     "br",
-                                     "code",
-                                     "em",
-                                     "font",
-                                     "i",
-                                     "img",
-                                     "ins",
-                                     "kbd",
-                                     "map",
-                                     "samp",
-                                     "small",
-                                     "span",
-                                     "strong",
-                                     "sub",
-                                     "sup"};
+const set<string> TagNode::inlineTags_ = {
+    "a",
+    "abbr",
+    "acronym",
+    "b",
+    "br",
+    "code",
+    "em",
+    "font",
+    "i",
+    "img",
+    "ins",
+    "kbd",
+    "map",
+    "samp",
+    "small",
+    "span",
+    "strong",
+    "sub",
+    "sup"};
 
 TagNode::TagNode(NodeType type) : AttrsNode(type)
 {

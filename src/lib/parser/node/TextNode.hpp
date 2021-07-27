@@ -28,7 +28,7 @@ class TextNode : public Node
     const string &getValue() const;
     void setValue(const string &value);
     void appendText(const string &txt);
-    void execute(IndentWriter &writer, PugModel &model, PugTemplate &tmplt);
+    void execute(IndentWriter &writer, PugModel &model, PugTemplate &tmplt) override;
 };
 } // namespace node
 } // namespace parser

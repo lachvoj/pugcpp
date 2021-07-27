@@ -15,7 +15,7 @@ class LiteralNode : public Node
 {
   public:
     LiteralNode();
-    void execute(IndentWriter &writer, PugModel &model, PugTemplate &tmplt);
+    void execute(IndentWriter &writer, PugModel &model, PugTemplate &tmplt) override;
 };
 } // namespace node
 } // namespace parser

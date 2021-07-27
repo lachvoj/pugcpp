@@ -12,6 +12,9 @@
 #include "../filter/IFilter.hpp"
 #include "../util/HashUtils.hpp"
 
+#include "../../../3d/v8/include/libplatform/libplatform.h"
+#include "../../../3d/v8/include/v8.h"
+
 using namespace std;
 
 namespace pugcpp
@@ -36,31 +39,35 @@ class PugModel : public map<string, any>
     static const string LOCALS;
 
     map<string, any> baseModel_;
-    deque<map<string, any>> scopes_;
-    map<string, MixinNode> mixins_;
+    vector<map<string, any>> scopes_;
+    vector<shared_ptr<void>> contexts_;
+    map<string, MixinNode *> mixins_;
     map<string, shared_ptr<IFilter>> filter_;
 
   public:
     static const string NON_LOCAL_VARS;
+    static const string CONTEXT_VAR_NAME;
 
     PugModel(const map<string, any> *defaults);
 
     void pushScope();
     void popScope();
-    void setMixin(const string &name, const MixinNode &node);
+    shared_ptr<void> getCurrentScopeContext();
+    void setCurrentScopeContext(shared_ptr<void> context);
+    void setMixin(const string &name, MixinNode *node);
     MixinNode *getMixin(const string &name);
     void clear();
     bool containsKey(const string &key);
     bool containsValue(const any *value);
-    list<pair<string, any>> entrySet();
-    any get(const string &key);
+    void entrySet(vector<pair<string, any>> &entries);
+    any *get(const string &key);
     bool isEmpty();
-    vector<string> keySet();
+    void keySet(vector<string> &keys);
     any put(const string &key, const any &value);
     void putAll(const map<string, any> &m);
     bool remove(const string &key);
-    int size();
-    list<any> values();
+    size_t size();
+    void values(vector<any> &values);
     shared_ptr<IFilter> getFilter(const string &name);
     void addFilter(const string &name, const shared_ptr<IFilter> &filter);
 };

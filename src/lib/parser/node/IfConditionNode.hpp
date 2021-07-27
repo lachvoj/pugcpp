@@ -27,7 +27,7 @@ class IfConditionNode : public Node
     const bool isInverse() const;
     void setInverse(const bool isInverse);
 
-    void execute(IndentWriter &writer, PugModel &model, PugTemplate &tmplt);
+    void execute(IndentWriter &writer, PugModel &model, PugTemplate &tmplt) override;
 };
 
 } // namespace node

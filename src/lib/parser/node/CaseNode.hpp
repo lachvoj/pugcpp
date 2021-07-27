@@ -30,15 +30,15 @@ class CaseNode : public Node
     {
       public:
         When();
-        void execute(IndentWriter &writer, PugModel &model, PugTemplate &tmplt);
+        void execute(IndentWriter &writer, PugModel &model, PugTemplate &tmplt) override;
     };
 
     CaseNode();
-    
+
     vector<shared_ptr<CaseConditionNode>> &getCaseConditionNodes();
     void setConditions(const vector<shared_ptr<CaseConditionNode>> &caseConditionNodes);
 
-    void execute(IndentWriter &writer, PugModel &model, PugTemplate &tmplt);
+    void execute(IndentWriter &writer, PugModel &model, PugTemplate &tmplt) override;
 };
 } // namespace node
 } // namespace parser

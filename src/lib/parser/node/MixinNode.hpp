@@ -18,7 +18,7 @@ class MixinNode : public CallNode
     MixinNode();
     void setRest(const string &reset);
     const string &getRest() const;
-    void execute(IndentWriter &writer, PugModel &model, PugTemplate &tmplt);
+    void execute(IndentWriter &writer, PugModel &model, PugTemplate &tmplt) override;
 };
 } // namespace node
 } // namespace parser

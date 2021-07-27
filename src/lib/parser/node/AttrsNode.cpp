@@ -1,6 +1,6 @@
-#include "../../template/PugTemplate.hpp"
-
 #include "AttrsNode.hpp"
+
+#include "../../template/PugTemplate.hpp"
 
 namespace pugcpp
 {
@@ -8,22 +8,23 @@ namespace parser
 {
 namespace node
 {
-const set<string> AttrsNode::selfClosingTags = {"area",
-                                                "base",
-                                                "br",
-                                                "col",
-                                                "embed",
-                                                "hr",
-                                                "img",
-                                                "input",
-                                                "keygen",
-                                                "link",
-                                                "menuitem",
-                                                "meta",
-                                                "param",
-                                                "source",
-                                                "track",
-                                                "wbr"};
+const set<string> AttrsNode::selfClosingTags = {
+    "area",
+    "base",
+    "br",
+    "col",
+    "embed",
+    "hr",
+    "img",
+    "input",
+    "keygen",
+    "link",
+    "menuitem",
+    "meta",
+    "param",
+    "source",
+    "track",
+    "wbr"};
 
 AttrsNode::AttrsNode(NodeType type) : Node(type)
 {
@@ -175,11 +176,7 @@ string AttrsNode::attrsToString(const map<string, string, AttrCmp> &attrs)
     return os.str();
 }
 
-void AttrsNode::attrs(
-    map<string, string, AttrCmp> &retAttrs,
-    PugModel &model,
-    PugTemplate &tmplt,
-    vector<Attr> &attrs)
+void AttrsNode::attrs(map<string, string, AttrCmp> &retAttrs, PugModel &model, PugTemplate &tmplt, vector<Attr> &attrs)
 {
     vector<string> classes;
     vector<bool> classEscaping;
