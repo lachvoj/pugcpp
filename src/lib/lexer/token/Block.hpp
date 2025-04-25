@@ -30,6 +30,7 @@ class Block : public Token
     Block(const string &value, int lineNumber);
     E_MODE getMode() const;
     void setMode(const string &mode);
+    void setMode(E_MODE mode);
 };
 } // namespace token
 } // namespace lexer

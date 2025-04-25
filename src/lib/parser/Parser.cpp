@@ -96,13 +96,17 @@ void Parser::parseExpr(shared_ptr<Node> &ret)
     case e_Mixin: parseMixin(ret); break;
     case e_Block: parseBlock(ret); break;
     case e_MixinBlock: parseMixinBlock(ret); break;
-    case e_CaseToken: parseCase(ret); break;
-    case e_ExtendsToken: parseExtends(ret); break;
+    case e_Case: parseCase(ret); break;
+    case e_Extends: parseExtends(ret); break;
     case e_Include: parseInclude(ret); break;
     case e_Doctype: parseDoctype(ret); break;
     case e_Filter: parseFilter(ret); break;
     case e_Comment: parseComment(ret); break;
-    case e_Text: parseText(ret); break;
+    case e_Text:
+    case e_InterpolatedCode:
+    case e_StartPugInterpolation: parseText(ret); break;
+    case e_TextHtml: parseTextHtml(ret); break;
+    case e_Dot: parseDot(ret); break;
     case e_Each: parseEach(ret); break;
     case e_Expression: parseCode(ret); break;
     case e_BlockCode: parseBlockCode(ret); break;
@@ -390,7 +394,7 @@ void Parser::parseInclude(shared_ptr<Node> &ret)
 void Parser::parseExtends(shared_ptr<Node> &ret)
 {
     shared_ptr<ExtendsToken> tok;
-    expect(tok, e_ExtendsToken);
+    expect(tok, e_Extends);
     string templateName = StringUtils::trim(tok->getValue());
 
     shared_ptr<Parser> prs = createParser(templateName);
@@ -415,6 +419,13 @@ void Parser::parseInterpolation(shared_ptr<Node> &ret)
     ret = nd;
 }
 
+
+void Parser::parseDot(shared_ptr<Node> &ret)
+{
+    advance();
+    parseTextBlock(ret);
+}
+
 void Parser::parseText(shared_ptr<Node> &ret)
 {
     shared_ptr<Token> tok;
@@ -436,6 +447,10 @@ void Parser::parseText(shared_ptr<Node> &ret)
     nd->setLineNumber(tok->getLineNumber());
     nd->setFileName(fileName_);
     ret = nd;
+}
+
+void Parser::parseTextHtml(shared_ptr<Node> &ret)
+{
 }
 
 void Parser::parseEach(shared_ptr<Node> &ret)
@@ -712,7 +727,7 @@ void Parser::parseBlockExpansion(shared_ptr<Node> &ret)
 void Parser::parseCase(shared_ptr<Node> &ret)
 {
     shared_ptr<Token> tok;
-    expect(tok, e_CaseToken);
+    expect(tok, e_Case);
     const string &val = tok->getValue();
     shared_ptr<Node> nd = make_shared<CaseNode>();
     nd->setValue(val);
@@ -759,7 +774,7 @@ void Parser::parseCase(shared_ptr<Node> &ret)
 void Parser::parseWhen(shared_ptr<Node> &ret)
 {
     shared_ptr<Token> tok;
-    expect(tok, e_CaseToken);
+    expect(tok, e_Case);
     const string &val = tok->getValue();
     shared_ptr<CaseNode::When> nd = make_shared<CaseNode::When>();
     nd->setValue(val);

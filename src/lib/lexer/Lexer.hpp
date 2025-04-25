@@ -38,6 +38,7 @@
 #include "token/Each.hpp"
 #include "token/Else.hpp"
 #include "token/ElseIf.hpp"
+#include "token/EndPugInterpolation.hpp"
 #include "token/Eos.hpp"
 #include "token/Expression.hpp"
 #include "token/ExtendsToken.hpp"
@@ -46,14 +47,17 @@
 #include "token/If.hpp"
 #include "token/Include.hpp"
 #include "token/Indent.hpp"
+#include "token/InterpolatedCode.hpp"
 #include "token/Interpolation.hpp"
 #include "token/Mixin.hpp"
 #include "token/MixinBlock.hpp"
 #include "token/Newline.hpp"
 #include "token/Outdent.hpp"
 #include "token/PipelessText.hpp"
+#include "token/StartPugInterpolation.hpp"
 #include "token/Tag.hpp"
 #include "token/Text.hpp"
+#include "token/TextHtml.hpp"
 #include "token/Token.hpp"
 #include "token/UnbufferedComment.hpp"
 #include "token/When.hpp"
@@ -85,10 +89,13 @@ class Lexer
     static const regex cleanRe;
     static const regex doubleQuotedRe;
     static const regex quotedRe;
+    static const regex whitespaceRe;
     static const map<char, char> closingBrackets;
 
     int lneno_ = 1;
     bool pipeless_ = false;
+    bool interpolated_ = false;
+    bool ended_ = false;
     string fileName_;
     string indentRe_;
     Scanner scanner_;
@@ -130,47 +137,49 @@ class Lexer
   private:
     shared_ptr<CharacterParser::Match> bracketExpression();
     shared_ptr<CharacterParser::Match> bracketExpression(int skip);
-    string scan(const string &regexp, size_t group = 1);
     string interpolate(const string &attr, const char quote);
+    string scan(const string &regexp, size_t group = 1);
     bool assertNestingCorrect(const string &exp);
-    void stashed(shared_ptr<Token> &ret);
-    void deferred(shared_ptr<Token> &ret);
-    void blank(shared_ptr<Token> &ret);
-    void eos(shared_ptr<Token> &ret);
-    void comment(shared_ptr<Token> &ret);
-    void code(shared_ptr<Token> &ret);
-    void interpolation(shared_ptr<Token> &ret);
-    void tag(shared_ptr<Token> &ret);
-    void yield(shared_ptr<Token> &ret);
-    void filter(shared_ptr<Token> &ret);
-    void each(shared_ptr<Token> &ret);
-    void whileToken(shared_ptr<Token> &ret);
-    void conditional(shared_ptr<Token> &ret);
-    void doctype(shared_ptr<Token> &ret);
-    void id(shared_ptr<Token> &ret);
-    void className(shared_ptr<Token> &ret);
-    void text(shared_ptr<Token> &ret);
-    void textFail(shared_ptr<Token> &ret);
-    void extendsToken(shared_ptr<Token> &ret);
-    void prepend(shared_ptr<Token> &ret);
+    void addText(shared_ptr<Token> &ret, string &value, string prefix = "", int escaped = 0);
     void append(shared_ptr<Token> &ret);
+    void assignment(shared_ptr<Token> &ret);
+    void attributesBlock(shared_ptr<Token> &ret);
+    void attrs(shared_ptr<Token> &ret);
+    void blank(shared_ptr<Token> &ret);
     void block(shared_ptr<Token> &ret);
-    void mixinBlock(shared_ptr<Token> &ret);
     void blockCode(shared_ptr<Token> &ret);
+    void call(shared_ptr<Token> &ret);
+    void caseToken(shared_ptr<Token> &ret);
+    void className(shared_ptr<Token> &ret);
+    void code(shared_ptr<Token> &ret);
+    void colon(shared_ptr<Token> &ret);
+    void comment(shared_ptr<Token> &ret);
+    void conditional(shared_ptr<Token> &ret);
+    void defaultToken(shared_ptr<Token> &ret);
+    void deferred(shared_ptr<Token> &ret);
+    void doctype(shared_ptr<Token> &ret);
+    void dot(shared_ptr<Token> &ret);
+    void each(shared_ptr<Token> &ret);
+    void endINterpolation();
+    void eos(shared_ptr<Token> &ret);
+    void extendsToken(shared_ptr<Token> &ret);
+    void filter(shared_ptr<Token> &ret);
+    void id(shared_ptr<Token> &ret);
     void include(shared_ptr<Token> &ret);
     void includeFiltered(shared_ptr<Token> &ret);
-    void caseToken(shared_ptr<Token> &ret);
-    void when(shared_ptr<Token> &ret);
-    void defaultToken(shared_ptr<Token> &ret);
-    void assignment(shared_ptr<Token> &ret);
-    void dot(shared_ptr<Token> &ret);
-    void mixin(shared_ptr<Token> &ret);
-    void call(shared_ptr<Token> &ret);
-    void attrs(shared_ptr<Token> &ret);
-    void attributesBlock(shared_ptr<Token> &ret);
     void indent(shared_ptr<Token> &ret);
+    void interpolation(shared_ptr<Token> &ret);
+    void mixin(shared_ptr<Token> &ret);
+    void mixinBlock(shared_ptr<Token> &ret);
     void pipelessText(shared_ptr<Token> &ret);
-    void colon(shared_ptr<Token> &ret);
+    void prepend(shared_ptr<Token> &ret);
+    void stashed(shared_ptr<Token> &ret);
+    void tag(shared_ptr<Token> &ret);
+    void text(shared_ptr<Token> &ret);
+    void textFail(shared_ptr<Token> &ret);
+    void when(shared_ptr<Token> &ret);
+    void whileToken(shared_ptr<Token> &ret);
+    void yield(shared_ptr<Token> &ret);
 };
 } // namespace lexer
 } // namespace pugcpp

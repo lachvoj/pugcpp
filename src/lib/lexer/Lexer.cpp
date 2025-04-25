@@ -9,6 +9,7 @@ using namespace exceptions;
 const regex Lexer::cleanRe = regex("^['\"]|['\"]$");
 const regex Lexer::doubleQuotedRe = regex("^\"[^\"]*\"$");
 const regex Lexer::quotedRe = regex("^'[^']*'$");
+const regex whitespaceRe = regex("[ \\n\\t]");
 const map<char, char> Lexer::closingBrackets = {{'(', ')'}, {'{', '}'}, {'[', ']'}};
 
 // public
@@ -644,17 +645,39 @@ void Lexer::className(shared_ptr<Token> &ret)
         ret = make_shared<CssClass>(val, lneno_);
 }
 
+void endINterpolation()
+{
+}
+
+void Lexer::addText(shared_ptr<Token> &ret, string &value, string prefix, int escaped)
+{
+    if (value.append(prefix).empty())
+        return;
+    
+    int indexOfEnd = interpolated_? value.find(']') : -1;
+    int indexOfStart = interplated
+}
+
 void Lexer::text(shared_ptr<Token> &ret)
 {
-    string val = scan("^\\.([\\w-]+)");
-    if (val.empty())
+    smatch matcher;
+    string str = "";
+
+    scanner_.getMatcherForPattern(matcher, "^(?:\\| ?| )([^\\n]+)");
+    if (matcher.empty())
     {
-        val = scan("^\\|?( )");
-        if (val.empty())
-            val = scan("^(<[^\\n]*)");
+        scanner_.getMatcherForPattern(matcher, "^( )");
+        if (matcher.empty())
+        {
+            scanner_.getMatcherForPattern(matcher, "^\\|( ?)");
+        }
     }
-    if (StringUtils::isNotBlank(val))
-        ret = make_shared<Text>(val, lneno_);
+    if (!matcher.empty())
+    {
+        str = matcher.str(1);
+        consume(matcher.position(0) + matcher.length(0));
+        ret = make_shared<Text>(str, lneno_);
+    }
 }
 
 void Lexer::textFail(shared_ptr<Token> &ret)
@@ -677,7 +700,7 @@ void Lexer::prepend(shared_ptr<Token> &ret)
     if (StringUtils::isNotBlank(name))
     {
         shared_ptr<Block> tok = make_shared<Block>(name, lneno_);
-        tok->setMode("prepend");
+        tok->setMode(Block::E_MODE::PREPEND);
         ret = tok;
     }
 }
@@ -688,7 +711,7 @@ void Lexer::append(shared_ptr<Token> &ret)
     if (StringUtils::isNotBlank(name))
     {
         shared_ptr<Block> tok = make_shared<Block>(name, lneno_);
-        tok->setMode("append");
+        tok->setMode(Block::E_MODE::APPEND);
         ret = tok;
     }
 }

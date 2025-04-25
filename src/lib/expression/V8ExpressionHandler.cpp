@@ -79,7 +79,10 @@ Local<v8::Value> V8ExpressionHandler::modelAnyToV8Value(any val)
 
 bool V8ExpressionHandler::evaluateBooleanExpression(const string &expression, PugModel &model)
 {
-    return false;
+    any ret = evaluateExpression(expression, model);
+    bool *bRet = any_cast<bool>(&ret);
+
+    return *bRet;
 }
 
 any V8ExpressionHandler::evaluateExpression(const string &expression, PugModel &model)
@@ -114,15 +117,15 @@ any V8ExpressionHandler::evaluateExpression(const string &expression, PugModel &
     v8::Local<v8::Script> script = v8::Script::Compile(context, source).ToLocalChecked();
     v8::Local<v8::Value> result = script->Run(context).ToLocalChecked();
 
-    v8::MaybeLocal<v8::Array> propsArrayML = context->Global()->GetPropertyNames(context);
-    v8::Local<v8::Array> propsArrayL;
-    propsArrayML.ToLocal(&propsArrayL);
+    // v8::MaybeLocal<v8::Array> propsArrayML = context->Global()->GetPropertyNames(context);
+    // v8::Local<v8::Array> propsArrayL;
+    // propsArrayML.ToLocal(&propsArrayL);
 
-    v8::MaybeLocal<v8::String> propsArrayStrML = propsArrayL->ToString(context);
-    v8::Local<v8::String> propsArrayStrL;
-    propsArrayStrML.ToLocal(&propsArrayStrL);
+    // v8::MaybeLocal<v8::String> propsArrayStrML = propsArrayL->ToString(context);
+    // v8::Local<v8::String> propsArrayStrL;
+    // propsArrayStrML.ToLocal(&propsArrayStrL);
 
-    string propsString(*v8::String::Utf8Value(isolate_, propsArrayStrL));
+    // string propsString(*v8::String::Utf8Value(isolate_, propsArrayStrL));
     any ret;
     if (result->IsNullOrUndefined())
         return ret;
@@ -133,6 +136,11 @@ any V8ExpressionHandler::evaluateExpression(const string &expression, PugModel &
         else
             ret = stod(*v8::String::Utf8Value(isolate_, result));
     }
+    else if (result->IsBoolean())
+    {
+        v8::Boolean *bVal = v8::Boolean::Cast(*result);
+        ret = bVal->Value();
+    }
     else
         ret = string(*v8::String::Utf8Value(isolate_, result));
 
@@ -141,7 +149,10 @@ any V8ExpressionHandler::evaluateExpression(const string &expression, PugModel &
 
 string V8ExpressionHandler::evaluateStringExpression(const string &expression, PugModel &model)
 {
-    return "";
+    any ret = evaluateExpression(expression, model);
+    string *sRet = any_cast<string>(&ret);
+
+    return *sRet;
 }
 
 void V8ExpressionHandler::assertExpression(string expression)

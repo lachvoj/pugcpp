@@ -51,7 +51,13 @@ int main(int argc, char const *argv[])
     // });
     auto t1 = std::chrono::high_resolution_clock::now();
 
-    string out = pugcpp::PugCpp::render("test.pug", nullptr);
+    string inputFileName = "test.pug";
+    if (argc > 1)
+    {
+        inputFileName = string(argv[1]);
+    }
+
+    string out = pugcpp::PugCpp::render(inputFileName, nullptr);
 
     auto t2 = std::chrono::high_resolution_clock::now();
     auto duration = std::chrono::duration_cast<std::chrono::microseconds>(t2 - t1).count();

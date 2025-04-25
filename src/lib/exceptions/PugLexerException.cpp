@@ -12,5 +12,6 @@ PugLexerException::PugLexerException(
 : PugException(message, filename, lineNumber, templateLoader, nullptr)
 {
 }
+
 } // namespace exceptions
 } // namespace pugcpp

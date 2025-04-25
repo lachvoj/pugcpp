@@ -96,7 +96,9 @@ class Parser
     void parseInclude(shared_ptr<Node> &ret);
     void parseExtends(shared_ptr<Node> &ret);
     void parseInterpolation(shared_ptr<Node> &ret);
+    void parseDot(shared_ptr<Node> &ret);
     void parseText(shared_ptr<Node> &ret);
+    void parseTextHtml(shared_ptr<Node> &ret);
     void parseEach(shared_ptr<Node> &ret);
     void parseWhile(shared_ptr<Node> &ret);
     void parseAssignment(shared_ptr<Node> &ret);

@@ -25,6 +25,11 @@ void Block::setMode(const string &mode)
     else
         mode_ = E_MODE::REPLACE;
 }
+
+void Block::setMode(E_MODE mode)
+{
+    mode_ = mode;
+}
 } // namespace token
 } // namespace lexer
 } // namespace pugcpp

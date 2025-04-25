@@ -15,13 +15,14 @@ namespace token
 enum TokenType
 {
     e_Default = 0,
+    e_Assignment,
     e_AttributeList,
     e_AttributesBlock,
     e_Block,
     e_BlockCode,
     e_BufferedComment,
     e_Call,
-    e_CaseToken,
+    e_Case,
     e_Colon,
     e_Comment,
     e_CssClass,
@@ -29,30 +30,33 @@ enum TokenType
     e_Deferred,
     e_Doctype,
     e_Dot,
+    e_Each,
     e_Else,
     e_ElseIf,
+    e_EndPugInterpolation,
     e_Eos,
     e_Expression,
-    e_ExtendsToken,
+    e_Extends,
     e_Filter,
     e_ForTag,
     e_If,
     e_Include,
     e_Indent,
+    e_InterpolatedCode,
     e_Interpolation,
     e_Mixin,
     e_MixinBlock,
     e_Newline,
     e_Outdent,
     e_PipelessText,
+    e_StartPugInterpolation,
     e_Tag,
     e_Text,
+    e_TextHtml,
     e_UnbufferedComment,
     e_When,
     e_While,
-    e_Yield,
-    e_Assignment,
-    e_Each
+    e_Yield
 };
 
 class Token
@@ -67,6 +71,8 @@ class Token
     string name_;
     int indents_;
     bool selfClosing_ = false;
+
+    friend class Lexer;
 
   public:
     Token(int lineNumber = 0, TokenType type = e_Default);

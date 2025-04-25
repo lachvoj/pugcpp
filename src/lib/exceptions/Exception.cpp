@@ -1,5 +1,7 @@
 #include "Exception.hpp"
 
+#include <regex>
+
 namespace pugcpp
 {
 namespace exceptions
@@ -10,8 +12,10 @@ Exception::Exception(const string &error, std::exception *e) : Exception(error)
         throwable_ = e;
 }
 
-Exception::Exception(const string &error, bool printStack) : error_(error), printStack_(printStack)
+Exception::Exception(const string &error, bool printStack) : printStack_(printStack)
 {
+    error_ = string(regex_replace(error, regex("\n"), string("\\n")));
+
     if (printStack_)
         error_ += getStackTrace();
 }
